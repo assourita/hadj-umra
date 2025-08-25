@@ -1,0 +1,319 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Répondre au message - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>📤 Répondre au message</h1>
+        <p>Message #{{ message.id }}</p>
+    </div>
+
+    <div class="reply-form">
+        <!-- Informations du message original -->
+        <div class="form-section">
+            <h2>📋 Message original</h2>
+            <div class="original-message">
+                <div class="message-header">
+                    <div class="message-info">
+                        <h3>{{ message.sujet|title }}</h3>
+                        <p class="message-meta">
+                            <span class="sender">{{ message.nom }}</span>
+                            <span class="date">{{ message.createdAt|date('d/m/Y H:i') }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="message-content">
+                    <p>{{ message.message|nl2br }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de réponse -->
+        <div class="form-section">
+            <h2>📤 Votre réponse</h2>
+            <form method="POST" action="{{ path('app_admin_contact_message_reply', {'id': message.id}) }}">
+                <div class="form-group">
+                    <label for="statut">Statut du message</label>
+                    <select id="statut" name="statut" required class="form-control">
+                        <option value="en_cours" {{ message.statut == 'en_cours' ? 'selected' : '' }}>En cours</option>
+                        <option value="repondu" {{ message.statut == 'repondu' ? 'selected' : '' }}>Répondu</option>
+                        <option value="clos" {{ message.statut == 'clos' ? 'selected' : '' }}>Clos</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reponse">Votre réponse</label>
+                    <textarea id="reponse" name="reponse" rows="8" required class="form-control" placeholder="Tapez votre réponse ici...">{{ message.reponse }}</textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        📤 Envoyer la réponse
+                    </button>
+                    <a href="{{ path('app_admin_contact_message_show', {'id': message.id}) }}" class="btn btn-secondary">
+                        ← Retour aux détails
+                    </a>
+                    <a href="{{ path('app_admin_contact_messages_index') }}" class="btn btn-info">
+                        📋 Retour à la liste
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Informations de contact -->
+        <div class="form-section">
+            <h2>👤 Informations de contact</h2>
+            <div class="contact-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Nom :</span>
+                        <span class="value">{{ message.nom }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Email :</span>
+                        <span class="value">
+                            <a href="mailto:{{ message.email }}" class="email-link">{{ message.email }}</a>
+                        </span>
+                    </div>
+                    {% if message.telephone %}
+                        <div class="info-item">
+                            <span class="label">Téléphone :</span>
+                            <span class="value">
+                                <a href="tel:{{ message.telephone }}" class="phone-link">{{ message.telephone }}</a>
+                            </span>
+                        </div>
+                    {% endif %}
+                    {% if message.pays %}
+                        <div class="info-item">
+                            <span class="label">Pays :</span>
+                            <span class="value">{{ message.pays }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.original-message {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.message-header {
+    padding: 1rem;
+    background: #fce7f3;
+    border-bottom: 1px solid #fbcfe8;
+}
+
+.message-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: #be185d;
+}
+
+.message-meta {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #831843;
+}
+
+.sender {
+    font-weight: 600;
+}
+
+.date {
+    margin-left: 1rem;
+    opacity: 0.8;
+}
+
+.message-content {
+    padding: 1rem;
+}
+
+.message-content p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--color-gray);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 200px;
+}
+
+.contact-info {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 0.25rem;
+    border-left: 3px solid var(--color-primary);
+}
+
+.info-item .label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.info-item .value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.email-link, .phone-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.email-link:hover, .phone-link:hover {
+    text-decoration: underline;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+}
+</style>
+{% endblock %}

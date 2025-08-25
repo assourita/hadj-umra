@@ -1,0 +1,519 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Départ - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-depart-form">
+    <div class="page-header">
+        <h1>✈️ Nouveau Départ</h1>
+        <p>Créez un nouveau départ pour un package</p>
+    </div>
+
+    <div class="content">
+        <div class="form-container">
+            <form method="POST" class="depart-form">
+                <div class="form-section">
+                    <h2>📦 Sélection du package</h2>
+                    
+                    <div class="form-group">
+                        <label for="package_id">Package *</label>
+                        <select id="package_id" name="package_id" required class="form-control">
+                            <option value="">Sélectionner un package</option>
+                            {% for package in packages %}
+                                <option value="{{ package.id }}">{{ package.titre }} - {{ package.prixBase|number_format(0, ',', ' ') }} {{ package.devise }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>📅 Dates et quotas</h2>
+                    
+                    <div class="form-group">
+                        <label for="ville_depart">Ville de départ *</label>
+                        <input type="text" id="ville_depart" name="ville_depart" required class="form-control" placeholder="Dakar" value="Dakar">
+                        <small class="form-help">Ville de départ pour ce voyage</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date_depart">Date de départ *</label>
+                            <input type="date" id="date_depart" name="date_depart" required class="form-control" min="{{ "now"|date("Y-m-d") }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="date_retour">Date de retour *</label>
+                            <input type="date" id="date_retour" name="date_retour" required class="form-control" min="{{ "now"|date("Y-m-d") }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="heure_depart">Heure de départ</label>
+                        <input type="time" id="heure_depart" name="heure_depart" class="form-control">
+                        <small class="form-help">Heure de départ du vol (optionnel)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quota_total">Quota total *</label>
+                        <input type="number" id="quota_total" name="quota_total" required class="form-control" min="1" placeholder="50">
+                        <small class="form-help">Nombre maximum de pèlerins pour ce départ</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>✈️ Informations de vol</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="compagnie_aerienne">Compagnie aérienne</label>
+                            <input type="text" id="compagnie_aerienne" name="compagnie_aerienne" class="form-control" placeholder="Air Senegal, Turkish Airlines, etc.">
+                            <small class="form-help">Nom de la compagnie aérienne (optionnel)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="numero_vol">Numéro de vol</label>
+                            <input type="text" id="numero_vol" name="numero_vol" class="form-control" placeholder="SN123, TK456, etc.">
+                            <small class="form-help">Numéro du vol (optionnel)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>🏨 Tarifs par type de chambre</h2>
+                    <p class="section-description">Définissez les prix pour chaque type de chambre. Si aucun tarif n'est défini, le prix de base du package sera utilisé.</p>
+                    
+                    <div class="tarifs-container">
+                        <div class="tarif-item">
+                            <div class="tarif-header">
+                                <h4>🛏️ Chambre Individuelle</h4>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tarifs[individuelle][active]" value="1" checked>
+                                    <span class="checkmark"></span>
+                                    Activer ce tarif
+                                </label>
+                            </div>
+                            <div class="tarif-fields">
+                                <div class="form-group">
+                                    <label for="tarif_individuelle_prix">Prix (FCFA)</label>
+                                    <input type="number" id="tarif_individuelle_prix" name="tarifs[individuelle][prix]" class="form-control" placeholder="1200000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tarif_individuelle_reduction">Réduction (%)</label>
+                                    <input type="number" id="tarif_individuelle_reduction" name="tarifs[individuelle][reduction]" class="form-control" placeholder="0" min="0" max="100" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tarif-item">
+                            <div class="tarif-header">
+                                <h4>🛏️ Chambre Double</h4>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tarifs[double][active]" value="1" checked>
+                                    <span class="checkmark"></span>
+                                    Activer ce tarif
+                                </label>
+                            </div>
+                            <div class="tarif-fields">
+                                <div class="form-group">
+                                    <label for="tarif_double_prix">Prix (FCFA)</label>
+                                    <input type="number" id="tarif_double_prix" name="tarifs[double][prix]" class="form-control" placeholder="1200000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tarif_double_reduction">Réduction (%)</label>
+                                    <input type="number" id="tarif_double_reduction" name="tarifs[double][reduction]" class="form-control" placeholder="0" min="0" max="100" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tarif-item">
+                            <div class="tarif-header">
+                                <h4>🛏️ Chambre Triple</h4>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tarifs[triple][active]" value="1" checked>
+                                    <span class="checkmark"></span>
+                                    Activer ce tarif
+                                </label>
+                            </div>
+                            <div class="tarif-fields">
+                                <div class="form-group">
+                                    <label for="tarif_triple_prix">Prix (FCFA)</label>
+                                    <input type="number" id="tarif_triple_prix" name="tarifs[triple][prix]" class="form-control" placeholder="1200000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tarif_triple_reduction">Réduction (%)</label>
+                                    <input type="number" id="tarif_triple_reduction" name="tarifs[triple][reduction]" class="form-control" placeholder="0" min="0" max="100" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tarif-item">
+                            <div class="tarif-header">
+                                <h4>🛏️ Chambre Quadruple</h4>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="tarifs[quad][active]" value="1" checked>
+                                    <span class="checkmark"></span>
+                                    Activer ce tarif
+                                </label>
+                            </div>
+                            <div class="tarif-fields">
+                                <div class="form-group">
+                                    <label for="tarif_quad_prix">Prix (FCFA)</label>
+                                    <input type="number" id="tarif_quad_prix" name="tarifs[quad][prix]" class="form-control" placeholder="1200000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tarif_quad_reduction">Réduction (%)</label>
+                                    <input type="number" id="tarif_quad_reduction" name="tarifs[quad][reduction]" class="form-control" placeholder="0" min="0" max="100" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>📝 Remarques</h2>
+                    
+                    <div class="form-group">
+                        <label for="remarques">Remarques</label>
+                        <textarea id="remarques" name="remarques" rows="4" class="form-control" placeholder="Informations supplémentaires, conditions spéciales, etc."></textarea>
+                        <small class="form-help">Remarques optionnelles pour ce départ</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>⚙️ Statut</h2>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="is_active" value="1" checked>
+                            <span class="checkmark"></span>
+                            Départ actif
+                        </label>
+                        <small class="form-help">Un départ inactif ne sera pas visible aux utilisateurs</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ path('app_admin_departs_index') }}" class="btn btn-secondary">
+                        ❌ Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        💾 Créer le départ
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Aide -->
+        <div class="help-section">
+            <h2>💡 Conseils pour créer un départ</h2>
+            
+            <div class="help-item">
+                <div class="help-icon">📦</div>
+                <div class="help-content">
+                    <h3>Sélection du package</h3>
+                    <p>Choisissez le package correspondant à ce départ. Seuls les packages actifs sont affichés.</p>
+                </div>
+            </div>
+            
+            <div class="help-item">
+                <div class="help-icon">📅</div>
+                <div class="help-content">
+                    <h3>Dates</h3>
+                    <p>Les dates doivent être dans le futur. La date de retour doit être après la date de départ.</p>
+                </div>
+            </div>
+            
+            <div class="help-item">
+                <div class="help-icon">👥</div>
+                <div class="help-content">
+                    <h3>Quota</h3>
+                    <p>Définissez le nombre maximum de pèlerins pour ce départ. Ce nombre peut être ajusté plus tard.</p>
+                </div>
+            </div>
+            
+            <div class="help-item">
+                <div class="help-icon">✈️</div>
+                <div class="help-content">
+                    <h3>Informations de vol</h3>
+                    <p>Renseignez la compagnie aérienne et le numéro de vol pour faciliter le suivi des réservations.</p>
+                </div>
+            </div>
+            
+            <div class="help-item">
+                <div class="help-icon">💰</div>
+                <div class="help-content">
+                    <h3>Tarifs</h3>
+                    <p>Configurez les prix pour chaque type de chambre. Les réductions s'appliquent au prix de base.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-depart-form {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.form-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.section-description {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.tarifs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tarif-item {
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.tarif-header {
+    background: #f8fafc;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tarif-header h4 {
+    margin: 0;
+    color: var(--color-primary);
+}
+
+.tarif-fields {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.checkmark {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 3px;
+    margin-right: 0.5rem;
+    position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 1px;
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.help-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.help-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.help-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.help-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.help-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.help-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.help-content p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+    .content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-depart-form {
+        padding: 1rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .tarif-fields {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %} 

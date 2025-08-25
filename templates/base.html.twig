@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dèmè Travel - Agence de voyage{% endblock %}</title>
+    <link rel="icon" href="{{ asset('images/logo.svg') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <style>
+        :root {
+            --color-primary: #1e3a8a;     /* Bleu nuit */
+            --color-secondary: #f59e0b;   /* Or doux */
+            --color-accent: #fbbf24;      /* Sable */
+            --color-light: #fefefe;       /* Blanc cassé */
+            --color-dark: #1f2937;
+            --color-gray: #6b7280;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--color-dark);
+            background-color: var(--color-light);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--color-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header - Harmonisé avec la page d'accueil */
+        .header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 1rem;
+            cursor: pointer;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-secondary);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Modal pour le logo agrandi */
+        .logo-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .logo-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: scaleIn 0.3s ease;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .logo-modal img {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 8px solid var(--color-secondary);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-modal h2 {
+            color: var(--color-primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+        }
+
+        .logo-modal p {
+            color: var(--color-gray);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-modal .close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-gray);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .logo-modal .close:hover {
+            color: var(--color-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { 
+                transform: translate(-50%, -50%) scale(0.7);
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .logo-text {
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+
+        .nav a:hover {
+            color: var(--color-secondary);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+
+        .nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: var(--color-secondary);
+            border-radius: 2px;
+        }
+
+        /* Main content */
+        .main {
+            min-height: calc(100vh - 160px);
+            padding: 1rem 0;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--color-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d97706;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background-color: #dbeafe;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header .container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav {
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo" onclick="showLogoModal()">
+                <img src="{{ asset('images/logo.svg') }}" alt="Dèmè Travel">
+                <span class="logo-text">Dèmè Travel</span>
+            </div>
+            
+            <nav>
+                <ul class="nav">
+                    <li><a href="{{ path('app_home') }}" {% if app.request.get('_route') == 'app_home' %}class="active"{% endif %}>Accueil</a></li>
+                    <li><a href="{{ path('app_packages_index') }}" {% if app.request.get('_route') starts with 'app_package' %}class="active"{% endif %}>Nos Offres</a></li>
+                    <li><a href="{{ path('app_about') }}" {% if app.request.get('_route') == 'app_about' %}class="active"{% endif %}>À Propos</a></li>
+                    <li><a href="{{ path('app_contact') }}" {% if app.request.get('_route') == 'app_contact' %}class="active"{% endif %}>Contact</a></li>
+                    
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li><a href="{{ path('app_admin_dashboard') }}" {% if app.request.get('_route') starts with 'app_admin' %}class="active"{% endif %}>Administration</a></li>
+                        {% endif %}
+                        <li><a href="{{ path('app_client_dashboard') }}" {% if app.request.get('_route') starts with 'app_client' %}class="active"{% endif %}>Mon Espace</a></li>
+                        <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                    {% else %}
+                        <li><a href="{{ path('app_login') }}" {% if app.request.get('_route') == 'app_login' %}class="active"{% endif %}>Connexion</a></li>
+                        <li><a href="{{ path('app_register') }}" {% if app.request.get('_route') == 'app_register' %}class="active"{% endif %}>Inscription</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; {{ 'now'|date('Y') }} Dèmè Travel. Tous droits réservés.</p>
+            <p>Agence de voyage spécialisée dans l'organisation de pèlerinages Umra et Hadj</p>
+        </div>
+    </footer>
+
+    <!-- Modal pour le logo agrandi -->
+    <div id="logoModal" class="logo-modal">
+        <div class="logo-modal-content">
+            <span class="close" onclick="hideLogoModal()">&times;</span>
+            <img src="{{ asset('images/logo.svg') }}" alt="Dèmè Travel">
+            <h2>Dèmè Travel</h2>
+            <p>Agence de voyage spécialisée dans l'organisation de pèlerinages Umra et Hadj</p>
+            <p>Votre partenaire de confiance pour des expériences spirituelles inoubliables</p>
+        </div>
+    </div>
+
+    <script>
+        function showLogoModal() {
+            document.getElementById('logoModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLogoModal() {
+            document.getElementById('logoModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fermer le modal en cliquant en dehors
+        document.getElementById('logoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLogoModal();
+            }
+        });
+
+        // Fermer le modal avec la touche Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideLogoModal();
+            }
+        });
+    </script>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

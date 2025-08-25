@@ -1,0 +1,325 @@
+{% extends 'layouts/admin_dashboard.html.twig' %}
+
+{% block title %}Réservations en Attente - Administration{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1>⏳ Réservations en Attente</h1>
+    <p>Gérez les réservations nécessitant une validation</p>
+</div>
+
+<div class="content">
+    {% if reservations is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">✅</div>
+            <h2>Aucune réservation en attente</h2>
+            <p>Toutes les réservations ont été traitées.</p>
+        </div>
+    {% else %}
+        <div class="reservations-grid">
+            {% for reservation in reservations %}
+                <div class="reservation-card">
+                    <div class="reservation-header">
+                        <h3>{{ reservation.package.titre }}</h3>
+                        <span class="reservation-id">#{{ reservation.id }}</span>
+                    </div>
+                    
+                    <div class="reservation-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Client :</span>
+                            <span class="detail-value">{{ reservation.user.prenom }} {{ reservation.user.nom }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email :</span>
+                            <span class="detail-value">{{ reservation.user.email }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Téléphone :</span>
+                            <span class="detail-value">{{ reservation.user.phone ?: 'Non renseigné' }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date de départ :</span>
+                            <span class="detail-value">{{ reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Nombre de pèlerins :</span>
+                            <span class="detail-value">{{ reservation.pelerins|length }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Montant total :</span>
+                            <span class="detail-value">{{ reservation.montantTotal|number_format(0, ',', ' ') }} {{ reservation.devise }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Statut :</span>
+                            <span class="detail-value">
+                                {% if reservation.statut == 'en_attente_paiement' %}
+                                    <span class="status-badge pending">⏳ En attente de paiement</span>
+                                {% elseif reservation.statut == 'en_attente_documents' %}
+                                    <span class="status-badge documents">📄 Documents requis</span>
+                                {% else %}
+                                    <span class="status-badge other">{{ reservation.statut|title }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Créée le :</span>
+                            <span class="detail-value">{{ reservation.createdAt|date('d/m/Y H:i') }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="reservation-actions">
+                        <a href="{{ path('app_admin_reservation_show', {'id': reservation.id}) }}" class="btn btn-secondary btn-small">
+                            👁️ Voir détails
+                        </a>
+                        {% if reservation.statut == 'en_attente_paiement' %}
+                            <form method="POST" action="{{ path('app_admin_reservation_approve', {'id': reservation.id}) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-success btn-small">
+                                    ✅ Approuver
+                                </button>
+                            </form>
+                        {% endif %}
+                        {% if reservation.statut == 'en_attente_documents' %}
+                            <a href="{{ path('app_admin_reservation_documents', {'id': reservation.id}) }}" class="btn btn-primary btn-small">
+                                📄 Vérifier documents
+                            </a>
+                        {% endif %}
+                        <form method="POST" action="{{ path('app_admin_reservation_reject', {'id': reservation.id}) }}" 
+                              style="display: inline;" 
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir rejeter cette réservation ?')">
+                            <button type="submit" class="btn btn-danger btn-small">
+                                ❌ Rejeter
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.content {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.reservations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+}
+
+.reservation-card {
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.3s ease;
+}
+
+.reservation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.reservation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.reservation-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+}
+
+.reservation-id {
+    background: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.reservation-details {
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.detail-value {
+    color: #1f2937;
+    font-size: 0.875rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.documents {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge.other {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.reservation-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .reservations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reservation-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .reservation-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,285 @@
+{% extends 'layouts/admin_dashboard.html.twig' %}
+
+{% block title %}Gestion des Départs - Administration{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1>✈️ Gestion des Départs</h1>
+    <p>Gérez tous les départs programmés</p>
+</div>
+
+<div class="content">
+    <div class="actions-bar">
+        <a href="{{ path('app_admin_depart_new') }}" class="btn btn-primary">
+            ➕ Nouveau Départ
+        </a>
+    </div>
+
+    {% if departs is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">✈️</div>
+            <h2>Aucun départ programmé</h2>
+            <p>Commencez par créer votre premier départ.</p>
+            <a href="{{ path('app_admin_depart_new') }}" class="btn btn-primary">
+                Créer un départ
+            </a>
+        </div>
+    {% else %}
+        <div class="departs-grid">
+            {% for depart in departs %}
+                <div class="depart-card">
+                    <div class="depart-header">
+                        <h3>{{ depart.package.titre }}</h3>
+                        <span class="depart-date">{{ depart.dateDepart|date('d/m/Y') }}</span>
+                    </div>
+                    
+                    <div class="depart-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Date de départ :</span>
+                            <span class="detail-value">{{ depart.dateDepart|date('d/m/Y H:i') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date de retour :</span>
+                            <span class="detail-value">{{ depart.dateRetour|date('d/m/Y H:i') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Quota total :</span>
+                            <span class="detail-value">{{ depart.quotaTotal }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Quota vendu :</span>
+                            <span class="detail-value">{{ depart.quotaVendu }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Places restantes :</span>
+                            <span class="detail-value">{{ depart.quotaTotal - depart.quotaVendu }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Statut :</span>
+                            <span class="detail-value">
+                                {% if depart.isActive %}
+                                    ✅ Actif
+                                {% else %}
+                                    ❌ Inactif
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="depart-actions">
+                        <a href="{{ path('app_admin_depart_edit', {'id': depart.id}) }}" class="btn btn-secondary btn-small">
+                            ✏️ Modifier
+                        </a>
+                        <form method="POST" action="{{ path('app_admin_depart_delete', {'id': depart.id}) }}" 
+                              style="display: inline;" 
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce départ ?')">
+                            <button type="submit" class="btn btn-danger btn-small">
+                                🗑️ Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.content {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.actions-bar {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.departs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.depart-card {
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.3s ease;
+}
+
+.depart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.depart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.depart-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+}
+
+.depart-date {
+    background: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.depart-details {
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.detail-value {
+    color: #1f2937;
+    font-size: 0.875rem;
+}
+
+.depart-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .departs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .depart-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .depart-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %} 

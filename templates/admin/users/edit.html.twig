@@ -1,0 +1,335 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'Utilisateur - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-user-form">
+    <div class="page-header">
+        <h1>✏️ Modifier l'Utilisateur</h1>
+        <p>Modifiez les informations de l'utilisateur</p>
+    </div>
+
+    <div class="content">
+        <div class="form-container">
+            <form method="POST" class="user-form">
+                <div class="form-section">
+                    <h2>👤 Informations personnelles</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nom">Nom *</label>
+                            <input type="text" id="nom" name="nom" required class="form-control" value="{{ user.nom }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="prenom">Prénom *</label>
+                            <input type="text" id="prenom" name="prenom" required class="form-control" value="{{ user.prenom }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required class="form-control" value="{{ user.email }}">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Téléphone</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" value="{{ user.phone }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="pays">Pays</label>
+                            <input type="text" id="pays" name="pays" class="form-control" value="{{ user.pays }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>🔐 Statut et rôles</h2>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="verified" name="verified" value="1" {% if user.isVerified %}checked{% endif %}>
+                            <span class="checkmark"></span>
+                            Compte vérifié
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rôles :</label>
+                        <div class="roles-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="role_user" name="role_user" value="1" {% if 'ROLE_USER' in user.roles %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                                Utilisateur (ROLE_USER)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="role_admin" name="role_admin" value="1" {% if 'ROLE_ADMIN' in user.roles %}checked{% endif %}>
+                                <span class="checkmark"></span>
+                                Administrateur (ROLE_ADMIN)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ path('app_admin_users_index') }}" class="btn btn-secondary">
+                        ❌ Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        💾 Sauvegarder
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Informations actuelles -->
+        <div class="info-section">
+            <h2>📋 Informations actuelles</h2>
+            
+            <div class="info-item">
+                <div class="info-icon">👤</div>
+                <div class="info-content">
+                    <h3>Utilisateur</h3>
+                    <p>{{ user.prenom }} {{ user.nom }}</p>
+                    <p>{{ user.email }}</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">📞</div>
+                <div class="info-content">
+                    <h3>Contact</h3>
+                    <p>Téléphone : {{ user.phone ?: 'Non renseigné' }}</p>
+                    <p>Pays : {{ user.pays ?: 'Non renseigné' }}</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">🔐</div>
+                <div class="info-content">
+                    <h3>Statut</h3>
+                    <p>Vérifié : {% if user.isVerified %}✅ Oui{% else %}❌ Non{% endif %}</p>
+                    <p>Inscrit le : {{ user.createdAt|date('d/m/Y') }}</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">👑</div>
+                <div class="info-content">
+                    <h3>Rôles</h3>
+                    {% for role in user.roles %}
+                        <span class="role-badge">{{ role|replace({'ROLE_': ''}) }}</span>
+                    {% else %}
+                        <p>Aucun rôle</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-user-form {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+}
+
+.form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+    margin-bottom: 0.5rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.25rem;
+}
+
+.roles-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.info-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.info-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+}
+
+.info-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.info-content p {
+    margin: 0 0 0.25rem 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.info-content p:last-child {
+    margin-bottom: 0;
+}
+
+.role-badge {
+    display: inline-block;
+    background: var(--color-secondary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .admin-user-form {
+        padding: 1rem;
+    }
+    
+    .content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,296 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des pèlerins - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>👤 Gestion des pèlerins</h1>
+        <p>Gérez les informations des pèlerins</p>
+    </div>
+
+    {% if pelerins is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">👤</div>
+            <h3>Aucun pèlerin trouvé</h3>
+            <p>Les pèlerins sont créés lors des réservations.</p>
+        </div>
+    {% else %}
+        <div class="pelerins-grid">
+            {% for pelerin in pelerins %}
+                <div class="pelerin-card">
+                    <div class="pelerin-header">
+                        <div class="pelerin-avatar">
+                            {{ pelerin.prenom|first|upper }}{{ pelerin.nom|first|upper }}
+                        </div>
+                        <div class="pelerin-info">
+                            <h3>{{ pelerin.prenom }} {{ pelerin.nom }}</h3>
+                            <p>{{ pelerin.nationalite }} - {{ pelerin.sexe == 'M' ? 'Homme' : 'Femme' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="pelerin-details">
+                        <div class="detail-row">
+                            <span class="label">Âge :</span>
+                            <span class="value">{{ pelerin.age }} ans</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Date de naissance :</span>
+                            <span class="value">{{ pelerin.dateNaissance|date('d/m/Y') }}</span>
+                        </div>
+                        {% if pelerin.passportNumber %}
+                            <div class="detail-row">
+                                <span class="label">Passeport :</span>
+                                <span class="value">{{ pelerin.passportNumber }}</span>
+                            </div>
+                        {% endif %}
+                        {% if pelerin.phone %}
+                            <div class="detail-row">
+                                <span class="label">Téléphone :</span>
+                                <span class="value">{{ pelerin.phone }}</span>
+                            </div>
+                        {% endif %}
+                        <div class="detail-row">
+                            <span class="label">Réservation :</span>
+                            <span class="value">#{{ pelerin.reservation.codeDossier }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Package :</span>
+                            <span class="value">{{ pelerin.reservation.depart.package.titre }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Départ :</span>
+                            <span class="value">{{ pelerin.reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                        </div>
+                    </div>
+
+                    {% if pelerin.nomUrgence or pelerin.phoneUrgence %}
+                        <div class="urgence-section">
+                            <h4>📞 Contact d'urgence</h4>
+                            <div class="urgence-details">
+                                {% if pelerin.nomUrgence %}
+                                    <div class="detail-row">
+                                        <span class="label">Nom :</span>
+                                        <span class="value">{{ pelerin.nomUrgence }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if pelerin.phoneUrgence %}
+                                    <div class="detail-row">
+                                        <span class="label">Téléphone :</span>
+                                        <span class="value">{{ pelerin.phoneUrgence }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if pelerin.relationUrgence %}
+                                    <div class="detail-row">
+                                        <span class="label">Relation :</span>
+                                        <span class="value">{{ pelerin.relationUrgence }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="pelerin-actions">
+                        <a href="{{ path('app_admin_pelerin_show', {'id': pelerin.id}) }}" class="btn btn-secondary">
+                            👁️ Voir détails
+                        </a>
+                        <a href="{{ path('app_admin_pelerin_edit', {'id': pelerin.id}) }}" class="btn btn-primary">
+                            ✏️ Modifier
+                        </a>
+                        <form method="POST" action="{{ path('app_admin_pelerin_delete', {'id': pelerin.id}) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer ce pèlerin ?')">
+                                🗑️ Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: var(--color-gray);
+}
+
+.pelerins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.pelerin-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.pelerin-header {
+    padding: 1.5rem;
+    background: #f0f9ff;
+    border-bottom: 1px solid #bae6fd;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pelerin-avatar {
+    width: 60px;
+    height: 60px;
+    background: #0891b2;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.pelerin-info h3 {
+    margin: 0 0 0.25rem 0;
+    color: #0c4a6e;
+}
+
+.pelerin-info p {
+    margin: 0;
+    color: #0369a1;
+    font-size: 0.875rem;
+}
+
+.pelerin-details {
+    padding: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.value {
+    color: var(--color-primary);
+}
+
+.urgence-section {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.urgence-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.urgence-details {
+    background: #fef3c7;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #f59e0b;
+}
+
+.pelerin-actions {
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .pelerins-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pelerin-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

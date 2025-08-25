@@ -1,0 +1,512 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="contact-page">
+    <div class="page-header">
+        <h1>📞 Contactez-nous</h1>
+        <p>Notre équipe est à votre disposition pour répondre à toutes vos questions</p>
+    </div>
+
+    <div class="contact-content">
+        <div class="contact-grid">
+            <!-- Informations de contact -->
+            <div class="contact-info">
+                <h2>📍 Nos Coordonnées</h2>
+                
+                <div class="info-section">
+                    <h3>🏢 Adresse</h3>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <strong>Dèmè Travel</strong><br>
+                            123 Avenue de la Paix<br>
+                            Bamako, Mali
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>📞 Téléphone</h3>
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <strong>+223 20 22 33 44</strong><br>
+                            <span>Lun-Ven: 8h-18h</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div class="info-content">
+                            <strong>+223 76 12 34 56</strong><br>
+                            <span>Support 24/7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>✉️ Email</h3>
+                    <div class="info-item">
+                        <div class="info-icon">✉️</div>
+                        <div class="info-content">
+                            <strong>info@deme-travel.com</strong><br>
+                            <span>Réponse sous 24h</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <strong>reservations@deme-travel.com</strong><br>
+                            <span>Pour les réservations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>🕒 Horaires d'ouverture</h3>
+                    <div class="info-item">
+                        <div class="info-icon">🕒</div>
+                        <div class="info-content">
+                            <strong>Lundi - Vendredi</strong><br>
+                            8h00 - 18h00<br>
+                            <strong>Samedi</strong><br>
+                            9h00 - 16h00<br>
+                            <strong>Dimanche</strong><br>
+                            Fermé
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>🌐 Réseaux sociaux</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <span class="social-icon">📘</span>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="#" class="social-link">
+                            <span class="social-icon">📷</span>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="#" class="social-link">
+                            <span class="social-icon">🐦</span>
+                            <span>Twitter</span>
+                        </a>
+                        <a href="#" class="social-link">
+                            <span class="social-icon">💼</span>
+                            <span>LinkedIn</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire de contact -->
+            <div class="contact-form">
+                <h2>💬 Envoyez-nous un message</h2>
+                <p>Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.</p>
+
+                <form method="POST" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nom">Nom complet *</label>
+                            <input type="text" id="nom" name="nom" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="telephone">Téléphone</label>
+                            <input type="tel" id="telephone" name="telephone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="pays">Pays</label>
+                            <select id="pays" name="pays" class="form-control">
+                                <option value="">Sélectionner un pays</option>
+                                <option value="Mali">Mali</option>
+                                <option value="Sénégal">Sénégal</option>
+                                <option value="Côte d'Ivoire">Côte d'Ivoire</option>
+                                <option value="Burkina Faso">Burkina Faso</option>
+                                <option value="Guinée">Guinée</option>
+                                <option value="Niger">Niger</option>
+                                <option value="Tchad">Tchad</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sujet">Sujet *</label>
+                        <select id="sujet" name="sujet" required class="form-control">
+                            <option value="">Sélectionner un sujet</option>
+                            <option value="reservation">Réservation de package</option>
+                            <option value="visa">Demande de visa</option>
+                            <option value="information">Demande d'information</option>
+                            <option value="reclamation">Réclamation</option>
+                            <option value="partenariat">Partenariat</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="6" required class="form-control" 
+                                  placeholder="Décrivez votre demande en détail..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="newsletter" value="1">
+                            <span class="checkmark"></span>
+                            Je souhaite recevoir la newsletter et les offres spéciales
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="rgpd" value="1" required>
+                            <span class="checkmark"></span>
+                            J'accepte que mes données soient traitées conformément à la politique de confidentialité *
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">
+                        📤 Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FAQ rapide -->
+        <div class="faq-section">
+            <h2>❓ Questions fréquentes</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>🛂 Comment obtenir un visa pour l'Arabie Saoudite ?</h3>
+                    <p>Nous nous chargeons de toutes les démarches administratives pour l'obtention de votre visa. Il vous suffit de nous fournir les documents requis (passeport, photos, etc.).</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>💰 Quels sont les modes de paiement acceptés ?</h3>
+                    <p>Nous acceptons les paiements par carte bancaire, virement bancaire, et espèces. Un acompte de 30% est requis à la réservation.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>✈️ Les vols sont-ils inclus dans les packages ?</h3>
+                    <p>Oui, tous nos packages incluent les vols aller-retour, les transferts aéroport-hôtel, et l'hébergement en pension complète.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>🏨 Quel type d'hébergement proposez-vous ?</h3>
+                    <p>Nous proposons des hôtels 3, 4 et 5 étoiles à proximité des lieux saints, avec des chambres individuelles, doubles ou triples selon vos besoins.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte -->
+        <div class="map-section">
+            <h2>🗺️ Notre localisation</h2>
+            <div class="map-container">
+                <div class="map-placeholder">
+                    <div class="map-icon">🗺️</div>
+                    <p>Carte interactive</p>
+                    <small>123 Avenue de la Paix, Bamako, Mali</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.contact-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 3rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+}
+
+.contact-info h2,
+.contact-form h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 2rem;
+}
+
+.contact-form p {
+    margin: 0 0 2rem 0;
+    color: var(--color-gray);
+    font-size: 1.1rem;
+}
+
+.info-section {
+    margin-bottom: 2rem;
+}
+
+.info-section h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+}
+
+.info-content strong {
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.info-content span {
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
+    color: var(--color-secondary);
+}
+
+.social-icon {
+    font-size: 1.25rem;
+}
+
+.form {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.25rem;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.faq-section {
+    margin-bottom: 4rem;
+}
+
+.faq-section h2 {
+    text-align: center;
+    margin: 0 0 3rem 0;
+    color: var(--color-primary);
+    font-size: 2rem;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.faq-item {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.faq-item h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.faq-item p {
+    margin: 0;
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
+.map-section {
+    margin-bottom: 2rem;
+}
+
+.map-section h2 {
+    text-align: center;
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 2rem;
+}
+
+.map-container {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.map-placeholder {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+}
+
+.map-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.map-placeholder p {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.map-placeholder small {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .contact-page {
+        padding: 1rem;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .contact-info h2,
+    .contact-form h2 {
+        font-size: 1.5rem;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %} 

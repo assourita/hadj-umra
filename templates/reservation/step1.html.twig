@@ -1,0 +1,700 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation - Étape 1 - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="reservation-page">
+    <div class="page-header">
+        <h1>📋 Réservation - Étape 1</h1>
+        <p>Choisissez votre type de chambre et le nombre de pèlerins</p>
+    </div>
+
+    <!-- Progression -->
+    <div class="progress-bar">
+        <div class="progress-step active">
+            <div class="step-number">1</div>
+            <div class="step-label">Choisir</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="step-number">2</div>
+            <div class="step-label">Pèlerins</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            <div class="step-number">3</div>
+            <div class="step-label">Confirmation</div>
+        </div>
+    </div>
+
+    <div class="reservation-content">
+        <div class="reservation-grid">
+            <!-- Informations du départ -->
+            <div class="depart-info">
+                <h2>✈️ Détails du départ</h2>
+                
+                <div class="depart-card">
+                    <div class="depart-header">
+                        <h3>{{ depart.package.titre }}</h3>
+                        <span class="depart-date">{{ depart.dateDepart|date('d/m/Y') }}</span>
+                    </div>
+                    
+                    <div class="depart-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🕋</span>
+                            <span class="detail-label">Package :</span>
+                            <span class="detail-value">{{ depart.package.titre }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-icon">📅</span>
+                            <span class="detail-label">Date de départ :</span>
+                            <span class="detail-value">{{ depart.dateDepart|date('d/m/Y') }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-icon">📅</span>
+                            <span class="detail-label">Date de retour :</span>
+                            <span class="detail-value">{{ depart.dateRetour|date('d/m/Y') }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-icon">👥</span>
+                            <span class="detail-label">Places disponibles :</span>
+                            <span class="detail-value">{{ depart.quotaTotal - depart.quotaVendu }} / {{ depart.quotaTotal }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-icon">🏨</span>
+                            <span class="detail-label">Hébergement :</span>
+                            <span class="detail-value">{{ depart.package.hotelMakkah ?: 'Non spécifié' }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-icon">✈️</span>
+                            <span class="detail-label">Vol inclus :</span>
+                            <span class="detail-value">Oui</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description du package -->
+                <div class="package-description">
+                    <h3>📝 Description du package</h3>
+                    <p>{{ depart.package.description }}</p>
+                    
+                    <div class="package-features">
+                        <h4>✅ Inclus dans ce package :</h4>
+                        <ul>
+                            <li>Vol aller-retour</li>
+                            <li>Hébergement en pension complète</li>
+                            <li>Transferts aéroport-hôtel</li>
+                            <li>Assistance guide francophone</li>
+                            <li>Visa saoudien</li>
+                            <li>Assurance voyage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire de réservation -->
+            <div class="reservation-form">
+                <h2>🏨 Choisissez votre hébergement</h2>
+                
+                <form method="POST" action="{{ path('app_reservation_step2') }}" class="form">
+                    <div class="form-section">
+                        <h3>Type de chambre</h3>
+                        <div class="room-options">
+                            {% if tarifs is empty %}
+                                <!-- Options par défaut si aucun tarif n'est défini -->
+                                <div class="room-option">
+                                    <input type="radio" id="room_individuelle" name="type_chambre" value="individuelle" required class="room-radio">
+                                    <label for="room_individuelle" class="room-label">
+                                        <div class="room-info">
+                                            <div class="room-type">Individuelle</div>
+                                            <div class="room-price">{{ depart.package.prixBase|number_format(0, ',', ' ') }} {{ depart.package.devise }}</div>
+                                            <div class="room-description">Chambre individuelle avec salle de bain privée</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="room-option">
+                                    <input type="radio" id="room_double" name="type_chambre" value="double" required class="room-radio">
+                                    <label for="room_double" class="room-label">
+                                        <div class="room-info">
+                                            <div class="room-type">Double</div>
+                                            <div class="room-price">{{ depart.package.prixBase|number_format(0, ',', ' ') }} {{ depart.package.devise }}</div>
+                                            <div class="room-description">Chambre double avec salle de bain privée</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="room-option">
+                                    <input type="radio" id="room_triple" name="type_chambre" value="triple" required class="room-radio">
+                                    <label for="room_triple" class="room-label">
+                                        <div class="room-info">
+                                            <div class="room-type">Triple</div>
+                                            <div class="room-price">{{ depart.package.prixBase|number_format(0, ',', ' ') }} {{ depart.package.devise }}</div>
+                                            <div class="room-description">Chambre triple avec salle de bain privée</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="room-option">
+                                    <input type="radio" id="room_quadruple" name="type_chambre" value="quadruple" required class="room-radio">
+                                    <label for="room_quadruple" class="room-label">
+                                        <div class="room-info">
+                                            <div class="room-type">Quadruple</div>
+                                            <div class="room-price">{{ depart.package.prixBase|number_format(0, ',', ' ') }} {{ depart.package.devise }}</div>
+                                            <div class="room-description">Chambre quadruple avec salle de bain privée</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            {% else %}
+                                {% for tarif in tarifs %}
+                                    <div class="room-option">
+                                        <input type="radio" id="room_{{ tarif.id }}" name="type_chambre" value="{{ tarif.typeChambre }}" required class="room-radio">
+                                        <label for="room_{{ tarif.id }}" class="room-label">
+                                            <div class="room-info">
+                                                <div class="room-type">{{ tarif.typeChambre|title }}</div>
+                                                <div class="room-price">{{ tarif.prixFinal|number_format(0, ',', ' ') }} FCFA</div>
+                                                <div class="room-description">
+                                                    {% if tarif.typeChambre == 'individuelle' %}
+                                                        Chambre individuelle avec salle de bain privée
+                                                    {% elseif tarif.typeChambre == 'double' %}
+                                                        Chambre double avec salle de bain privée
+                                                    {% elseif tarif.typeChambre == 'triple' %}
+                                                        Chambre triple avec salle de bain privée
+                                                    {% else %}
+                                                        Chambre quadruple avec salle de bain privée
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Nombre de pèlerins</h3>
+                        <div class="pilgrims-selector">
+                            <label for="nb_pelerins">Nombre de pèlerins *</label>
+                            <select id="nb_pelerins" name="nb_pelerins" required class="form-control">
+                                <option value="">Sélectionner</option>
+                                <option value="1">1 pèlerin</option>
+                                <option value="2">2 pèlerins</option>
+                                <option value="3">3 pèlerins</option>
+                                <option value="4">4 pèlerins</option>
+                            </select>
+                            <small class="form-help">Maximum 4 pèlerins par réservation</small>
+                        </div>
+                    </div>
+
+                    <!-- Calcul du prix -->
+                    <div class="price-calculation">
+                        <h3>💰 Calcul du prix</h3>
+                        <div class="price-breakdown">
+                            <div class="price-item">
+                                <span>Prix par personne :</span>
+                                <span id="price-per-person">--</span>
+                            </div>
+                            <div class="price-item">
+                                <span>Nombre de pèlerins :</span>
+                                <span id="pilgrims-count">--</span>
+                            </div>
+                            <div class="price-total">
+                                <span>Total estimé :</span>
+                                <span id="total-price">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ path('app_package_show', {'slug': depart.package.slug}) }}" class="btn btn-secondary">
+                            ← Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Continuer → Étape 2
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Informations importantes -->
+        <div class="important-info">
+            <h2>ℹ️ Informations importantes</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon">💳</div>
+                    <div class="info-content">
+                        <h3>Acompte requis</h3>
+                        <p>Un acompte de 30% sera requis pour confirmer votre réservation.</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">📋</div>
+                    <div class="info-content">
+                        <h3>Documents nécessaires</h3>
+                        <p>Passeport valide 6 mois minimum, photos d'identité, et autres documents selon les exigences.</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">⏰</div>
+                    <div class="info-content">
+                        <h3>Délai de traitement</h3>
+                        <p>Le traitement du visa prend 2 à 4 semaines. Réservez à l'avance !</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🔄</div>
+                    <div class="info-content">
+                        <h3>Modifications</h3>
+                        <p>Les modifications sont possibles selon les conditions de votre package.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.reservation-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-number {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.progress-step.active .step-number {
+    background: var(--color-primary);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+    font-weight: 600;
+}
+
+.progress-line {
+    width: 4rem;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 1rem;
+}
+
+.reservation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.depart-info h2,
+.reservation-form h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.depart-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.depart-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.depart-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+}
+
+.depart-date {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.depart-details {
+    padding: 2rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.detail-icon {
+    font-size: 1.25rem;
+    min-width: 2rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--color-gray);
+    min-width: 120px;
+}
+
+.detail-value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.package-description {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.package-description h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.package-description p {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
+.package-features h4 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.package-features ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--color-gray);
+}
+
+.package-features li {
+    margin-bottom: 0.5rem;
+}
+
+.reservation-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.room-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.room-option {
+    position: relative;
+}
+
+.room-radio {
+    display: none;
+}
+
+.room-label {
+    display: block;
+    padding: 1.5rem;
+    border: 2px solid #e9ecef;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.room-radio:checked + .room-label {
+    border-color: var(--color-primary);
+    background: rgba(139, 69, 19, 0.05);
+}
+
+.room-type {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.room-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.room-description {
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.pilgrims-selector {
+    margin-bottom: 1rem;
+}
+
+.pilgrims-selector label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.price-calculation {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.price-calculation h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.price-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-gray);
+}
+
+.price-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.important-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.important-info h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+}
+
+.info-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.info-content p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .reservation-page {
+        padding: 1rem;
+    }
+    
+    .reservation-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .progress-bar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .progress-line {
+        width: 2px;
+        height: 2rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const roomRadios = document.querySelectorAll('.room-radio');
+    const pilgrimsSelect = document.getElementById('nb_pelerins');
+    const pricePerPerson = document.getElementById('price-per-person');
+    const pilgrimsCount = document.getElementById('pilgrims-count');
+    const totalPrice = document.getElementById('total-price');
+    
+    let selectedPrice = 0;
+    
+    // Mettre à jour le prix quand une chambre est sélectionnée
+    roomRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const roomLabel = this.nextElementSibling;
+            const priceText = roomLabel.querySelector('.room-price').textContent;
+            selectedPrice = parseInt(priceText.replace(/[^\d]/g, ''));
+            updatePriceCalculation();
+        });
+    });
+    
+    // Mettre à jour le prix quand le nombre de pèlerins change
+    pilgrimsSelect.addEventListener('change', function() {
+        updatePriceCalculation();
+    });
+    
+    function updatePriceCalculation() {
+        const pilgrims = parseInt(pilgrimsSelect.value) || 0;
+        const total = selectedPrice * pilgrims;
+        
+        pricePerPerson.textContent = selectedPrice > 0 ? selectedPrice.toLocaleString() + ' FCFA' : '--';
+        pilgrimsCount.textContent = pilgrims > 0 ? pilgrims : '--';
+        totalPrice.textContent = total > 0 ? total.toLocaleString() + ' FCFA' : '--';
+    }
+});
+</script>
+{% endblock %} 

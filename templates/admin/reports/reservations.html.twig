@@ -1,0 +1,449 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail des Réservations - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-reservations-report">
+    <div class="page-header">
+        <h1>📋 Détail des Réservations</h1>
+        <p>Consultez toutes les réservations de votre agence</p>
+    </div>
+
+    <div class="content">
+        <div class="actions-bar">
+            <a href="{{ path('app_admin_reports_index') }}" class="btn btn-secondary">
+                ← Retour aux rapports
+            </a>
+            <a href="{{ path('app_admin_dashboard') }}" class="btn btn-secondary">
+                🏠 Tableau de bord
+            </a>
+        </div>
+
+        {% if reservations is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h2>Aucune réservation</h2>
+                <p>Aucune réservation n'a encore été créée.</p>
+            </div>
+        {% else %}
+            <div class="reservations-table">
+                <div class="table-header">
+                    <div class="header-cell">Code</div>
+                    <div class="header-cell">Client</div>
+                    <div class="header-cell">Package</div>
+                    <div class="header-cell">Départ</div>
+                    <div class="header-cell">Pèlerins</div>
+                    <div class="header-cell">Total</div>
+                    <div class="header-cell">Statut</div>
+                    <div class="header-cell">Date</div>
+                </div>
+                
+                {% for reservation in reservations %}
+                    <div class="table-row">
+                        <div class="table-cell">
+                            <div class="reservation-code">{{ reservation.codeDossier }}</div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="client-info">
+                                <div class="client-name">{{ reservation.user.prenom }} {{ reservation.user.nom }}</div>
+                                <div class="client-email">{{ reservation.user.email }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="package-info">
+                                {% if reservation.depart and reservation.depart.package %}
+                                    <div class="package-name">{{ reservation.depart.package.titre }}</div>
+                                    <div class="package-duration">{{ reservation.depart.package.dureeJours }} jours</div>
+                                {% else %}
+                                    <span class="no-data">Non spécifié</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="depart-info">
+                                {% if reservation.depart %}
+                                    <div class="depart-date">{{ reservation.depart.dateDepart|date('d/m/Y') }}</div>
+                                    <div class="depart-ville">{{ reservation.depart.villeDepart ?: 'Non spécifiée' }}</div>
+                                {% else %}
+                                    <span class="no-data">Non spécifié</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="pelerins-info">
+                                <div class="pelerins-count">{{ reservation.nbPelerins }} pèlerin(s)</div>
+                                <div class="room-type">{{ reservation.typeChambre }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="price-info">
+                                <div class="total-price">{{ reservation.total|number_format(0, ',', ' ') }} XOF</div>
+                                {% if reservation.acompte %}
+                                    <div class="acompte">Acompte: {{ reservation.acompte|number_format(0, ',', ' ') }} XOF</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="status-info">
+                                <span class="status-badge status-{{ reservation.statut }}">
+                                    {% if reservation.statut == 'brouillon' %}
+                                        📝 Brouillon
+                                    {% elseif reservation.statut == 'en_attente_paiement' %}
+                                        ⏳ En attente
+                                    {% elseif reservation.statut == 'confirme' %}
+                                        ✅ Confirmée
+                                    {% elseif reservation.statut == 'complet' %}
+                                        🎉 Complète
+                                    {% elseif reservation.statut == 'annule' %}
+                                        ❌ Annulée
+                                    {% else %}
+                                        {{ reservation.statut|title }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-cell">
+                            <div class="date-info">
+                                <div class="created-date">{{ reservation.createdAt|date('d/m/Y') }}</div>
+                                <div class="created-time">{{ reservation.createdAt|date('H:i') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Statistiques -->
+            <div class="stats-section">
+                <h2>📊 Statistiques des réservations</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <h3>{{ reservations|length }}</h3>
+                            <p>Total réservations</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3>{{ reservations|filter(r => r.statut == 'confirme')|length }}</h3>
+                            <p>Confirmées</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3>{{ reservations|filter(r => r.statut == 'en_attente_paiement')|length }}</h3>
+                            <p>En attente</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <h3>{{ reservations|reduce((sum, r) => sum + r.total, 0)|number_format(0, ',', ' ') }} XOF</h3>
+                            <p>Chiffre d'affaires</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.admin-reservations-report {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.actions-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h2 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.empty-state p {
+    margin: 0;
+    color: var(--color-gray);
+}
+
+.reservations-table {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 3rem;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1.5fr 1fr 1.5fr 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+}
+
+.header-cell {
+    padding: 0.5rem;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1.5fr 1fr 1.5fr 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-row:hover {
+    background: #f8f9fa;
+}
+
+.table-cell {
+    padding: 0.5rem;
+}
+
+.reservation-code {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-family: monospace;
+}
+
+.client-name {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.client-email {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.package-name {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.package-duration {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.depart-date {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.depart-ville {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.pelerins-count {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.room-type {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.total-price {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.acompte {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.status-brouillon { background: #e9ecef; color: #495057; }
+.status-en_attente_paiement { background: #fff3cd; color: #856404; }
+.status-confirme { background: #d4edda; color: #155724; }
+.status-complet { background: #cce5ff; color: #004085; }
+.status-annule { background: #f8d7da; color: #721c24; }
+
+.created-date {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.created-time {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.no-data {
+    color: var(--color-gray);
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+.stats-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.stats-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--color-primary);
+}
+
+.stat-content p {
+    margin: 0.25rem 0 0 0;
+    color: var(--color-gray);
+}
+
+@media (max-width: 768px) {
+    .admin-reservations-report {
+        padding: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .actions-bar {
+        flex-direction: column;
+    }
+    
+    .table-header,
+    .table-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .header-cell {
+        display: none;
+    }
+    
+    .table-cell {
+        padding: 0.25rem 0;
+    }
+    
+    .table-cell:before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-primary);
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %} 

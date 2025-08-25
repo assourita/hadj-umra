@@ -1,0 +1,197 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - Dèmè Travel{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .register-container {
+        max-width: 500px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .register-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .register-header p {
+        color: var(--color-gray);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-actions {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .login-link a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        color: var(--color-secondary);
+    }
+
+    .required {
+        color: #dc2626;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="register-container">
+    <div class="register-header">
+        <h1>🕌 Inscription</h1>
+        <p>Créez votre compte pour réserver votre pèlerinage</p>
+    </div>
+
+    <form method="post">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="nom">Nom <span class="required">*</span></label>
+                <input type="text" 
+                       name="nom" 
+                       id="nom" 
+                       class="form-control" 
+                       value="{{ user.nom ?? '' }}"
+                       required
+                       placeholder="Votre nom">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="prenom">Prénom <span class="required">*</span></label>
+                <input type="text" 
+                       name="prenom" 
+                       id="prenom" 
+                       class="form-control" 
+                       value="{{ user.prenom ?? '' }}"
+                       required
+                       placeholder="Votre prénom">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="email">Email <span class="required">*</span></label>
+            <input type="email" 
+                   name="email" 
+                   id="email" 
+                   class="form-control" 
+                   value="{{ user.email ?? '' }}"
+                   required
+                   placeholder="votre@email.com">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="phone">Téléphone</label>
+                <input type="tel" 
+                       name="phone" 
+                       id="phone" 
+                       class="form-control" 
+                       value="{{ user.phone ?? '' }}"
+                       placeholder="+223 XX XX XX XX">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="pays">Pays</label>
+                <select name="pays" id="pays" class="form-control">
+                    <option value="">Sélectionner un pays</option>
+                    <option value="Mali" {{ user.pays == 'Mali' ? 'selected' : '' }}>Mali</option>
+                    <option value="Sénégal" {{ user.pays == 'Sénégal' ? 'selected' : '' }}>Sénégal</option>
+                    <option value="Côte d'Ivoire" {{ user.pays == "Côte d'Ivoire" ? 'selected' : '' }}>Côte d'Ivoire</option>
+                    <option value="Burkina Faso" {{ user.pays == 'Burkina Faso' ? 'selected' : '' }}>Burkina Faso</option>
+                    <option value="Niger" {{ user.pays == 'Niger' ? 'selected' : '' }}>Niger</option>
+                    <option value="Guinée" {{ user.pays == 'Guinée' ? 'selected' : '' }}>Guinée</option>
+                    <option value="France" {{ user.pays == 'France' ? 'selected' : '' }}>France</option>
+                    <option value="Autre" {{ user.pays == 'Autre' ? 'selected' : '' }}>Autre</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">Mot de passe <span class="required">*</span></label>
+            <input type="password" 
+                   name="password" 
+                   id="password" 
+                   class="form-control" 
+                   required
+                   minlength="6"
+                   placeholder="Minimum 6 caractères">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="confirm_password">Confirmer le mot de passe <span class="required">*</span></label>
+            <input type="password" 
+                   name="confirm_password" 
+                   id="confirm_password" 
+                   class="form-control" 
+                   required
+                   minlength="6"
+                   placeholder="Confirmez votre mot de passe">
+        </div>
+
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+                <input type="checkbox" required style="margin: 0;">
+                J'accepte les <a href="#" style="color: var(--color-primary);">conditions générales</a> et la <a href="#" style="color: var(--color-primary);">politique de confidentialité</a>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">
+                Créer mon compte
+            </button>
+        </div>
+    </form>
+
+    <div class="login-link">
+        <p>Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Les mots de passe ne correspondent pas');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    }
+    
+    password.addEventListener('change', validatePassword);
+    confirmPassword.addEventListener('keyup', validatePassword);
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,763 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation #{{ reservation.id }} - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="reservation-detail-page">
+    <div class="page-header">
+        <h1>📋 Réservation #{{ reservation.id }}</h1>
+        <p>{{ reservation.depart.package.titre }} - {{ reservation.depart.dateDepart|date('d/m/Y') }}</p>
+    </div>
+
+    <div class="reservation-content">
+        <div class="reservation-grid">
+            <!-- Informations principales -->
+            <div class="main-info">
+                <div class="status-card">
+                    <div class="status-header">
+                        <h2>Statut de la réservation</h2>
+                        <span class="status-badge {{ reservation.statut }}">
+                            {% if reservation.statut == 'en_attente_paiement' %}
+                                ⏳ En attente de paiement
+                            {% elseif reservation.statut == 'confirme' %}
+                                ✅ Confirmée
+                            {% elseif reservation.statut == 'annule' %}
+                                ❌ Annulée
+                            {% elseif reservation.statut == 'complet' %}
+                                🎉 Complète
+                            {% else %}
+                                📝 {{ reservation.statut|title }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="status-timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-icon">✅</div>
+                            <div class="timeline-content">
+                                <h4>Réservation créée</h4>
+                                <p>{{ reservation.createdAt|date('d/m/Y H:i') }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if reservation.statut != 'brouillon' %}
+                            <div class="timeline-item {{ reservation.statut in ['en_attente_paiement', 'confirme', 'complet'] ? 'completed' : '' }}">
+                                <div class="timeline-icon">
+                                    {% if reservation.statut in ['en_attente_paiement', 'confirme', 'complet'] %}✅{% else %}⏳{% endif %}
+                                </div>
+                                <div class="timeline-content">
+                                    <h4>Paiement de l'acompte</h4>
+                                    <p>30% du montant total</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if reservation.statut in ['confirme', 'complet'] %}
+                            <div class="timeline-item completed">
+                                <div class="timeline-icon">✅</div>
+                                <div class="timeline-content">
+                                    <h4>Réservation confirmée</h4>
+                                    <p>Visa en cours de traitement</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if reservation.statut == 'complet' %}
+                            <div class="timeline-item completed">
+                                <div class="timeline-icon">✅</div>
+                                <div class="timeline-content">
+                                    <h4>Paiement complet</h4>
+                                    <p>100% du montant payé</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Détails du voyage -->
+                <div class="travel-details">
+                    <h2>✈️ Détails du voyage</h2>
+                    
+                    <div class="travel-card">
+                        <div class="travel-header">
+                                                            <h3>{{ reservation.depart.package.titre }}</h3>
+                            <div class="travel-dates">
+                                <span class="depart-date">{{ reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                                <span class="arrow">→</span>
+                                <span class="return-date">{{ reservation.depart.dateRetour|date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="travel-info">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-icon">🏨</span>
+                                    <div class="info-content">
+                                        <div class="info-label">Hébergement</div>
+                                        <div class="info-value">{{ reservation.typeChambre|title }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <span class="info-icon">👥</span>
+                                    <div class="info-content">
+                                        <div class="info-label">Pèlerins</div>
+                                        <div class="info-value">{{ reservation.nbPelerins }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <span class="info-icon">💰</span>
+                                    <div class="info-content">
+                                        <div class="info-label">Prix total</div>
+                                        <div class="info-value">{{ reservation.total|number_format(0, ',', ' ') }} FCFA</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <span class="info-icon">📅</span>
+                                    <div class="info-content">
+                                        <div class="info-label">Durée</div>
+                                        <div class="info-value">{{ ((reservation.depart.dateRetour|date('U') - reservation.depart.dateDepart|date('U')) / 86400)|round }} jours</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions et paiement -->
+            <div class="actions-section">
+                <!-- État du paiement -->
+                <div class="payment-status">
+                    <h2>💳 État du paiement</h2>
+                    
+                    <div class="payment-card">
+                        <div class="payment-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ reservation.acompte ? (reservation.acompte / reservation.total * 100) : 0 }}%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>{{ reservation.acompte ? (reservation.acompte / reservation.total * 100)|round }}% payé</span>
+                                <span>{{ reservation.total|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-breakdown">
+                            <div class="payment-item">
+                                <span>Acompte (30%) :</span>
+                                <span>{{ (reservation.total * 0.3)|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                            <div class="payment-item">
+                                <span>Solde (70%) :</span>
+                                <span>{{ (reservation.total * 0.7)|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                            <div class="payment-item total">
+                                <span>Total :</span>
+                                <span>{{ reservation.total|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                        </div>
+                        
+                        {% if reservation.statut == 'en_attente_paiement' %}
+                            <div class="payment-actions">
+                                <a href="{{ path('app_reservation_payment', {'id': reservation.id}) }}" class="btn btn-primary">
+                                    💳 Payer maintenant
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Actions rapides -->
+                <div class="quick-actions">
+                    <h2>⚡ Actions rapides</h2>
+                    
+                    <div class="actions-grid">
+                        {% if reservation.statut in ['en_attente_paiement', 'confirme'] %}
+                            <a href="{{ path('app_client_documents', {'id': reservation.id}) }}" class="action-card">
+                                <div class="action-icon">📄</div>
+                                <h3>Documents</h3>
+                                <p>Gérer les documents de voyage</p>
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{{ path('app_contact') }}" class="action-card">
+                            <div class="action-icon">📞</div>
+                            <h3>Support</h3>
+                            <p>Contacter notre équipe</p>
+                        </a>
+                        
+                        {% if reservation.statut == 'brouillon' %}
+                            <a href="{{ path('app_reservation_payment', {'id': reservation.id}) }}" class="action-card">
+                                <div class="action-icon">💳</div>
+                                <h3>Paiement</h3>
+                                <p>Effectuer le paiement</p>
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{{ path('app_client_reservations') }}" class="action-card">
+                            <div class="action-icon">📋</div>
+                            <h3>Mes réservations</h3>
+                            <p>Voir toutes mes réservations</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Informations importantes -->
+                <div class="important-info">
+                    <h2>ℹ️ Informations importantes</h2>
+                    
+                    <div class="info-list">
+                        {% if reservation.statut == 'en_attente_paiement' %}
+                            <div class="info-item">
+                                <div class="info-icon">⏰</div>
+                                <div class="info-content">
+                                    <h4>Paiement en attente</h4>
+                                    <p>Veuillez effectuer le paiement de l'acompte pour confirmer votre réservation.</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if reservation.statut in ['confirme', 'complet'] %}
+                            <div class="info-item">
+                                <div class="info-icon">📋</div>
+                                <div class="info-content">
+                                    <h4>Documents requis</h4>
+                                    <p>N'oubliez pas de télécharger vos documents de voyage.</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="info-item">
+                            <div class="info-icon">📧</div>
+                            <div class="info-content">
+                                <h4>Notifications</h4>
+                                <p>Vous recevrez des emails pour les mises à jour importantes.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">📞</div>
+                            <div class="info-content">
+                                <h4>Support 24/7</h4>
+                                <p>Notre équipe est disponible pour vous aider.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des pèlerins -->
+        <div class="pilgrims-section">
+            <h2>👥 Pèlerins inscrits</h2>
+            
+            <div class="pilgrims-grid">
+                {% for pelerin in reservation.pelerins %}
+                    <div class="pilgrim-card">
+                        <div class="pilgrim-header">
+                            <div class="pilgrim-number">{{ loop.index }}</div>
+                            <div class="pilgrim-name">{{ pelerin.prenom }} {{ pelerin.nom }}</div>
+                        </div>
+                        
+                        <div class="pilgrim-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Date de naissance :</span>
+                                <span class="detail-value">{{ pelerin.dateNaissance|date('d/m/Y') }}</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label">Sexe :</span>
+                                <span class="detail-value">{{ pelerin.sexe == 'M' ? 'Masculin' : 'Féminin' }}</span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label">Nationalité :</span>
+                                <span class="detail-value">{{ pelerin.nationalite }}</span>
+                            </div>
+                        </div>
+                        
+                        {% if reservation.statut in ['confirme', 'complet'] %}
+                            <div class="pilgrim-documents">
+                                <h4>📄 Documents</h4>
+                                <div class="document-status">
+                                    <span class="status-dot pending"></span>
+                                    <span>En attente de téléchargement</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.reservation-detail-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.reservation-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.main-info h2,
+.actions-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.status-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.status-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-header h2 {
+    margin: 0;
+    color: white;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-badge.en_attente_paiement {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.confirme {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.complet {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.annule {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-timeline {
+    padding: 2rem;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    border-left: 4px solid #e9ecef;
+}
+
+.timeline-item.completed {
+    border-left-color: #28a745;
+    background: #d4edda;
+}
+
+.timeline-icon {
+    font-size: 1.25rem;
+    min-width: 2rem;
+}
+
+.timeline-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.timeline-content p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.travel-details {
+    margin-bottom: 2rem;
+}
+
+.travel-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.travel-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.travel-header h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+}
+
+.travel-dates {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1rem;
+}
+
+.arrow {
+    font-size: 1.5rem;
+}
+
+.travel-info {
+    padding: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+    margin-bottom: 0.25rem;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.payment-status {
+    margin-bottom: 2rem;
+}
+
+.payment-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.payment-progress {
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 1rem;
+    background: #e9ecef;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.payment-breakdown {
+    margin-bottom: 2rem;
+}
+
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    color: var(--color-gray);
+}
+
+.payment-item.total {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dee2e6;
+    margin-bottom: 0;
+}
+
+.payment-actions {
+    text-align: center;
+}
+
+.quick-actions {
+    margin-bottom: 2rem;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.action-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-2px);
+    color: inherit;
+}
+
+.action-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.action-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.action-card p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.important-info {
+    margin-bottom: 2rem;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-icon {
+    font-size: 1.25rem;
+    min-width: 2rem;
+}
+
+.info-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.info-content p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.pilgrims-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.pilgrims-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.pilgrims-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.pilgrim-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.pilgrim-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pilgrim-number {
+    width: 2rem;
+    height: 2rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.pilgrim-name {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.pilgrim-details {
+    margin-bottom: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.detail-label {
+    color: var(--color-gray);
+}
+
+.detail-value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.pilgrim-documents h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.document-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+}
+
+.status-dot.pending {
+    background: #ffc107;
+}
+
+@media (max-width: 768px) {
+    .reservation-detail-page {
+        padding: 1rem;
+    }
+    
+    .reservation-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .status-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pilgrims-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %} 

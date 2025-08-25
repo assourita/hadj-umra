@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="domeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4682B4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="buildingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DEB887;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fond -->
+  <rect width="200" height="200" fill="#f0f8ff"/>
+  
+  <!-- Dôme principal -->
+  <ellipse cx="100" cy="60" rx="40" ry="25" fill="url(#domeGradient)" stroke="#4682B4" stroke-width="2"/>
+  
+  <!-- Croissant sur le dôme -->
+  <path d="M 85 50 Q 100 45 115 50 Q 100 55 85 50" fill="gold" stroke="#FFD700" stroke-width="1"/>
+  
+  <!-- Bâtiment principal -->
+  <rect x="40" y="80" width="120" height="80" fill="url(#buildingGradient)" stroke="#DEB887" stroke-width="2"/>
+  
+  <!-- Porte principale -->
+  <rect x="85" y="120" width="30" height="40" fill="#8B4513" stroke="#654321" stroke-width="1"/>
+  
+  <!-- Fenêtres -->
+  <rect x="55" y="95" width="15" height="20" fill="#87CEEB" stroke="#4682B4" stroke-width="1"/>
+  <rect x="130" y="95" width="15" height="20" fill="#87CEEB" stroke="#4682B4" stroke-width="1"/>
+  
+  <!-- Minarets -->
+  <rect x="20" y="60" width="8" height="100" fill="url(#buildingGradient)" stroke="#DEB887" stroke-width="1"/>
+  <rect x="172" y="60" width="8" height="100" fill="url(#buildingGradient)" stroke="#DEB887" stroke-width="1"/>
+  
+  <!-- Dômes des minarets -->
+  <ellipse cx="24" cy="55" rx="6" ry="8" fill="url(#domeGradient)" stroke="#4682B4" stroke-width="1"/>
+  <ellipse cx="176" cy="55" rx="6" ry="8" fill="url(#domeGradient)" stroke="#4682B4" stroke-width="1"/>
+  
+  <!-- Croissants sur les minarets -->
+  <path d="M 20 50 Q 24 47 28 50 Q 24 53 20 50" fill="gold" stroke="#FFD700" stroke-width="1"/>
+  <path d="M 172 50 Q 176 47 180 50 Q 176 53 172 50" fill="gold" stroke="#FFD700" stroke-width="1"/>
+  
+  <!-- Étoiles décoratives -->
+  <polygon points="50,30 52,35 57,35 53,38 55,43 50,40 45,43 47,38 43,35 48,35" fill="gold"/>
+  <polygon points="150,30 152,35 157,35 153,38 155,43 150,40 145,43 147,38 143,35 148,35" fill="gold"/>
+</svg> 

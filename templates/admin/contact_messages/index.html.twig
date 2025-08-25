@@ -1,0 +1,377 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messages de contact - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>📧 Messages de contact</h1>
+        <p>Gérez les messages reçus via le formulaire de contact</p>
+    </div>
+
+    {% if messages is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📧</div>
+            <h3>Aucun message trouvé</h3>
+            <p>Aucun message de contact n'a été reçu pour le moment.</p>
+        </div>
+    {% else %}
+        <div class="messages-header">
+            <div class="messages-stats">
+                <span class="stat-item">
+                    <span class="stat-number">{{ messages|length }}</span>
+                    <span class="stat-label">Messages total</span>
+                </span>
+                <span class="stat-item">
+                    <span class="stat-number">{{ messages|filter(m => not m.hasReponse)|length }}</span>
+                    <span class="stat-label">Sans réponse</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="messages-grid">
+            {% for message in messages %}
+                <div class="message-card {{ not message.hasReponse ? 'unread' : '' }}">
+                    <div class="message-header">
+                        <div class="message-info">
+                            <h3>{{ message.sujet|title }}</h3>
+                            <p class="message-meta">
+                                <span class="sender">{{ message.nom }}</span>
+                                <span class="date">{{ message.createdAt|date('d/m/Y H:i') }}</span>
+                            </p>
+                        </div>
+                        <div class="message-status">
+                            {% if not message.hasReponse %}
+                                <span class="unread-badge">Nouveau</span>
+                            {% endif %}
+                            {% if message.reponse %}
+                                <span class="replied-badge">Répondu</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="message-content">
+                        <div class="message-details">
+                            <div class="detail-row">
+                                <span class="label">Email :</span>
+                                <span class="value">{{ message.email }}</span>
+                            </div>
+                            {% if message.telephone %}
+                                <div class="detail-row">
+                                    <span class="label">Téléphone :</span>
+                                    <span class="value">{{ message.telephone }}</span>
+                                </div>
+                            {% endif %}
+                            <div class="detail-row">
+                                <span class="label">Sujet :</span>
+                                <span class="value">{{ message.sujet|title }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="message-text">
+                            <h4>Message :</h4>
+                            <p>{{ message.message|nl2br }}</p>
+                        </div>
+
+                        {% if message.reponse %}
+                            <div class="message-reply">
+                                <h4>📤 Réponse :</h4>
+                                <p>{{ message.reponse|nl2br }}</p>
+                                <small>Répondu le {{ message.reponduAt|date('d/m/Y H:i') }}{% if message.reponduPar %} par {{ message.reponduPar }}{% endif %}</small>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="message-actions">
+                        <a href="{{ path('app_admin_contact_message_show', {'id': message.id}) }}" class="btn btn-secondary">
+                            👁️ Voir détails
+                        </a>
+                        {% if not message.reponse %}
+                            <a href="{{ path('app_admin_contact_message_reply', {'id': message.id}) }}" class="btn btn-primary">
+                                📤 Répondre
+                            </a>
+                        {% endif %}
+                        <form method="POST" action="{{ path('app_admin_contact_message_delete', {'id': message.id}) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer ce message ?')">
+                                🗑️ Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: var(--color-gray);
+}
+
+.messages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.messages-stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.messages-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.message-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border-left: 4px solid transparent;
+}
+
+.message-card.unread {
+    border-left-color: #ec4899;
+    background: #fdf2f8;
+}
+
+.message-header {
+    padding: 1.5rem;
+    background: #fce7f3;
+    border-bottom: 1px solid #fbcfe8;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.message-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: #be185d;
+}
+
+.message-meta {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #831843;
+}
+
+.sender {
+    font-weight: 600;
+}
+
+.date {
+    margin-left: 1rem;
+    opacity: 0.8;
+}
+
+.message-status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.unread-badge {
+    background: #ec4899;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.replied-badge {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.message-content {
+    padding: 1.5rem;
+}
+
+.message-details {
+    margin-bottom: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.value {
+    color: var(--color-primary);
+}
+
+.message-text h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+}
+
+.message-text p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--color-gray);
+}
+
+.message-reply {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f0fdf4;
+    border-radius: 0.5rem;
+    border-left: 4px solid #10b981;
+}
+
+.message-reply h4 {
+    margin: 0 0 0.5rem 0;
+    color: #166534;
+}
+
+.message-reply p {
+    margin: 0 0 0.5rem 0;
+    line-height: 1.6;
+    color: #166534;
+}
+
+.message-reply small {
+    color: #059669;
+    font-size: 0.875rem;
+}
+
+.message-actions {
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .messages-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .messages-stats {
+        justify-content: center;
+    }
+    
+    .message-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,365 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du billet - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>✈️ Détails du billet</h1>
+        <p>Billet #{{ billet.id }}</p>
+    </div>
+
+    <div class="billet-details">
+        <!-- Informations du billet -->
+        <div class="detail-section">
+            <h2>📋 Informations du billet</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Numéro de billet :</span>
+                    <span class="value">{{ billet.numero }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Compagnie aérienne :</span>
+                    <span class="value">{{ billet.compagnie }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Type de vol :</span>
+                    <span class="value">
+                        {% if billet.type == 'aller' %}
+                            <span class="badge badge-primary">Aller</span>
+                        {% elseif billet.type == 'retour' %}
+                            <span class="badge badge-success">Retour</span>
+                        {% elseif billet.type == 'aller_retour' %}
+                            <span class="badge badge-info">Aller-Retour</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Statut :</span>
+                    <span class="value">
+                        {% if billet.statut == 'reserve' %}
+                            <span class="badge badge-warning">Réservé</span>
+                        {% elseif billet.statut == 'confirme' %}
+                            <span class="badge badge-success">Confirmé</span>
+                        {% elseif billet.statut == 'annule' %}
+                            <span class="badge badge-danger">Annulé</span>
+                        {% elseif billet.statut == 'utilise' %}
+                            <span class="badge badge-secondary">Utilisé</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Prix :</span>
+                    <span class="value">{{ billet.prix|number_format(0, ',', ' ') }} FCFA</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de réservation :</span>
+                    <span class="value">{{ billet.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations du vol -->
+        <div class="detail-section">
+            <h2>✈️ Informations du vol</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Aéroport de départ :</span>
+                    <span class="value">{{ billet.aeroportDepart }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Aéroport d'arrivée :</span>
+                    <span class="value">{{ billet.aeroportArrivee }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de départ :</span>
+                    <span class="value">{{ billet.dateDepart|date('d/m/Y H:i') }}</span>
+                </div>
+                {% if billet.dateRetour %}
+                    <div class="detail-item">
+                        <span class="label">Date de retour :</span>
+                        <span class="value">{{ billet.dateRetour|date('d/m/Y H:i') }}</span>
+                    </div>
+                {% endif %}
+                <div class="detail-item">
+                    <span class="label">Numéro de vol :</span>
+                    <span class="value">{{ billet.numeroVol }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Classe :</span>
+                    <span class="value">{{ billet.classe }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations du pèlerin -->
+        <div class="detail-section">
+            <h2>👤 Informations du pèlerin</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Nom complet :</span>
+                    <span class="value">{{ billet.pelerin.nom }} {{ billet.pelerin.prenom }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de naissance :</span>
+                    <span class="value">{{ billet.pelerin.dateNaissance|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nationalité :</span>
+                    <span class="value">{{ billet.pelerin.nationalite }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Numéro de passeport :</span>
+                    <span class="value">{{ billet.pelerin.passportNumber }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Téléphone :</span>
+                    <span class="value">{{ billet.pelerin.phone }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations de la réservation -->
+        {% if billet.pelerin.reservation %}
+            <div class="detail-section">
+                <h2>📋 Informations de la réservation</h2>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Numéro de réservation :</span>
+                        <span class="value">#{{ billet.pelerin.reservation.id }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Package :</span>
+                        <span class="value">{{ billet.pelerin.reservation.depart.package.titre }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Date de départ du package :</span>
+                        <span class="value">{{ billet.pelerin.reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Statut de la réservation :</span>
+                        <span class="value">
+                            {% if billet.pelerin.reservation.statut == 'en_attente_approbation' %}
+                                <span class="badge badge-warning">En attente d'approbation</span>
+                            {% elseif billet.pelerin.reservation.statut == 'approuvee' %}
+                                <span class="badge badge-success">Approuvée</span>
+                            {% elseif billet.pelerin.reservation.statut == 'rejetee' %}
+                                <span class="badge badge-danger">Rejetée</span>
+                            {% elseif billet.pelerin.reservation.statut == 'en_attente_paiement' %}
+                                <span class="badge badge-info">En attente de paiement</span>
+                            {% elseif billet.pelerin.reservation.statut == 'payee' %}
+                                <span class="badge badge-success">Payée</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Commentaires -->
+        {% if billet.commentaires %}
+            <div class="detail-section">
+                <h2>💬 Commentaires</h2>
+                <div class="commentaires">
+                    <p>{{ billet.commentaires|nl2br }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="detail-section">
+            <h2>⚙️ Actions</h2>
+            <div class="actions-grid">
+                <a href="{{ path('app_admin_billet_edit', {'id': billet.id}) }}" class="btn btn-primary">
+                    ✏️ Modifier le billet
+                </a>
+                <form method="POST" action="{{ path('app_admin_billet_delete', {'id': billet.id}) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer ce billet ?')">
+                        🗑️ Supprimer
+                    </button>
+                </form>
+                <a href="{{ path('app_admin_billets_index') }}" class="btn btn-secondary">
+                    ← Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.billet-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.detail-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.detail-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.badge-success {
+    background: #10b981;
+    color: white;
+}
+
+.badge-info {
+    background: #06b6d4;
+    color: white;
+}
+
+.badge-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.badge-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.badge-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.commentaires {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.commentaires p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--color-gray);
+}
+
+.actions-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .actions-grid {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

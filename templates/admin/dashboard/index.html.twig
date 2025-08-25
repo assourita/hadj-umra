@@ -1,0 +1,631 @@
+{% extends 'layouts/admin_dashboard.html.twig' %}
+
+{% block title %}Administration - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="dashboard-header">
+    <h1>Tableau de bord administrateur</h1>
+    <p>Vue d'ensemble de l'activité du site</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card total-reservations">
+        <div class="stat-icon">📋</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_reservations|default(0) }}</h3>
+            <p>Réservations totales</p>
+            <small>{{ stats.total_reservations|default(0) }} réservations</small>
+        </div>
+    </div>
+    
+    <div class="stat-card pending-approval">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+            <h3>{{ stats.en_attente_approbation|default(0) }}</h3>
+            <p>En attente d'approbation</p>
+            <small>{{ stats.en_attente_approbation|default(0) }} à traiter</small>
+        </div>
+    </div>
+    
+    <div class="stat-card pending-documents">
+        <div class="stat-icon">📄</div>
+        <div class="stat-content">
+            <h3>{{ stats.en_attente_documents|default(0) }}</h3>
+            <p>Documents en attente</p>
+            <small>{{ stats.en_attente_documents|default(0) }} à valider</small>
+        </div>
+    </div>
+
+    <div class="stat-card total-users">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_users|default(0) }}</h3>
+            <p>Utilisateurs inscrits</p>
+            <small>{{ stats.total_users|default(0) }} clients</small>
+        </div>
+    </div>
+
+    <div class="stat-card total-packages">
+        <div class="stat-icon">🕌</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_packages|default(0) }}</h3>
+            <p>Packages actifs</p>
+            <small>{{ stats.total_packages|default(0) }} disponibles</small>
+        </div>
+    </div>
+
+    <div class="stat-card unread-messages">
+        <div class="stat-icon">💬</div>
+        <div class="stat-content">
+            <h3>{{ stats.messages_non_lus|default(0) }}</h3>
+            <p>Messages non lus</p>
+            <small>{{ stats.messages_non_lus|default(0) }} à traiter</small>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-section">
+    <div class="chart-container">
+        <h3>Réservations par statut</h3>
+        <div class="chart" id="reservationsChart">
+            <div class="chart-placeholder">
+                <div class="chart-bar" style="height: 70%; background: #10b981;">
+                    <span>Confirmées</span>
+                </div>
+                <div class="chart-bar" style="height: 50%; background: #f59e0b;">
+                    <span>En attente</span>
+                </div>
+                <div class="chart-bar" style="height: 30%; background: #3b82f6;">
+                    <span>Documents</span>
+                </div>
+                <div class="chart-bar" style="height: 20%; background: #ef4444;">
+                    <span>Approbation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>Activité récente</h3>
+        <div class="activity-timeline">
+            <div class="activity-item">
+                <div class="activity-icon">📋</div>
+                <div class="activity-content">
+                    <h4>Nouvelle réservation</h4>
+                    <p>Réservation #12345 créée</p>
+                    <small>Il y a 2 heures</small>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">✅</div>
+                <div class="activity-content">
+                    <h4>Réservation approuvée</h4>
+                    <p>Réservation #12344 approuvée</p>
+                    <small>Il y a 3 heures</small>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">📄</div>
+                <div class="activity-content">
+                    <h4>Documents validés</h4>
+                    <p>Documents pour #12343 validés</p>
+                    <small>Il y a 5 heures</small>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">👤</div>
+                <div class="activity-content">
+                    <h4>Nouveau client</h4>
+                    <p>Ahmed Diallo s'est inscrit</p>
+                    <small>Il y a 1 jour</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions-section">
+    <h3>Actions rapides</h3>
+    <div class="actions-grid">
+        <a href="{{ path('app_admin_reservations_pending') }}" class="action-btn">
+            <div class="action-icon">⏳</div>
+            <div class="action-content">
+                <h4>Gérer les réservations</h4>
+                <p>Approuver ou rejeter les nouvelles réservations</p>
+            </div>
+        </a>
+        
+        <a href="{{ path('app_admin_reservations_documents') }}" class="action-btn">
+            <div class="action-icon">📋</div>
+            <div class="action-content">
+                <h4>Documents requis</h4>
+                <p>Valider les documents fournis par les clients</p>
+            </div>
+        </a>
+
+        <a href="{{ path('app_admin_package_new') }}" class="action-btn">
+            <div class="action-icon">🕌</div>
+            <div class="action-content">
+                <h4>Créer un package</h4>
+                <p>Ajouter un nouveau package de voyage</p>
+            </div>
+        </a>
+
+        <a href="{{ path('app_admin_depart_new') }}" class="action-btn">
+            <div class="action-icon">✈️</div>
+            <div class="action-content">
+                <h4>Planifier un départ</h4>
+                <p>Organiser un nouveau départ</p>
+            </div>
+        </a>
+
+        <a href="{{ path('app_admin_contact_messages_index') }}" class="action-btn">
+            <div class="action-icon">💬</div>
+            <div class="action-content">
+                <h4>Messages clients</h4>
+                <p>Répondre aux messages des clients</p>
+            </div>
+        </a>
+
+        <a href="{{ path('app_admin_users_index') }}" class="action-btn">
+            <div class="action-icon">👥</div>
+            <div class="action-content">
+                <h4>Gérer les utilisateurs</h4>
+                <p>Voir et gérer tous les utilisateurs</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="recent-section">
+    <div class="section-header">
+        <h3>Activité récente</h3>
+        <a href="#" class="view-all-btn">Voir tout</a>
+    </div>
+    
+    <div class="activity-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Détails</th>
+                    <th>Utilisateur</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="action-type">
+                            <span class="action-icon">📋</span>
+                            <span>Nouvelle réservation</span>
+                        </div>
+                    </td>
+                    <td>Réservation #12345 - Package Omra Premium</td>
+                    <td>Fatou Diop</td>
+                    <td>Il y a 2h</td>
+                    <td><span class="status-badge status-pending">En attente</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="action-type">
+                            <span class="action-icon">✅</span>
+                            <span>Réservation approuvée</span>
+                        </div>
+                    </td>
+                    <td>Réservation #12344 - Package Omra Standard</td>
+                    <td>Moussa Traoré</td>
+                    <td>Il y a 3h</td>
+                    <td><span class="status-badge status-approved">Approuvée</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="action-type">
+                            <span class="action-icon">📄</span>
+                            <span>Documents validés</span>
+                        </div>
+                    </td>
+                    <td>Documents pour #12343 validés</td>
+                    <td>Aissatou Ba</td>
+                    <td>Il y a 5h</td>
+                    <td><span class="status-badge status-documents">Documents OK</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="action-type">
+                            <span class="action-icon">👤</span>
+                            <span>Nouveau client</span>
+                        </div>
+                    </td>
+                    <td>Ahmed Diallo s'est inscrit</td>
+                    <td>Ahmed Diallo</td>
+                    <td>Il y a 1j</td>
+                    <td><span class="status-badge status-new">Nouveau</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.dashboard-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+/* Statistics Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.total-reservations .stat-icon {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.pending-approval .stat-icon {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.pending-documents .stat-icon {
+    background: #e0f2fe;
+    color: #0277bd;
+}
+
+.total-users .stat-icon {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.total-packages .stat-icon {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.unread-messages .stat-icon {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.stat-content h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 2rem;
+    color: #1f2937;
+}
+
+.stat-content p {
+    margin: 0 0 0.25rem 0;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.stat-content small {
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+/* Charts Section */
+.charts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.chart-container h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+}
+
+.chart {
+    height: 200px;
+    display: flex;
+    align-items: end;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.chart-placeholder {
+    display: flex;
+    align-items: end;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+}
+
+.chart-bar {
+    flex: 1;
+    border-radius: 0.5rem 0.5rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    min-height: 40px;
+}
+
+.activity-timeline {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.activity-content h4 {
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+    font-size: 0.875rem;
+}
+
+.activity-content p {
+    margin: 0 0 0.25rem 0;
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.activity-content small {
+    color: #9ca3af;
+    font-size: 0.75rem;
+}
+
+/* Quick Actions */
+.quick-actions-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.quick-actions-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: #1f2937;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: #1f2937;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.action-btn:hover {
+    background: #f1f5f9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.action-content h4 {
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.action-content p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Recent Section */
+.recent-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #1f2937;
+}
+
+.view-all-btn {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.view-all-btn:hover {
+    text-decoration: underline;
+}
+
+/* Table */
+.activity-table {
+    overflow-x: auto;
+}
+
+.activity-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.activity-table th {
+    text-align: left;
+    padding: 0.75rem;
+    background: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.activity-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+}
+
+.activity-table tr:hover {
+    background: #f9fafb;
+}
+
+.action-type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-type .action-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.875rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-documents {
+    background: #e0f2fe;
+    color: #0277bd;
+}
+
+.status-new {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .activity-table {
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %} 

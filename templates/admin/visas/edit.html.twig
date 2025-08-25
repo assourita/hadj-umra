@@ -1,0 +1,264 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le visa - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>✏️ Modifier le visa</h1>
+        <p>Visa #{{ visa.id }}</p>
+    </div>
+
+    <div class="edit-form">
+        <form method="POST" action="{{ path('app_admin_visa_edit', {'id': visa.id}) }}">
+            <div class="form-section">
+                <h2>📋 Informations du visa</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numero">Numéro de visa</label>
+                        <input type="text" id="numero" name="numero" value="{{ visa.numero }}" required class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="type">Type de visa</label>
+                        <select id="type" name="type" required class="form-control">
+                            <option value="touristique" {{ visa.type == 'touristique' ? 'selected' : '' }}>Touristique</option>
+                            <option value="affaires" {{ visa.type == 'affaires' ? 'selected' : '' }}>Affaires</option>
+                            <option value="etudiant" {{ visa.type == 'etudiant' ? 'selected' : '' }}>Étudiant</option>
+                            <option value="travail" {{ visa.type == 'travail' ? 'selected' : '' }}>Travail</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateEmission">Date d'émission</label>
+                        <input type="date" id="dateEmission" name="dateEmission" value="{{ visa.dateEmission ? visa.dateEmission|date('Y-m-d') : '' }}" required class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateExpiration">Date d'expiration</label>
+                        <input type="date" id="dateExpiration" name="dateExpiration" value="{{ visa.dateExpiration ? visa.dateExpiration|date('Y-m-d') : '' }}" required class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="statut">Statut</label>
+                        <select id="statut" name="statut" required class="form-control">
+                            <option value="en_attente" {{ visa.statut == 'en_attente' ? 'selected' : '' }}>En attente</option>
+                            <option value="approuve" {{ visa.statut == 'approuve' ? 'selected' : '' }}>Approuvé</option>
+                            <option value="rejete" {{ visa.statut == 'rejete' ? 'selected' : '' }}>Rejeté</option>
+                            <option value="expire" {{ visa.statut == 'expire' ? 'selected' : '' }}>Expiré</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prix">Prix (FCFA)</label>
+                        <input type="number" id="prix" name="prix" value="{{ visa.prix }}" required class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="commentaires">Commentaires</label>
+                    <textarea id="commentaires" name="commentaires" rows="4" class="form-control">{{ visa.commentaires }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>👤 Informations du pèlerin</h2>
+                <div class="readonly-info">
+                    <div class="info-row">
+                        <span class="label">Nom complet :</span>
+                        <span class="value">{{ visa.pelerin.nom }} {{ visa.pelerin.prenom }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Passport :</span>
+                        <span class="value">{{ visa.pelerin.passportNumber }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Nationalité :</span>
+                        <span class="value">{{ visa.pelerin.nationalite }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    💾 Enregistrer les modifications
+                </button>
+                <a href="{{ path('app_admin_visas_index') }}" class="btn btn-secondary">
+                    ← Retour à la liste
+                </a>
+                <a href="{{ path('app_admin_visa_show', {'id': visa.id}) }}" class="btn btn-info">
+                    👁️ Voir les détails
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.edit-form {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.readonly-info {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row .label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.info-row .value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+}
+</style>
+{% endblock %}

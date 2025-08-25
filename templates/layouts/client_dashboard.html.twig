@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Espace Client - Dèmè Travel{% endblock %}</title>
+    <link rel="icon" href="{{ asset('images/logo.svg') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-section">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Dèmè Travel" class="sidebar-logo">
+                    <h2>Dèmè Travel</h2>
+                </div>
+                <div class="user-status">
+                    <div class="status-indicator active"></div>
+                    <span>Connecté</span>
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar">
+                    <span>{{ app.user.prenom|first }}{{ app.user.nom|first }}</span>
+                </div>
+                <div class="user-details">
+                    <h4>{{ app.user.prenom }} {{ app.user.nom }}</h4>
+                    <p>{{ app.user.email }}</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <h3>NAVIGATION PRINCIPALE</h3>
+                <ul>
+                    <li class="{{ app.request.get('_route') == 'app_client_dashboard' ? 'active' : '' }}">
+                        <a href="{{ path('app_client_dashboard') }}">
+                            <i class="icon">📊</i>
+                            <span>Tableau de bord</span>
+                        </a>
+                    </li>
+                    <li class="{{ app.request.get('_route') starts with 'app_client_reservations' ? 'active' : '' }}">
+                        <a href="{{ path('app_client_reservations') }}">
+                            <i class="icon">📋</i>
+                            <span>Mes réservations</span>
+                        </a>
+                    </li>
+                    <li class="{{ app.request.get('_route') starts with 'app_documents' ? 'active' : '' }}">
+                        <a href="{{ path('app_documents_index') }}">
+                            <i class="icon">📄</i>
+                            <span>Mes Documents</span>
+                        </a>
+                    </li>
+                    <li class="{{ app.request.get('_route') starts with 'app_client_profile' ? 'active' : '' }}">
+                        <a href="{{ path('app_client_profile_edit') }}">
+                            <i class="icon">👤</i>
+                            <span>Mon Profil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_home') }}">
+                            <i class="icon">🕌</i>
+                            <span>Nouvelle réservation</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="{{ path('app_logout') }}" class="logout-btn">
+                    <i class="icon">🚪</i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-main">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+
+    <style>
+    .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+        background: #f8fafc;
+    }
+
+    /* Sidebar */
+    .dashboard-sidebar {
+        width: 280px;
+        background: #1f2937;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+    }
+
+    .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #374151;
+    }
+
+    .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .logo-section h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: white;
+    }
+
+    .user-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #9ca3af;
+    }
+
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+    }
+
+    .status-indicator.active {
+        background: #10b981;
+    }
+
+    .user-info {
+        padding: 1.5rem;
+        border-bottom: 1px solid #374151;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: white;
+        font-size: 1.125rem;
+    }
+
+    .user-details h4 {
+        margin: 0 0 0.25rem 0;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .user-details p {
+        margin: 0;
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        padding: 1.5rem 0;
+    }
+
+    .sidebar-nav h3 {
+        padding: 0 1.5rem 1rem;
+        margin: 0;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #9ca3af;
+        letter-spacing: 0.05em;
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav li {
+        margin: 0;
+    }
+
+    .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        color: #d1d5db;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-nav a:hover {
+        background: #374151;
+        color: white;
+    }
+
+    .sidebar-nav li.active a {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .sidebar-nav .icon {
+        font-size: 1.25rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .sidebar-footer {
+        padding: 1.5rem;
+        border-top: 1px solid #374151;
+    }
+
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #ef4444;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background: #991b1b;
+        color: white;
+    }
+
+    /* Main Content */
+    .dashboard-main {
+        flex: 1;
+        margin-left: 280px;
+        padding: 2rem;
+        min-height: 100vh;
+        background: #f8fafc;
+    }
+
+    /* Alert messages */
+    .alert {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+
+    .alert-success {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #10b981;
+    }
+
+    .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #ef4444;
+    }
+
+    .alert-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #f59e0b;
+    }
+
+    .alert-info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #3b82f6;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .dashboard-sidebar {
+            transform: translateX(0);
+        }
+        
+        .dashboard-main {
+            margin-left: 280px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-main {
+            padding: 1rem;
+        }
+    }
+    </style>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

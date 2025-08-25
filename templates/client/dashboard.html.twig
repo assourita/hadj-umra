@@ -1,0 +1,507 @@
+{% extends 'layouts/client_dashboard.html.twig' %}
+
+{% block title %}Tableau de bord - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="dashboard-header">
+    <h1>Tableau de bord</h1>
+    <p>Bienvenue {{ app.user.prenom }} {{ app.user.nom }}</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card total-reservations">
+        <div class="stat-icon">📋</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_reservations }}</h3>
+            <p>Réservations totales</p>
+            <small>{{ stats.total_reservations }} réservations au total</small>
+        </div>
+    </div>
+    
+    <div class="stat-card confirmed">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+            <h3>{{ stats.reservations_confirmees }}</h3>
+            <p>Réservations confirmées</p>
+            <small>{{ stats.reservations_confirmees }} confirmées</small>
+        </div>
+    </div>
+    
+    <div class="stat-card pending-payment">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+            <h3>{{ stats.en_attente_paiement }}</h3>
+            <p>En attente de paiement</p>
+            <small>{{ stats.en_attente_paiement }} en attente</small>
+        </div>
+    </div>
+
+    <div class="stat-card pending-documents">
+        <div class="stat-icon">📄</div>
+        <div class="stat-content">
+            <h3>{{ stats.en_attente_documents|default(0) }}</h3>
+            <p>Documents en attente</p>
+            <small>{{ stats.en_attente_documents|default(0) }} à fournir</small>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-section">
+    <div class="chart-container">
+        <h3>Réservations par statut</h3>
+        <div class="chart" id="reservationsChart">
+            <div class="chart-placeholder">
+                <div class="chart-bar" style="height: 60%; background: #10b981;">
+                    <span>Confirmées</span>
+                </div>
+                <div class="chart-bar" style="height: 40%; background: #3b82f6;">
+                    <span>En attente</span>
+                </div>
+                <div class="chart-bar" style="height: 20%; background: #f59e0b;">
+                    <span>Documents</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>Activité récente</h3>
+        <div class="activity-timeline">
+            {% for reservation in reservations|slice(0, 5) %}
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        {% if reservation.statut == 'confirme' %}✅
+                        {% elseif reservation.statut == 'en_attente_paiement' %}💰
+                        {% elseif reservation.statut == 'en_attente_documents' %}📄
+                        {% else %}📋{% endif %}
+                    </div>
+                    <div class="activity-content">
+                        <h4>Réservation #{{ reservation.codeDossier }}</h4>
+                        <p>{{ reservation.depart.package.titre }}</p>
+                        <small>{{ reservation.createdAt|date('d/m/Y H:i') }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Reservations -->
+<div class="recent-section">
+    <div class="section-header">
+        <h3>Réservations récentes</h3>
+        <a href="{{ path('app_client_reservations') }}" class="view-all-btn">Voir tout</a>
+    </div>
+    
+    {% if reservations is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h4>Aucune réservation</h4>
+            <p>Vous n'avez pas encore de réservations.</p>
+            <a href="{{ path('app_home') }}" class="btn btn-primary">Voir les packages</a>
+        </div>
+    {% else %}
+        <div class="reservations-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Package</th>
+                        <th>Date départ</th>
+                        <th>Pèlerins</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations|slice(0, 5) %}
+                        <tr>
+                            <td>
+                                <strong>#{{ reservation.codeDossier }}</strong>
+                            </td>
+                            <td>{{ reservation.depart.package.titre }}</td>
+                            <td>{{ reservation.depart.dateDepart|date('d/m/Y') }}</td>
+                            <td>{{ reservation.nbPelerins }}</td>
+                            <td>{{ reservation.total|number_format(0, ',', ' ') }} XOF</td>
+                            <td>
+                                <span class="status-badge status-{{ reservation.statut }}">
+                                    {% if reservation.statut == 'en_attente_approbation' %}
+                                        En attente d'approbation
+                                    {% elseif reservation.statut == 'en_attente_documents' %}
+                                        Documents requis
+                                    {% elseif reservation.statut == 'en_attente_paiement' %}
+                                        En attente de paiement
+                                    {% elseif reservation.statut == 'confirme' %}
+                                        Confirmée
+                                    {% else %}
+                                        {{ reservation.statut|title }}
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ path('app_client_documents', {'id': reservation.id}) }}" class="btn btn-sm btn-secondary">
+                                        📄
+                                    </a>
+                                    <a href="{{ path('app_client_reservations') }}" class="btn btn-sm btn-primary">
+                                        👁️
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.dashboard-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+/* Statistics Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.total-reservations .stat-icon {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.confirmed .stat-icon {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.pending-payment .stat-icon {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.pending-documents .stat-icon {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.stat-content h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 2rem;
+    color: #1f2937;
+}
+
+.stat-content p {
+    margin: 0 0 0.25rem 0;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.stat-content small {
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+/* Charts Section */
+.charts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.chart-container h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+}
+
+.chart {
+    height: 200px;
+    display: flex;
+    align-items: end;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.chart-placeholder {
+    display: flex;
+    align-items: end;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+}
+
+.chart-bar {
+    flex: 1;
+    border-radius: 0.5rem 0.5rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    min-height: 40px;
+}
+
+.activity-timeline {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.activity-content h4 {
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+    font-size: 0.875rem;
+}
+
+.activity-content p {
+    margin: 0 0 0.25rem 0;
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.activity-content small {
+    color: #9ca3af;
+    font-size: 0.75rem;
+}
+
+/* Recent Section */
+.recent-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #1f2937;
+}
+
+.view-all-btn {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.view-all-btn:hover {
+    text-decoration: underline;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+}
+
+.empty-state p {
+    margin: 0 0 1.5rem 0;
+    color: #6b7280;
+}
+
+/* Table */
+.reservations-table {
+    overflow-x: auto;
+}
+
+.reservations-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reservations-table th {
+    text-align: left;
+    padding: 0.75rem;
+    background: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.reservations-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+}
+
+.reservations-table tr:hover {
+    background: #f9fafb;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-en_attente_approbation {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-en_attente_documents {
+    background: #e0f2fe;
+    color: #0277bd;
+}
+
+.status-en_attente_paiement {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.status-confirme {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reservations-table {
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %} 

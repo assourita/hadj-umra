@@ -1,0 +1,414 @@
+{% extends 'layouts/admin_dashboard.html.twig' %}
+
+{% block title %}Nouveau Package - Administration{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1>➕ Nouveau Package</h1>
+    <p>Créez un nouveau package de voyage</p>
+</div>
+
+<div class="content">
+    {{ form_start(form, {'attr': {'class': 'package-form'}}) }}
+    
+    <div class="form-sections">
+        <!-- Informations de base -->
+        <div class="form-section">
+            <h3>📋 Informations de base</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.titre) }}
+                    {{ form_widget(form.titre) }}
+                    {{ form_errors(form.titre) }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.programme) }}
+                    {{ form_widget(form.programme) }}
+                    {{ form_errors(form.programme) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Prix et devise -->
+        <div class="form-section">
+            <h3>💰 Prix et devise</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.prixBase) }}
+                    {{ form_widget(form.prixBase) }}
+                    {{ form_errors(form.prixBase) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.devise) }}
+                    {{ form_widget(form.devise) }}
+                    {{ form_errors(form.devise) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Détails du voyage -->
+        <div class="form-section">
+            <h3>✈️ Détails du voyage</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.duree) }}
+                    {{ form_widget(form.duree) }}
+                    {{ form_errors(form.duree) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.villeDepart) }}
+                    {{ form_widget(form.villeDepart) }}
+                    {{ form_errors(form.villeDepart) }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.villeArrivee) }}
+                    {{ form_widget(form.villeArrivee) }}
+                    {{ form_errors(form.villeArrivee) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Hébergement -->
+        <div class="form-section">
+            <h3>🏨 Hébergement</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.hotelMakkah) }}
+                    {{ form_widget(form.hotelMakkah) }}
+                    {{ form_errors(form.hotelMakkah) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.hotelMadinah) }}
+                    {{ form_widget(form.hotelMadinah) }}
+                    {{ form_errors(form.hotelMadinah) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents requis -->
+        <div class="form-section">
+            <h3>📄 Documents requis</h3>
+            <div class="documents-requis-container">
+                {{ form_label(form.documentsRequis) }}
+                <div class="documents-list" data-prototype="{{ form_widget(form.documentsRequis.vars.prototype)|e('html_attr') }}" data-index="{{ form.documentsRequis|length }}">
+                    {% for document in form.documentsRequis %}
+                        <div class="document-item">
+                            <div class="document-header">
+                                <h4>Document #{{ loop.index }}</h4>
+                                <button type="button" class="btn btn-danger btn-small remove-document">
+                                    🗑️ Supprimer
+                                </button>
+                            </div>
+                            <div class="document-fields">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        {{ form_label(document.nom) }}
+                                        {{ form_widget(document.nom) }}
+                                        {{ form_errors(document.nom) }}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        {{ form_label(document.description) }}
+                                        {{ form_widget(document.description) }}
+                                        {{ form_errors(document.description) }}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        {{ form_label(document.obligatoire) }}
+                                        {{ form_widget(document.obligatoire) }}
+                                        {{ form_errors(document.obligatoire) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary add-document">
+                    ➕ Ajouter un document
+                </button>
+            </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="form-section">
+            <h3>⚙️ Statut</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.isActive) }}
+                    {{ form_widget(form.isActive) }}
+                    {{ form_errors(form.isActive) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ path('app_admin_packages_index') }}" class="btn btn-secondary">
+            ← Annuler
+        </a>
+        <button type="submit" class="btn btn-primary">
+            💾 Créer le package
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+
+<style>
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.content {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.package-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+}
+
+.form-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.form-control {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-check-input {
+    margin-right: 0.5rem;
+}
+
+.documents-requis-container {
+    margin-top: 1rem;
+}
+
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.document-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: white;
+}
+
+.document-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.document-header h4 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.document-fields .form-row {
+    grid-template-columns: 1fr;
+}
+
+.add-document {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const documentsList = document.querySelector('.documents-list');
+    const addButton = document.querySelector('.add-document');
+    const removeButtons = document.querySelectorAll('.remove-document');
+    
+    // Ajouter un document
+    addButton.addEventListener('click', function() {
+        const prototype = documentsList.dataset.prototype;
+        const index = documentsList.dataset.index;
+        const newForm = prototype.replace(/__name__/g, index);
+        
+        const documentItem = document.createElement('div');
+        documentItem.className = 'document-item';
+        documentItem.innerHTML = `
+            <div class="document-header">
+                <h4>Document #${parseInt(index) + 1}</h4>
+                <button type="button" class="btn btn-danger btn-small remove-document">
+                    🗑️ Supprimer
+                </button>
+            </div>
+            <div class="document-fields">
+                ${newForm}
+            </div>
+        `;
+        
+        documentsList.appendChild(documentItem);
+        documentsList.dataset.index = parseInt(index) + 1;
+        
+        // Ajouter l'événement de suppression au nouveau bouton
+        documentItem.querySelector('.remove-document').addEventListener('click', function() {
+            documentItem.remove();
+        });
+    });
+    
+    // Supprimer un document
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.document-item').remove();
+        });
+    });
+});
+</script>
+{% endblock %} 

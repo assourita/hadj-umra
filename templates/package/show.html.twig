@@ -1,0 +1,471 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ package.titre }} - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="package-detail">
+    <div class="package-hero">
+        <div class="hero-images">
+            {% if package.images and package.images|length > 0 %}
+                <div class="main-image">
+                    <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                </div>
+                {% if package.images|length > 1 %}
+                    <div class="thumbnail-images">
+                        {% for image in package.images|slice(1, 4) %}
+                            <img src="{{ image }}" alt="{{ package.titre }}">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="placeholder-image">
+                    🕌
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="hero-content">
+            <h1>{{ package.titre }}</h1>
+            <div class="package-meta">
+                <span class="duration">📅 {{ package.dureeJours }} jours</span>
+                {% if package.prixBase %}
+                    <span class="price">💰 À partir de {{ package.prixBase|number_format(0, ',', ' ') }} {{ package.devise|default('XOF') }}</span>
+                {% endif %}
+            </div>
+            <p class="package-description">{{ package.description }}</p>
+        </div>
+    </div>
+
+    <div class="package-content">
+        <div class="content-main">
+            <!-- Programme -->
+            {% if package.programme %}
+                <div class="section">
+                    <h2>📋 Programme</h2>
+                    <div class="programme-content">
+                        {{ package.programme|nl2br }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Inclus -->
+            {% if package.inclus %}
+                <div class="section">
+                    <h2>✅ Inclus dans le package</h2>
+                    <div class="inclus-content">
+                        {{ package.inclus|nl2br }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Non inclus -->
+            {% if package.nonInclus %}
+                <div class="section">
+                    <h2>❌ Non inclus</h2>
+                    <div class="non-inclus-content">
+                        {{ package.nonInclus|nl2br }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Hébergement -->
+            <div class="section">
+                <h2>🏨 Hébergement</h2>
+                <div class="hotels-grid">
+                    {% if package.hotelMakkah %}
+                        <div class="hotel-card">
+                            <h3>🕋 Makkah</h3>
+                            <p>{{ package.hotelMakkah }}</p>
+                        </div>
+                    {% endif %}
+                    {% if package.hotelMadinah %}
+                        <div class="hotel-card">
+                            <h3>🕌 Madinah</h3>
+                            <p>{{ package.hotelMadinah }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="content-sidebar">
+            <!-- Départs disponibles -->
+            <div class="sidebar-section">
+                <h3>🚀 Départs disponibles</h3>
+                {% if available_departs is empty %}
+                    <p class="no-departs">Aucun départ programmé pour le moment.</p>
+                {% else %}
+                    <div class="departs-list">
+                        {% for depart in available_departs %}
+                            {% if depart.isActive and depart.dateDepart > date() %}
+                                <div class="depart-card">
+                                    <div class="depart-header">
+                                        <h4>{{ depart.villeDepart }}</h4>
+                                        <span class="depart-date">{{ depart.dateDepart|date('d/m/Y') }}</span>
+                                    </div>
+                                    
+                                    <div class="depart-info">
+                                        <p><strong>Retour :</strong> {{ depart.dateRetour|date('d/m/Y') }}</p>
+                                        {% if depart.heureDepart %}
+                                            <p><strong>Heure de départ :</strong> {{ depart.heureDepart|date('H:i') }}</p>
+                                        {% endif %}
+                                        {% if depart.compagnieAerienne %}
+                                            <p><strong>Compagnie :</strong> {{ depart.compagnieAerienne }}</p>
+                                        {% endif %}
+                                        <p><strong>Places disponibles :</strong> 
+                                            <span class="places-count">{{ depart.quotaTotal - depart.quotaVendu }}</span>
+                                        </p>
+                                    </div>
+
+                                    {% if depart.tarifs is not empty %}
+                                        <div class="tarifs-section">
+                                            <h5>Tarifs par chambre</h5>
+                                            {% for tarif in depart.tarifs %}
+                                                {% if tarif.isActive %}
+                                                    <div class="tarif-item">
+                                                        <span class="tarif-type">{{ tarif.typeChambre|title }}</span>
+                                                        <span class="tarif-price">{{ tarif.prixBase|number_format(0, ',', ' ') }} {{ tarif.devise }}</span>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="depart-actions">
+                                        <a href="{{ path('app_reservation_step1', {'departId': depart.id}) }}" 
+                                           class="btn btn-primary">
+                                            Réserver maintenant
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Contact -->
+            <div class="sidebar-section">
+                <h3>📞 Besoin d'aide ?</h3>
+                <div class="contact-info">
+                    <p>Notre équipe est à votre disposition pour répondre à toutes vos questions.</p>
+                    <a href="{{ path('app_contact') }}" class="btn btn-secondary">
+                        Nous contacter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-section">
+        <a href="{{ path('app_packages_index') }}" class="btn btn-outline">
+            ← Retour aux packages
+        </a>
+    </div>
+</div>
+
+<style>
+.package-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.package-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.hero-images {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.main-image {
+    height: 300px;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+}
+
+.thumbnail-images img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.thumbnail-images img:hover {
+    transform: scale(1.05);
+}
+
+.placeholder-image {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    font-size: 4rem;
+    border-radius: 1rem;
+}
+
+.hero-content h1 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 2.5rem;
+}
+
+.package-meta {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.package-meta span {
+    background: #f8fafc;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.package-description {
+    color: var(--color-gray);
+    line-height: 1.6;
+    font-size: 1.125rem;
+}
+
+.package-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.programme-content,
+.inclus-content,
+.non-inclus-content {
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
+.hotels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.hotel-card {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.hotel-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+}
+
+.hotel-card p {
+    margin: 0;
+    color: var(--color-gray);
+}
+
+.sidebar-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.sidebar-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+}
+
+.no-departs {
+    color: var(--color-gray);
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+}
+
+.departs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.depart-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease;
+}
+
+.depart-card:hover {
+    border-color: var(--color-primary);
+}
+
+.depart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.depart-header h4 {
+    margin: 0;
+    color: var(--color-primary);
+}
+
+.depart-date {
+    background: var(--color-primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.depart-info {
+    margin-bottom: 1rem;
+}
+
+.depart-info p {
+    margin: 0.5rem 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.places-count {
+    color: #059669;
+    font-weight: 600;
+}
+
+.tarifs-section {
+    margin-bottom: 1rem;
+}
+
+.tarifs-section h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 0.875rem;
+}
+
+.tarif-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.tarif-type {
+    color: var(--color-gray);
+}
+
+.tarif-price {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.depart-actions .btn {
+    width: 100%;
+    text-align: center;
+}
+
+.contact-info {
+    text-align: center;
+}
+
+.contact-info p {
+    margin: 0 0 1rem 0;
+    color: var(--color-gray);
+}
+
+.contact-info .btn {
+    width: 100%;
+}
+
+.back-section {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .package-detail {
+        padding: 1rem;
+    }
+    
+    .package-hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .package-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .package-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hotels-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .depart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+</style>
+{% endblock %} 

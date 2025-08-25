@@ -1,0 +1,560 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FAQ - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="faq-page">
+    <div class="page-header">
+        <h1>❓ Questions Fréquentes</h1>
+        <p>Trouvez rapidement les réponses à vos questions sur le pèlerinage</p>
+    </div>
+
+    <div class="faq-content">
+        <!-- Navigation par catégorie -->
+        <div class="faq-nav">
+            <h2>📂 Catégories</h2>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-category="general">📋 Général</button>
+                <button class="nav-btn" data-category="reservation">📅 Réservation</button>
+                <button class="nav-btn" data-category="visa">🛂 Visa</button>
+                <button class="nav-btn" data-category="voyage">✈️ Voyage</button>
+                <button class="nav-btn" data-category="paiement">💰 Paiement</button>
+                <button class="nav-btn" data-category="hebergement">🏨 Hébergement</button>
+            </div>
+        </div>
+
+        <!-- Questions par catégorie -->
+        <div class="faq-sections">
+            <!-- Général -->
+            <div class="faq-section active" id="general">
+                <h2>📋 Questions Générales</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Qu'est-ce que Dèmè Travel ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Dèmè Travel est une agence spécialisée dans l'organisation de pèlerinages vers les lieux saints de l'Islam. Nous proposons des packages complets incluant les vols, l'hébergement, les transferts et l'assistance pour l'obtention des visas.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quelle est la différence entre Umra et Hadj ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>L'Umra est un pèlerinage mineur qui peut être effectué à tout moment de l'année, tandis que le Hadj est le pèlerinage majeur qui se déroule pendant le mois de Dhul Hijja. L'Umra est plus courte et moins complexe que le Hadj.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quels sont les lieux visités lors de l'Umra ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>L'Umra comprend la visite de la Kaaba à La Mecque (avec les rituels de Tawaf et Sa'i) et peut inclure une visite de la mosquée du Prophète à Médine. Les rituels principaux sont : l'Ihram, le Tawaf, le Sa'i, et la tonte/raccourcissement des cheveux.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quelle est la durée typique d'un voyage Umra ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Un voyage Umra typique dure entre 10 et 15 jours, incluant les vols aller-retour. La durée exacte dépend du package choisi et peut inclure des visites supplémentaires à Médine ou d'autres sites religieux.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Réservation -->
+            <div class="faq-section" id="reservation">
+                <h2>📅 Réservation et Organisation</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Combien de temps à l'avance dois-je réserver ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nous recommandons de réserver au moins 2 à 3 mois à l'avance pour s'assurer de la disponibilité des vols et de l'hébergement. Pour les périodes de forte affluence (Ramadan, vacances), il est préférable de réserver 4 à 6 mois à l'avance.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Puis-je annuler ou modifier ma réservation ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, les modifications et annulations sont possibles selon les conditions de votre package. Les frais d'annulation varient selon le délai avant le départ. Contactez-nous pour connaître les conditions spécifiques à votre réservation.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Que se passe-t-il si le vol est annulé ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>En cas d'annulation de vol, nous nous chargeons de réorganiser votre voyage dans les plus brefs délais. Nous vous proposerons des alternatives et vous tiendrons informés de toutes les modifications.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Puis-je voyager seul ou dois-je être en groupe ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Vous pouvez voyager seul ou en groupe. Nous proposons des packages individuels et des départs en groupe avec accompagnement. Les deux options incluent notre assistance complète.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visa -->
+            <div class="faq-section" id="visa">
+                <h2>🛂 Visa et Documents</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Comment obtenir un visa pour l'Arabie Saoudite ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nous nous chargeons de toutes les démarches pour l'obtention de votre visa. Vous devez nous fournir : un passeport valide (6 mois minimum), des photos d'identité, et remplir le formulaire de demande. Le processus prend généralement 2 à 4 semaines.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quels documents sont nécessaires pour le visa ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Documents requis : passeport original valide 6 mois minimum, 2 photos d'identité récentes (4x6 cm), formulaire de demande rempli, justificatif de vaccination (méningite), et lettre d'invitation de notre partenaire saoudien.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Combien coûte le visa ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Le coût du visa est inclus dans nos packages. Il comprend les frais consulaires et les services de traitement. Aucun frais supplémentaire n'est à prévoir pour le visa.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Que faire si ma demande de visa est refusée ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>En cas de refus de visa, nous vous remboursons intégralement le montant versé pour le visa. Nous vous aiderons également à identifier les raisons du refus et à préparer une nouvelle demande si possible.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voyage -->
+            <div class="faq-section" id="voyage">
+                <h2>✈️ Voyage et Transport</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Les vols sont-ils inclus dans les packages ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, tous nos packages incluent les vols aller-retour, les taxes aéroportuaires, et les transferts aéroport-hôtel. Nous travaillons avec les meilleures compagnies aériennes pour assurer votre confort.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quelles compagnies aériennes utilisez-vous ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nous travaillons avec les principales compagnies aériennes desservant l'Arabie Saoudite : Saudia, Turkish Airlines, Emirates, Qatar Airways, et d'autres selon la disponibilité et les meilleurs tarifs.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Y a-t-il des restrictions de bagages ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Les restrictions de bagages dépendent de la compagnie aérienne. Généralement, vous avez droit à 23kg en soute et 7kg en cabine. Nous vous informerons des restrictions spécifiques lors de la réservation.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Comment se déroulent les transferts sur place ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nos transferts sont organisés avec des véhicules climatisés et des chauffeurs professionnels. Nous assurons les transferts aéroport-hôtel, hôtel-hôtel (si vous visitez Médine), et tous les déplacements nécessaires.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paiement -->
+            <div class="faq-section" id="paiement">
+                <h2>💰 Paiement et Tarifs</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quels sont les modes de paiement acceptés ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nous acceptons les paiements par carte bancaire (Visa, Mastercard), virement bancaire, et espèces. Les paiements peuvent être échelonnés selon nos conditions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quel est le montant de l'acompte requis ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Un acompte de 30% du montant total est requis à la réservation pour confirmer votre place. Le solde doit être réglé 30 jours avant le départ.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Les prix incluent-ils toutes les taxes ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, nos prix incluent toutes les taxes aéroportuaires, les frais de visa, et les transferts. Seuls les dépenses personnelles (shopping, pourboires) ne sont pas incluses.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Proposez-vous des facilités de paiement ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, nous proposons des facilités de paiement sans frais supplémentaires. Vous pouvez payer en plusieurs fois selon un échéancier convenu ensemble.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hébergement -->
+            <div class="faq-section" id="hebergement">
+                <h2>🏨 Hébergement et Confort</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Quel type d'hébergement proposez-vous ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nous proposons des hôtels 3, 4 et 5 étoiles à proximité des lieux saints. Tous nos hôtels sont sélectionnés pour leur qualité, leur propreté et leur proximité avec les mosquées.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Les repas sont-ils inclus ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, tous nos packages incluent la pension complète (petit-déjeuner, déjeuner, dîner) dans les hôtels. Les repas sont halal et variés pour satisfaire tous les goûts.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Puis-je choisir le type de chambre ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, nous proposons différents types de chambres : individuelles, doubles, triples, et familiales. Vous pouvez choisir selon vos besoins et votre budget.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Les hôtels sont-ils proches des lieux saints ?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Oui, tous nos hôtels sont sélectionnés pour leur proximité avec les lieux saints. À La Mecque, ils sont à distance de marche de la Grande Mosquée. À Médine, ils sont proches de la mosquée du Prophète.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="contact-section">
+            <h2>💬 Vous ne trouvez pas votre réponse ?</h2>
+            <p>Notre équipe est là pour vous aider</p>
+            <div class="contact-buttons">
+                <a href="{{ path('app_contact') }}" class="btn btn-primary">
+                    📞 Nous contacter
+                </a>
+                <a href="tel:+22320223344" class="btn btn-secondary">
+                    📱 Appeler maintenant
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.faq-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 3rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.faq-nav {
+    margin-bottom: 3rem;
+}
+
+.faq-nav h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.nav-btn {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+.faq-sections {
+    margin-bottom: 4rem;
+}
+
+.faq-section {
+    display: none;
+}
+
+.faq-section.active {
+    display: block;
+}
+
+.faq-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.faq-item {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: #f8f9fa;
+}
+
+.faq-question h3 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.faq-toggle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-toggle {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+}
+
+.faq-answer p {
+    margin: 0;
+    padding: 0 2rem 1.5rem 2rem;
+    color: var(--color-gray);
+    line-height: 1.6;
+}
+
+.contact-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.contact-section h2 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.contact-section p {
+    margin: 0 0 2rem 0;
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.contact-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .faq-page {
+        padding: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .nav-buttons {
+        justify-content: center;
+    }
+    
+    .nav-btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .faq-question {
+        padding: 1rem 1.5rem;
+    }
+    
+    .faq-question h3 {
+        font-size: 1rem;
+    }
+    
+    .faq-answer p {
+        padding: 0 1.5rem 1rem 1.5rem;
+    }
+    
+    .contact-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigation par catégorie
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const faqSections = document.querySelectorAll('.faq-section');
+    
+    navButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Mettre à jour les boutons
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Afficher la section correspondante
+            faqSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === category) {
+                    section.classList.add('active');
+                }
+            });
+        });
+    });
+    
+    // Toggle des questions
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', function() {
+            const isActive = item.classList.contains('active');
+            
+            // Fermer tous les autres items
+            faqItems.forEach(otherItem => {
+                otherItem.classList.remove('active');
+            });
+            
+            // Ouvrir l'item cliqué s'il n'était pas déjà ouvert
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

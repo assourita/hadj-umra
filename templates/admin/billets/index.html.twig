@@ -1,0 +1,343 @@
+{% extends 'layouts/admin_dashboard.html.twig' %}
+
+{% block title %}Gestion des Billets - Administration{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1>✈️ Gestion des Billets</h1>
+    <p>Gérez tous les billets d'avion des pèlerins</p>
+</div>
+
+<div class="content">
+    <div class="actions-bar">
+        <a href="{{ path('app_admin_billet_new') }}" class="btn btn-primary">
+            ➕ Nouveau Billet
+        </a>
+    </div>
+
+    {% if billets is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">✈️</div>
+            <h2>Aucun billet enregistré</h2>
+            <p>Commencez par créer votre premier billet.</p>
+            <a href="{{ path('app_admin_billet_new') }}" class="btn btn-primary">
+                Créer un billet
+            </a>
+        </div>
+    {% else %}
+        <div class="billets-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pèlerin</th>
+                        <th>Numéro de vol</th>
+                        <th>Compagnie</th>
+                        <th>Date de départ</th>
+                        <th>Date de retour</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for billet in billets %}
+                        <tr>
+                            <td>
+                                <div class="pilgrim-info">
+                                    <div class="pilgrim-avatar">
+                                        <span>{{ billet.pelerin.prenom|first }}{{ billet.pelerin.nom|first }}</span>
+                                    </div>
+                                    <div class="pilgrim-details">
+                                        <strong>{{ billet.pelerin.prenom }} {{ billet.pelerin.nom }}</strong>
+                                        <span class="pilgrim-nationality">{{ billet.pelerin.nationalite }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="flight-number">{{ billet.numeroVol }}</span>
+                            </td>
+                            <td>
+                                <span class="airline">{{ billet.compagnieAerienne }}</span>
+                            </td>
+                            <td>
+                                <span class="flight-date">{{ billet.dateDepart|date('d/m/Y H:i') }}</span>
+                            </td>
+                            <td>
+                                <span class="flight-date">{{ billet.dateRetour|date('d/m/Y H:i') }}</span>
+                            </td>
+                            <td>
+                                {% if billet.statut == 'confirme' %}
+                                    <span class="status-badge confirmed">✅ Confirmé</span>
+                                {% elseif billet.statut == 'en_attente' %}
+                                    <span class="status-badge pending">⏳ En attente</span>
+                                {% elseif billet.statut == 'annule' %}
+                                    <span class="status-badge cancelled">❌ Annulé</span>
+                                {% else %}
+                                    <span class="status-badge other">{{ billet.statut|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ path('app_admin_billet_show', {'id': billet.id}) }}" class="btn btn-secondary btn-small">
+                                        👁️ Voir
+                                    </a>
+                                    <a href="{{ path('app_admin_billet_edit', {'id': billet.id}) }}" class="btn btn-primary btn-small">
+                                        ✏️ Modifier
+                                    </a>
+                                    <form method="POST" action="{{ path('app_admin_billet_delete', {'id': billet.id}) }}" 
+                                          style="display: inline;" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce billet ?')">
+                                        <button type="submit" class="btn btn-danger btn-small">
+                                            🗑️ Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.content {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.actions-bar {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.billets-table {
+    overflow-x: auto;
+}
+
+.billets-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.billets-table th {
+    text-align: left;
+    padding: 1rem;
+    background: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.billets-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+}
+
+.billets-table tr:hover {
+    background: #f9fafb;
+}
+
+.pilgrim-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pilgrim-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white;
+    font-size: 0.875rem;
+}
+
+.pilgrim-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.pilgrim-details strong {
+    color: #1f2937;
+}
+
+.pilgrim-nationality {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.flight-number {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #1f2937;
+    background: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.airline {
+    background: #e0f2fe;
+    color: #0277bd;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.flight-date {
+    font-size: 0.875rem;
+    color: #1f2937;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.confirmed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.other {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .billets-table {
+        font-size: 0.875rem;
+    }
+    
+    .billets-table th,
+    .billets-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .pilgrim-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,632 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation - Étape 3 - Dèmè Travel{% endblock %}
+
+{% block body %}
+<div class="reservation-page">
+    <div class="page-header">
+        <h1>📋 Réservation - Étape 3</h1>
+        <p>Confirmation finale de votre réservation</p>
+    </div>
+
+    <!-- Progression -->
+    <div class="progress-bar">
+        <div class="progress-step completed">
+            <div class="step-number">✓</div>
+            <div class="step-label">Choisir</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step completed">
+            <div class="step-number">✓</div>
+            <div class="step-label">Pèlerins</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step active">
+            <div class="step-number">3</div>
+            <div class="step-label">Confirmation</div>
+        </div>
+    </div>
+
+    <div class="reservation-content">
+        <div class="reservation-grid">
+            <!-- Récapitulatif complet -->
+            <div class="summary-section">
+                <h2>📋 Récapitulatif complet</h2>
+                
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <h3>{{ depart.package.titre }}</h3>
+                        <span class="depart-date">{{ depart.dateDepart|date('d/m/Y') }}</span>
+                    </div>
+                    
+                    <div class="summary-details">
+                        <div class="summary-item">
+                            <span class="summary-label">Type de chambre :</span>
+                            <span class="summary-value">{{ reservation_data.type_chambre|title }}</span>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <span class="summary-label">Nombre de pèlerins :</span>
+                            <span class="summary-value">{{ reservation_data.nb_pelerins }}</span>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <span class="summary-label">Prix par personne :</span>
+                            <span class="summary-value">{{ reservation_data.prix_total / reservation_data.nb_pelerins|number_format(0, ',', ' ') }} FCFA</span>
+                        </div>
+                        
+                        <div class="summary-item total">
+                            <span class="summary-label">Total :</span>
+                            <span class="summary-value">{{ reservation_data.prix_total|number_format(0, ',', ' ') }} FCFA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des pèlerins -->
+                <div class="pilgrims-list">
+                    <h3>👥 Pèlerins inscrits</h3>
+                    {% for pelerin in pelerins %}
+                        <div class="pilgrim-item">
+                            <div class="pilgrim-number">{{ loop.index }}</div>
+                            <div class="pilgrim-info">
+                                <div class="pilgrim-name">{{ pelerin.prenom }} {{ pelerin.nom }}</div>
+                                <div class="pilgrim-details">
+                                    {{ pelerin.date_naissance|date('d/m/Y') }} • {{ pelerin.sexe == 'M' ? 'Masculin' : 'Féminin' }} • {{ pelerin.nationalite }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Informations importantes -->
+                <div class="important-info">
+                    <h3>ℹ️ Informations importantes</h3>
+                    <ul>
+                        <li>✅ Un acompte de 30% sera requis pour confirmer</li>
+                        <li>✅ Le solde devra être réglé 30 jours avant le départ</li>
+                        <li>✅ Les documents de voyage vous seront demandés</li>
+                        <li>✅ Un guide vous accompagnera pendant tout le voyage</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Confirmation -->
+            <div class="confirmation-section">
+                <h2>✅ Confirmation finale</h2>
+                
+                <div class="confirmation-card">
+                    <div class="confirmation-header">
+                        <div class="confirmation-icon">🕋</div>
+                        <h3>Prêt pour votre pèlerinage ?</h3>
+                        <p>Vérifiez toutes les informations ci-dessus avant de confirmer votre réservation.</p>
+                    </div>
+
+                    <div class="confirmation-checklist">
+                        <h4>📋 Checklist de confirmation :</h4>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1" checked disabled>
+                            <label for="check1">Informations des pèlerins complètes</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2" checked disabled>
+                            <label for="check2">Type de chambre sélectionné</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3" checked disabled>
+                            <label for="check3">Dates de voyage confirmées</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4" checked disabled>
+                            <label for="check4">Prix total calculé</label>
+                        </div>
+                    </div>
+
+                    <div class="payment-info">
+                        <h4>💳 Informations de paiement :</h4>
+                        <div class="payment-details">
+                            <div class="payment-item">
+                                <span>Acompte (30%) :</span>
+                                <span>{{ (reservation_data.prix_total * 0.3)|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                            <div class="payment-item">
+                                <span>Solde (70%) :</span>
+                                <span>{{ (reservation_data.prix_total * 0.7)|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                            <div class="payment-item total">
+                                <span>Total :</span>
+                                <span>{{ reservation_data.prix_total|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ path('app_reservation_confirm') }}" class="confirmation-form">
+                        <div class="terms-checkbox">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="accept_terms" value="1" required>
+                                <span class="checkmark"></span>
+                                J'accepte les conditions générales de vente et la politique de confidentialité *
+                            </label>
+                        </div>
+
+                        <div class="terms-checkbox">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="accept_cancellation" value="1" required>
+                                <span class="checkmark"></span>
+                                J'accepte les conditions d'annulation et de modification *
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="{{ path('app_reservation_step2') }}" class="btn btn-secondary">
+                                ← Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-large">
+                                ✅ Confirmer ma réservation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Prochaines étapes -->
+                <div class="next-steps">
+                    <h3>📅 Prochaines étapes :</h3>
+                    <div class="steps-timeline">
+                        <div class="step-item">
+                            <div class="step-icon">📧</div>
+                            <div class="step-content">
+                                <h4>Email de confirmation</h4>
+                                <p>Vous recevrez un email de confirmation avec tous les détails</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-icon">💳</div>
+                            <div class="step-content">
+                                <h4>Paiement de l'acompte</h4>
+                                <p>Effectuez le paiement de l'acompte pour confirmer</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-icon">📋</div>
+                            <div class="step-content">
+                                <h4>Documents requis</h4>
+                                <p>Nous vous demanderons les documents nécessaires</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-icon">🛂</div>
+                            <div class="step-content">
+                                <h4>Demande de visa</h4>
+                                <p>Nous procéderons à la demande de visa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.reservation-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-number {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.progress-step.active .step-number {
+    background: var(--color-primary);
+    color: white;
+}
+
+.progress-step.completed .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+    font-weight: 600;
+}
+
+.progress-line {
+    width: 4rem;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 1rem;
+}
+
+.reservation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+
+.summary-section h2,
+.confirmation-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.summary-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.summary-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+}
+
+.depart-date {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.summary-details {
+    padding: 2rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+}
+
+.summary-label {
+    color: var(--color-gray);
+}
+
+.summary-value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.pilgrims-list {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.pilgrims-list h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+}
+
+.pilgrim-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pilgrim-item:last-child {
+    border-bottom: none;
+}
+
+.pilgrim-number {
+    width: 2rem;
+    height: 2rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.pilgrim-name {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.pilgrim-details {
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.important-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.important-info h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.important-info ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--color-gray);
+}
+
+.important-info li {
+    margin-bottom: 0.5rem;
+}
+
+.confirmation-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.confirmation-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.confirmation-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.confirmation-header h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.confirmation-header p {
+    margin: 0;
+    color: var(--color-gray);
+}
+
+.confirmation-checklist {
+    margin-bottom: 2rem;
+}
+
+.confirmation-checklist h4 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.checklist-item label {
+    color: var(--color-gray);
+    cursor: pointer;
+}
+
+.payment-info {
+    margin-bottom: 2rem;
+}
+
+.payment-info h4 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.payment-details {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    color: var(--color-gray);
+}
+
+.payment-item.total {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dee2e6;
+    margin-bottom: 0;
+}
+
+.terms-checkbox {
+    margin-bottom: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.25rem;
+}
+
+.confirmation-form {
+    margin-top: 2rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding-top: 2rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.next-steps {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.next-steps h3 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    text-align: center;
+}
+
+.steps-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.step-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+}
+
+.step-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.step-content p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .reservation-page {
+        padding: 1rem;
+    }
+    
+    .reservation-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .progress-bar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .progress-line {
+        width: 2px;
+        height: 2rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .step-item {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %} 

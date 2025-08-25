@@ -1,0 +1,595 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la réservation - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>📋 Détails de la réservation</h1>
+        <p>Réservation #{{ reservation.id }}</p>
+    </div>
+
+    <div class="reservation-details">
+        <!-- Informations de la réservation -->
+        <div class="detail-section">
+            <h2>📋 Informations de la réservation</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Numéro :</span>
+                    <span class="value">#{{ reservation.id }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Code dossier :</span>
+                    <span class="value">{{ reservation.codeDossier }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Statut :</span>
+                    <span class="value">
+                        {% if reservation.statut == 'en_attente_approbation' %}
+                            <span class="badge badge-warning">En attente d'approbation</span>
+                        {% elseif reservation.statut == 'approuvee' %}
+                            <span class="badge badge-success">Approuvée</span>
+                        {% elseif reservation.statut == 'rejetee' %}
+                            <span class="badge badge-danger">Rejetée</span>
+                        {% elseif reservation.statut == 'en_attente_paiement' %}
+                            <span class="badge badge-info">En attente de paiement</span>
+                        {% elseif reservation.statut == 'payee' %}
+                            <span class="badge badge-success">Payée</span>
+                        {% elseif reservation.statut == 'annulee' %}
+                            <span class="badge badge-secondary">Annulée</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de création :</span>
+                    <span class="value">{{ reservation.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Prix total :</span>
+                    <span class="value">{{ reservation.total|number_format(0, ',', ' ') }} FCFA</span>
+                </div>
+                {% if reservation.acompte %}
+                    <div class="detail-item">
+                        <span class="label">Acompte :</span>
+                        <span class="value">{{ reservation.acompte|number_format(0, ',', ' ') }} FCFA</span>
+                    </div>
+                {% endif %}
+                {% if reservation.reste %}
+                    <div class="detail-item">
+                        <span class="label">Reste à payer :</span>
+                        <span class="value">{{ reservation.reste|number_format(0, ',', ' ') }} FCFA</span>
+                    </div>
+                {% endif %}
+                {% if reservation.paiements is not empty %}
+                    <div class="detail-item">
+                        <span class="label">Dernier paiement :</span>
+                        <span class="value">{{ reservation.paiements.last.createdAt|date('d/m/Y H:i') }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Informations du départ -->
+        <div class="detail-section">
+            <h2>✈️ Informations du départ</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Package :</span>
+                    <span class="value">{{ reservation.depart.package.titre }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de départ :</span>
+                    <span class="value">{{ reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de retour :</span>
+                    <span class="value">{{ reservation.depart.dateRetour|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Prix du package :</span>
+                    <span class="value">{{ reservation.depart.package.prixBase|number_format(0, ',', ' ') }} {{ reservation.depart.package.devise }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Places disponibles :</span>
+                    <span class="value">{{ reservation.depart.placesRestantes }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Type de chambre :</span>
+                    <span class="value">{{ reservation.typeChambre|title }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nombre de pèlerins :</span>
+                    <span class="value">{{ reservation.nbPelerins }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations du pèlerin -->
+        <div class="detail-section">
+            <h2>👤 Informations du pèlerin</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Nom complet :</span>
+                    <span class="value">{{ reservation.pelerins.first.nom }} {{ reservation.pelerins.first.prenom }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date de naissance :</span>
+                    <span class="value">{{ reservation.pelerins.first.dateNaissance|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Sexe :</span>
+                    <span class="value">{{ reservation.pelerins.first.sexe == 'M' ? 'Masculin' : 'Féminin' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nationalité :</span>
+                    <span class="value">{{ reservation.pelerins.first.nationalite }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Lieu de naissance :</span>
+                    <span class="value">{{ reservation.pelerins.first.lieuNaissance }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Téléphone :</span>
+                    <span class="value">{{ reservation.pelerins.first.phone }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Adresse :</span>
+                    <span class="value">{{ reservation.pelerins.first.adresse }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Numéro de passeport :</span>
+                    <span class="value">{{ reservation.pelerins.first.passportNumber }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date d'expiration du passeport :</span>
+                    <span class="value">{{ reservation.pelerins.first.passportExpiry|date('d/m/Y') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact d'urgence -->
+        <div class="detail-section">
+            <h2>🚨 Contact d'urgence</h2>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Nom :</span>
+                    <span class="value">{{ reservation.pelerins.first.nomUrgence }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Téléphone :</span>
+                    <span class="value">{{ reservation.pelerins.first.phoneUrgence }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Relation :</span>
+                    <span class="value">{{ reservation.pelerins.first.relationUrgence }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents associés -->
+        {% if reservation.pelerins.first.documents is not empty %}
+            <div class="detail-section">
+                <h2>📄 Documents associés</h2>
+                <div class="documents-grid">
+                    {% for document in reservation.pelerins.first.documents %}
+                        <div class="document-card">
+                            <div class="document-icon">📄</div>
+                            <div class="document-info">
+                                <h4>{{ document.nom }}</h4>
+                                <p>{{ document.type }}</p>
+                                <small>Ajouté le {{ document.createdAt|date('d/m/Y') }}</small>
+                            </div>
+                            <a href="{{ asset('uploads/documents/' ~ document.fichier) }}" target="_blank" class="btn btn-secondary">
+                                📥 Télécharger
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Remarques -->
+        {% if reservation.remarques %}
+            <div class="detail-section">
+                <h2>💬 Remarques</h2>
+                <div class="remarques">
+                    <p>{{ reservation.remarques|nl2br }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="detail-section">
+            <h2>⚙️ Actions</h2>
+            <div class="actions-grid">
+                {% if reservation.statut == 'en_attente_approbation' %}
+                    <form method="POST" action="{{ path('app_admin_reservation_approve', {'id': reservation.id}) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-success">
+                            ✅ Approuver la réservation
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ path('app_admin_reservation_reject', {'id': reservation.id}) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Rejeter cette réservation ?')">
+                            ❌ Rejeter la réservation
+                        </button>
+                    </form>
+                {% elseif reservation.statut == 'en_attente_documents' %}
+                    <form method="POST" action="{{ path('app_admin_reservation_validate_documents', {'id': reservation.id}) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Valider les documents et autoriser le paiement ?')">
+                            ✅ Valider les documents
+                        </button>
+                    </form>
+                    <div class="documents-status">
+                        <h4>📋 État des documents requis</h4>
+                        {% set documentsRequis = reservation.depart.package.documentsRequis %}
+                        {% set documentsFournis = {} %}
+                        {% for pelerin in reservation.pelerins %}
+                            {% for document in pelerin.documents %}
+                                {% set documentsFournis = documentsFournis|merge({(document.type): true}) %}
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        <div class="documents-list">
+                            {% for type, doc in documentsRequis %}
+                                <div class="document-item {{ documentsFournis[type] is defined ? 'provided' : 'missing' }}">
+                                    <span class="document-icon">
+                                        {% if documentsFournis[type] is defined %}
+                                            ✅
+                                        {% else %}
+                                            ❌
+                                        {% endif %}
+                                    </span>
+                                    <div class="document-info">
+                                        <span class="document-name">{{ doc.nom }}</span>
+                                        <span class="document-description">{{ doc.description }}</span>
+                                        {% if doc.obligatoire %}
+                                            <span class="document-required">Obligatoire</span>
+                                        {% else %}
+                                            <span class="document-optional">Optionnel</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if reservation.dateLimiteDocument %}
+                            <div class="deadline-info">
+                                <p><strong>Date limite :</strong> {{ reservation.dateLimiteDocument|date('d/m/Y') }}</p>
+                                {% set daysLeft = reservation.dateLimiteDocument|date('U') - "now"|date('U') %}
+                                {% if daysLeft > 0 %}
+                                    <p class="days-left">Il reste {{ (daysLeft / 86400)|round(0, 'floor') }} jour(s)</p>
+                                {% else %}
+                                    <p class="deadline-passed">⚠️ Date limite dépassée</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                
+                <a href="{{ path('app_admin_reservations_pending') }}" class="btn btn-secondary">
+                    ← Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.reservation-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.detail-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.detail-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge-warning {
+    background: #fbbf24;
+    color: #92400e;
+}
+
+.badge-success {
+    background: #10b981;
+    color: white;
+}
+
+.badge-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.badge-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.badge-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.document-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.document-icon {
+    font-size: 2rem;
+}
+
+.document-info {
+    flex: 1;
+}
+
+.document-info h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--color-primary);
+}
+
+.document-info p {
+    margin: 0 0 0.25rem 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.document-info small {
+    color: #9ca3af;
+    font-size: 0.75rem;
+}
+
+.remarques {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.remarques p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--color-gray);
+}
+
+.actions-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .actions-grid {
+        flex-direction: column;
+    }
+}
+
+.documents-status {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.documents-status h4 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+}
+
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.document-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.document-item.provided {
+    background: #f0fdf4;
+    border-color: #10b981;
+}
+
+.document-item.missing {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.document-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.document-info {
+    flex: 1;
+}
+
+.document-name {
+    display: block;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.document-description {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+    margin-bottom: 0.25rem;
+}
+
+.document-required {
+    display: inline-block;
+    background: #ef4444;
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.document-optional {
+    display: inline-block;
+    background: #6b7280;
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.deadline-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    border-left: 4px solid #f59e0b;
+}
+
+.deadline-info p {
+    margin: 0 0 0.5rem 0;
+}
+
+.deadline-info p:last-child {
+    margin-bottom: 0;
+}
+
+.days-left {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.deadline-passed {
+    color: #ef4444;
+    font-weight: 600;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le pèlerin - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>✏️ Modifier le pèlerin</h1>
+        <p>{{ pelerin.prenom }} {{ pelerin.nom }}</p>
+    </div>
+
+    <div class="form-container">
+        <form method="POST" class="edit-form">
+            <div class="form-section">
+                <h3>👤 Informations personnelles</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nom">Nom *</label>
+                        <input type="text" id="nom" name="nom" value="{{ pelerin.nom }}" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="prenom">Prénom *</label>
+                        <input type="text" id="prenom" name="prenom" value="{{ pelerin.prenom }}" required class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date_naissance">Date de naissance *</label>
+                        <input type="date" id="date_naissance" name="date_naissance" value="{{ pelerin.dateNaissance|date('Y-m-d') }}" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="sexe">Sexe *</label>
+                        <select id="sexe" name="sexe" required class="form-control">
+                            <option value="M" {{ pelerin.sexe == 'M' ? 'selected' : '' }}>Masculin</option>
+                            <option value="F" {{ pelerin.sexe == 'F' ? 'selected' : '' }}>Féminin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nationalite">Nationalité *</label>
+                        <select id="nationalite" name="nationalite" required class="form-control">
+                            <option value="">Sélectionner</option>
+                            <option value="Mali" {{ pelerin.nationalite == 'Mali' ? 'selected' : '' }}>Mali</option>
+                            <option value="Sénégal" {{ pelerin.nationalite == 'Sénégal' ? 'selected' : '' }}>Sénégal</option>
+                            <option value="Côte d'Ivoire" {{ pelerin.nationalite == "Côte d'Ivoire" ? 'selected' : '' }}>Côte d'Ivoire</option>
+                            <option value="Burkina Faso" {{ pelerin.nationalite == 'Burkina Faso' ? 'selected' : '' }}>Burkina Faso</option>
+                            <option value="Guinée" {{ pelerin.nationalite == 'Guinée' ? 'selected' : '' }}>Guinée</option>
+                            <option value="Niger" {{ pelerin.nationalite == 'Niger' ? 'selected' : '' }}>Niger</option>
+                            <option value="Tchad" {{ pelerin.nationalite == 'Tchad' ? 'selected' : '' }}>Tchad</option>
+                            <option value="Mauritanie" {{ pelerin.nationalite == 'Mauritanie' ? 'selected' : '' }}>Mauritanie</option>
+                            <option value="Autre" {{ pelerin.nationalite == 'Autre' ? 'selected' : '' }}>Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lieu_naissance">Lieu de naissance</label>
+                        <input type="text" id="lieu_naissance" name="lieu_naissance" value="{{ pelerin.lieuNaissance }}" class="form-control" placeholder="Ville, Pays">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Téléphone</label>
+                        <input type="tel" id="phone" name="phone" value="{{ pelerin.phone }}" class="form-control" placeholder="+223 XX XX XX XX">
+                    </div>
+                    <div class="form-group">
+                        <label for="adresse">Adresse</label>
+                        <input type="text" id="adresse" name="adresse" value="{{ pelerin.adresse }}" class="form-control" placeholder="Adresse complète">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🛂 Informations de voyage</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="passport_number">Numéro de passeport</label>
+                        <input type="text" id="passport_number" name="passport_number" value="{{ pelerin.passportNumber }}" class="form-control" placeholder="AB123456">
+                    </div>
+                    <div class="form-group">
+                        <label for="passport_expiry">Date d'expiration du passeport</label>
+                        <input type="date" id="passport_expiry" name="passport_expiry" value="{{ pelerin.passportExpiry ? pelerin.passportExpiry|date('Y-m-d') : '' }}" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📞 Contact d'urgence</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nom_urgence">Nom du contact d'urgence</label>
+                        <input type="text" id="nom_urgence" name="nom_urgence" value="{{ pelerin.nomUrgence }}" class="form-control" placeholder="Nom complet">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_urgence">Téléphone d'urgence</label>
+                        <input type="tel" id="phone_urgence" name="phone_urgence" value="{{ pelerin.phoneUrgence }}" class="form-control" placeholder="+223 XX XX XX XX">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="relation_urgence">Relation avec le contact d'urgence</label>
+                    <select id="relation_urgence" name="relation_urgence" class="form-control">
+                        <option value="">Sélectionner</option>
+                        <option value="Conjoint(e)" {{ pelerin.relationUrgence == 'Conjoint(e)' ? 'selected' : '' }}>Conjoint(e)</option>
+                        <option value="Parent" {{ pelerin.relationUrgence == 'Parent' ? 'selected' : '' }}>Parent</option>
+                        <option value="Enfant" {{ pelerin.relationUrgence == 'Enfant' ? 'selected' : '' }}>Enfant</option>
+                        <option value="Frère/Sœur" {{ pelerin.relationUrgence == 'Frère/Sœur' ? 'selected' : '' }}>Frère/Sœur</option>
+                        <option value="Ami(e)" {{ pelerin.relationUrgence == 'Ami(e)' ? 'selected' : '' }}>Ami(e)</option>
+                        <option value="Autre" {{ pelerin.relationUrgence == 'Autre' ? 'selected' : '' }}>Autre</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📋 Informations de la réservation</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Code dossier :</span>
+                        <span class="value">#{{ pelerin.reservation.codeDossier }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Package :</span>
+                        <span class="value">{{ pelerin.reservation.depart.package.titre }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Date de départ :</span>
+                        <span class="value">{{ pelerin.reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Type de chambre :</span>
+                        <span class="value">{{ pelerin.reservation.typeChambre|title }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ path('app_admin_pelerins_index') }}" class="btn btn-secondary">
+                    ← Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    💾 Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.form-container {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.edit-form {
+    padding: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+.form-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.info-item .label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.info-item .value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.form-actions {
+    padding: 2rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

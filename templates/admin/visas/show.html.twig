@@ -1,0 +1,409 @@
+ Symfony Exception
+ Symfony Docs
+BadMethodCallException
+Erreur de serveur interne HTTP 500
+Méthode non définie « findAllWithReservation ». Le nom de la méthode doit commencer par findBy, findOneBy ou countBy !
+BadMethodCallException
+dans C :\Users\PC\Desktop\omra-himra-site\vendor\doctrine\orm\src\EntityRepository.php (ligne 165)
+        if (str_starts_with($method, 'countBy')) {            return $this->resolveMagicCall('count', substr($method, 7), $arguments);        }        throw new BadMethodCallException(sprintf(            'Undefined method "%s". The method name must start with ' .            'either findBy, findOneBy or countBy!',            $method,        ));    }
+EntityRepository->__call()
+dans C :\Users\PC\Desktop\omra-himra-site\vendor\doctrine\doctrine-bundle\src\Repository\ServiceEntityRepositoryProxy.php (ligne 95)
+ServiceEntityRepositoryProxy->__call()
+dans C :\Users\PC\Desktop\omra-himra-site\src\Controller\Admin\PelerinController.php (ligne 21)
+PelerinController->index()
+en C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\http-kernel\HttpKernel.php (ligne 183)
+HttpKernel->handleRaw()
+dans C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\http-kernel\HttpKernel.php (ligne 76)
+Pseudony-Kernel->()
+en C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\http-kernel\Kernel.php (ligne 182)
+Poignée > noyau()
+dans C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\runtime\Runner\Symfony\HttpKernelRunner.php (ligne 35)
+HttpKernelRunner->run()
+dans C :\Users\PC\Desktop\omra-himra-site\vendor\autoload_runtime.php (ligne 29)
+require_once('C :\\Users\\PC\\Desktop\\omra-himra-site\\vendor\\autoload_runtime.php')
+dans C :\Users\PC\Desktop\omra-himra-site\public\index.php (ligne 5)
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du visa - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+    <div class="page-header">
+        <h1>🛂 Détails du visa</h1>
+        <p>Informations complètes sur le visa</p>
+    </div>
+
+    <div class="detail-container">
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2>Visa #{{ visa.numero ?: 'En attente' }}</h2>
+                <span class="status-badge status-{{ visa.statut }}">
+                    {{ visa.statut|title }}
+                </span>
+            </div>
+
+            <div class="detail-sections">
+                <div class="detail-section">
+                    <h3>👤 Informations du pèlerin</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Nom complet :</span>
+                            <span class="value">{{ visa.pelerin.prenom }} {{ visa.pelerin.nom }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Nationalité :</span>
+                            <span class="value">{{ visa.pelerin.nationalite }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Date de naissance :</span>
+                            <span class="value">{{ visa.pelerin.dateNaissance|date('d/m/Y') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Âge :</span>
+                            <span class="value">{{ visa.pelerin.age }} ans</span>
+                        </div>
+                        {% if visa.pelerin.passportNumber %}
+                            <div class="detail-item">
+                                <span class="label">Numéro de passeport :</span>
+                                <span class="value">{{ visa.pelerin.passportNumber }}</span>
+                            </div>
+                        {% endif %}
+                        {% if visa.pelerin.passportExpiry %}
+                            <div class="detail-item">
+                                <span class="label">Expiration passeport :</span>
+                                <span class="value">{{ visa.pelerin.passportExpiry|date('d/m/Y') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>🛂 Informations du visa</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Numéro de visa :</span>
+                            <span class="value">{{ visa.numero ?: 'Non attribué' }}</span>
+                        </div>
+                        {% if visa.dateEmission %}
+                            <div class="detail-item">
+                                <span class="label">Date d'émission :</span>
+                                <span class="value">{{ visa.dateEmission|date('d/m/Y') }}</span>
+                            </div>
+                        {% endif %}
+                        {% if visa.dateExpiration %}
+                            <div class="detail-item">
+                                <span class="label">Date d'expiration :</span>
+                                <span class="value">{{ visa.dateExpiration|date('d/m/Y') }}</span>
+                            </div>
+                        {% endif %}
+                        <div class="detail-item">
+                            <span class="label">Statut :</span>
+                            <span class="value status-{{ visa.statut }}">{{ visa.statut|title }}</span>
+                        </div>
+                        {% if visa.remarques %}
+                            <div class="detail-item">
+                                <span class="label">Remarques :</span>
+                                <span class="value">{{ visa.remarques }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>📋 Informations de la réservation</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Code dossier :</span>
+                            <span class="value">#{{ visa.pelerin.reservation.codeDossier }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Package :</span>
+                            <span class="value">{{ visa.pelerin.reservation.depart.package.titre }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Date de départ :</span>
+                            <span class="value">{{ visa.pelerin.reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Statut réservation :</span>
+                            <span class="value status-{{ visa.pelerin.reservation.statut }}">
+                                {{ visa.pelerin.reservation.statut|title }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if visa.pelerin.documents is not empty %}
+                    <div class="detail-section">
+                        <h3>📄 Documents associés</h3>
+                        <div class="documents-grid">
+                            {% for document in visa.pelerin.documents %}
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <span class="document-type">{{ document.type|title }}</span>
+                                        <span class="document-status status-{{ document.statut }}">
+                                            {{ document.statut|title }}
+                                        </span>
+                                    </div>
+                                    {% if document.fichier %}
+                                        <a href="{{ asset('uploads/documents/' ~ document.fichier) }}" 
+                                           target="_blank" class="btn btn-small">
+                                            📄 Voir
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="detail-actions">
+                <a href="{{ path('app_admin_visas_index') }}" class="btn btn-secondary">
+                    ← Retour à la liste
+                </a>
+                <a href="{{ path('app_admin_visa_edit', {'id': visa.id}) }}" class="btn btn-primary">
+                    ✏️ Modifier
+                </a>
+                <form method="POST" action="{{ path('app_admin_visa_delete', {'id': visa.id}) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Supprimer ce visa ?')">
+                        🗑️ Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.detail-container {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.detail-header {
+    padding: 2rem;
+    background: #eff6ff;
+    border-bottom: 1px solid #bfdbfe;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-header h2 {
+    margin: 0;
+    color: #1e40af;
+    font-size: 2rem;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.status-en_attente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-en_cours {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-approuve {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-refuse {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.detail-sections {
+    padding: 2rem;
+}
+
+.detail-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.detail-section h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.value {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.documents-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.document-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.document-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.document-type {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.document-status {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+}
+
+.status-valide {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-en_attente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-refuse {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.btn-small {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.detail-actions {
+    padding: 2rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        padding: 1rem;
+    }
+    
+    .detail-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

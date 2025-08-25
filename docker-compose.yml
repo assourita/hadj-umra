@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # Application PHP-FPM
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: omra_himra_app
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    depends_on:
+      - database
+      - redis
+    environment:
+      - APP_ENV=dev
+      - DATABASE_URL=postgresql://omra_user:omra_password@database:5432/omra_himra_db?serverVersion=16&charset=utf8
+      - REDIS_URL=redis://redis:6379
+    networks:
+      - omra_network
+
+  # Serveur web Nginx
+  webserver:
+    image: nginx:alpine
+    container_name: omra_himra_nginx
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/sites/:/etc/nginx/sites-available/
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+    networks:
+      - omra_network
+
+  # Base de données PostgreSQL
+  database:
+    image: postgres:16-alpine
+    container_name: omra_himra_postgres
+    environment:
+      POSTGRES_DB: omra_himra_db
+      POSTGRES_USER: omra_user
+      POSTGRES_PASSWORD: omra_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - omra_network
+
+  # Redis pour cache et queues
+  redis:
+    image: redis:7-alpine
+    container_name: omra_himra_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - omra_network
+
+  # MinIO pour stockage S3-compatible
+  minio:
+    image: minio/minio:latest
+    container_name: omra_himra_minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    networks:
+      - omra_network
+
+  # MailHog pour tester les emails en développement
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: omra_himra_mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Interface web
+    networks:
+      - omra_network
+
+  # Adminer pour gérer la base de données
+  adminer:
+    image: adminer:latest
+    container_name: omra_himra_adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+    networks:
+      - omra_network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  omra_network:
+    driver: bridge 

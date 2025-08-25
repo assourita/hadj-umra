@@ -1,0 +1,483 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rapport Financier - Administration{% endblock %}
+
+{% block body %}
+<div class="admin-financial-report">
+    <div class="page-header">
+        <h1>💰 Rapport Financier</h1>
+        <p>Analysez les performances financières de votre agence</p>
+    </div>
+
+    <div class="content">
+        <div class="actions-bar">
+            <a href="{{ path('app_admin_reports_index') }}" class="btn btn-secondary">
+                ← Retour aux rapports
+            </a>
+            <a href="{{ path('app_admin_dashboard') }}" class="btn btn-secondary">
+                🏠 Tableau de bord
+            </a>
+        </div>
+
+        <!-- Statistiques financières -->
+        <div class="financial-stats">
+            <h2>📊 Aperçu financier</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3>{{ financial_stats.ca_confirme|default(0)|number_format(0, ',', ' ') }} XOF</h3>
+                        <p>CA confirmé</p>
+                        <small>{{ financial_stats.count_confirme|default(0) }} réservations</small>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3>{{ financial_stats.ca_en_attente|default(0)|number_format(0, ',', ' ') }} XOF</h3>
+                        <p>CA en attente</p>
+                        <small>{{ financial_stats.count_en_attente|default(0) }} réservations</small>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🎉</div>
+                    <div class="stat-content">
+                        <h3>{{ financial_stats.ca_complet|default(0)|number_format(0, ',', ' ') }} XOF</h3>
+                        <p>CA complet</p>
+                        <small>{{ financial_stats.count_complet|default(0) }} réservations</small>
+                    </div>
+                </div>
+                
+                <div class="stat-card total">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>{{ (financial_stats.ca_confirme|default(0) + financial_stats.ca_en_attente|default(0) + financial_stats.ca_complet|default(0))|number_format(0, ',', ' ') }} XOF</h3>
+                        <p>Total CA</p>
+                        <small>{{ (financial_stats.count_confirme|default(0) + financial_stats.count_en_attente|default(0) + financial_stats.count_complet|default(0)) }} réservations</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques et analyses -->
+        <div class="analysis-section">
+            <div class="analysis-grid">
+                <!-- Répartition par statut -->
+                <div class="analysis-card">
+                    <h3>📈 Répartition par statut</h3>
+                    <div class="chart-container">
+                        <div class="pie-chart">
+                            {% set total = financial_stats.count_confirme|default(0) + financial_stats.count_en_attente|default(0) + financial_stats.count_complet|default(0) %}
+                            {% if total > 0 %}
+                                <div class="pie-segment confirmed" style="--percentage: {{ (financial_stats.count_confirme|default(0) / total * 100)|round(1) }}%">
+                                    <span class="segment-label">Confirmées</span>
+                                </div>
+                                <div class="pie-segment pending" style="--percentage: {{ (financial_stats.count_en_attente|default(0) / total * 100)|round(1) }}%">
+                                    <span class="segment-label">En attente</span>
+                                </div>
+                                <div class="pie-segment complete" style="--percentage: {{ (financial_stats.count_complet|default(0) / total * 100)|round(1) }}%">
+                                    <span class="segment-label">Complètes</span>
+                                </div>
+                            {% else %}
+                                <div class="no-data-chart">
+                                    <p>Aucune donnée disponible</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance par montant -->
+                <div class="analysis-card">
+                    <h3>💵 Performance par montant</h3>
+                    <div class="performance-bars">
+                        {% set ca_confirme = financial_stats.ca_confirme|default(0) %}
+                        {% set ca_en_attente = financial_stats.ca_en_attente|default(0) %}
+                        {% set ca_complet = financial_stats.ca_complet|default(0) %}
+                        {% set max_ca = ca_confirme > ca_en_attente ? (ca_confirme > ca_complet ? ca_confirme : ca_complet) : (ca_en_attente > ca_complet ? ca_en_attente : ca_complet) %}
+                        {% if max_ca > 0 %}
+                            <div class="performance-item">
+                                <div class="performance-label">Confirmé</div>
+                                <div class="performance-bar">
+                                    <div class="bar-fill confirmed" style="width: {{ (financial_stats.ca_confirme|default(0) / max_ca * 100)|round(1) }}%"></div>
+                                    <span class="bar-value">{{ financial_stats.ca_confirme|default(0)|number_format(0, ',', ' ') }} XOF</span>
+                                </div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="performance-label">En attente</div>
+                                <div class="performance-bar">
+                                    <div class="bar-fill pending" style="width: {{ (financial_stats.ca_en_attente|default(0) / max_ca * 100)|round(1) }}%"></div>
+                                    <span class="bar-value">{{ financial_stats.ca_en_attente|default(0)|number_format(0, ',', ' ') }} XOF</span>
+                                </div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="performance-label">Complet</div>
+                                <div class="performance-bar">
+                                    <div class="bar-fill complete" style="width: {{ (financial_stats.ca_complet|default(0) / max_ca * 100)|round(1) }}%"></div>
+                                    <span class="bar-value">{{ financial_stats.ca_complet|default(0)|number_format(0, ',', ' ') }} XOF</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="no-data">
+                                <p>Aucune donnée financière disponible</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommandations -->
+        <div class="recommendations-section">
+            <h2>💡 Recommandations</h2>
+            <div class="recommendations-grid">
+                <div class="recommendation-card">
+                    <div class="recommendation-icon">📊</div>
+                    <div class="recommendation-content">
+                        <h3>Suivi des paiements</h3>
+                        <p>Surveillez régulièrement les réservations en attente de paiement pour optimiser votre trésorerie.</p>
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <div class="recommendation-icon">🎯</div>
+                    <div class="recommendation-content">
+                        <h3>Objectifs de vente</h3>
+                        <p>Définissez des objectifs mensuels basés sur vos performances actuelles pour améliorer vos résultats.</p>
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <div class="recommendation-icon">📈</div>
+                    <div class="recommendation-content">
+                        <h3>Analyse des tendances</h3>
+                        <p>Analysez les tendances saisonnières pour optimiser vos offres et votre stratégie de prix.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-financial-report {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.page-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.actions-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.financial-stats {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.financial-stats h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card.total {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-left-color: white;
+}
+
+.stat-card.total .stat-content h3,
+.stat-card.total .stat-content p,
+.stat-card.total .stat-content small {
+    color: white;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+}
+
+.stat-card.total .stat-icon {
+    background: rgba(255,255,255,0.2);
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+
+.stat-content p {
+    margin: 0.25rem 0 0 0;
+    color: var(--color-gray);
+    font-weight: 600;
+}
+
+.stat-content small {
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.analysis-section {
+    margin-bottom: 2rem;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.analysis-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.analysis-card h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.pie-chart {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #28a745 0deg var(--percentage),
+        #ffc107 calc(var(--percentage) + 0deg) calc(var(--percentage) + var(--percentage)),
+        #17a2b8 calc(var(--percentage) * 2 + 0deg) 360deg
+    );
+}
+
+.pie-segment {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.segment-label {
+    position: absolute;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.no-data-chart {
+    text-align: center;
+    color: var(--color-gray);
+    font-style: italic;
+}
+
+.performance-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.performance-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.performance-label {
+    min-width: 100px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.performance-bar {
+    flex: 1;
+    height: 30px;
+    background: #f0f0f0;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 15px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.bar-fill.confirmed { background: #28a745; }
+.bar-fill.pending { background: #ffc107; }
+.bar-fill.complete { background: #17a2b8; }
+
+.bar-value {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.no-data {
+    text-align: center;
+    color: var(--color-gray);
+    font-style: italic;
+    padding: 2rem;
+}
+
+.recommendations-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.recommendations-section h2 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.recommendation-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.recommendation-icon {
+    font-size: 2rem;
+    min-width: 3rem;
+}
+
+.recommendation-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.125rem;
+}
+
+.recommendation-content p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .admin-financial-report {
+        padding: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .actions-bar {
+        flex-direction: column;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .performance-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .performance-label {
+        min-width: auto;
+    }
+}
+</style>
+{% endblock %} 
