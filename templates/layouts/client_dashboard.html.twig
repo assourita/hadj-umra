@@ -60,6 +60,12 @@
                             <span>Mes Documents</span>
                         </a>
                     </li>
+                    <li class="{{ app.request.get('_route') starts with 'app_client_messages' ? 'active' : '' }}">
+                        <a href="{{ path('app_client_messages') }}">
+                            <i class="icon">💬</i>
+                            <span>Mes Messages</span>
+                        </a>
+                    </li>
                     <li class="{{ app.request.get('_route') starts with 'app_client_profile' ? 'active' : '' }}">
                         <a href="{{ path('app_client_profile_edit') }}">
                             <i class="icon">👤</i>
@@ -67,9 +73,27 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('app_home') }}">
+                        <a href="{{ path('app_packages_index') }}">
                             <i class="icon">🕌</i>
                             <span>Nouvelle réservation</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <h3>NAVIGATION EXTERNE</h3>
+                <ul>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li>
+                            <a href="{{ path('app_admin_dashboard') }}" target="_blank">
+                                <i class="icon">⚙️</i>
+                                <span>Dashboard Admin</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="{{ path('app_home') }}" target="_blank">
+                            <i class="icon">🏠</i>
+                            <span>Page d'accueil</span>
                         </a>
                     </li>
                 </ul>

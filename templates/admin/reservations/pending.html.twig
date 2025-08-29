@@ -20,7 +20,7 @@
             {% for reservation in reservations %}
                 <div class="reservation-card">
                     <div class="reservation-header">
-                        <h3>{{ reservation.package.titre }}</h3>
+                        <h3>{{ reservation.depart.package.titre }}</h3>
                         <span class="reservation-id">#{{ reservation.id }}</span>
                     </div>
                     
@@ -47,7 +47,7 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Montant total :</span>
-                            <span class="detail-value">{{ reservation.montantTotal|number_format(0, ',', ' ') }} {{ reservation.devise }}</span>
+                            <span class="detail-value">{{ reservation.total|number_format(0, ',', ' ') }} FCFA</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Statut :</span>
@@ -79,7 +79,7 @@
                             </form>
                         {% endif %}
                         {% if reservation.statut == 'en_attente_documents' %}
-                            <a href="{{ path('app_admin_reservation_documents', {'id': reservation.id}) }}" class="btn btn-primary btn-small">
+                            <a href="{{ path('app_admin_reservations_documents') }}" class="btn btn-primary btn-small">
                                 📄 Vérifier documents
                             </a>
                         {% endif %}

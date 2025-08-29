@@ -9,12 +9,53 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-###> phpunit/phpunit ###
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
 /phpunit.xml
-/.phpunit.cache/
-###< phpunit/phpunit ###
+###< symfony/phpunit-bridge ###
 
-###> symfony/asset-mapper ###
-/public/assets/
-/assets/vendor/
-###< symfony/asset-mapper ###
+###> IDE files ###
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+###< IDE files ###
+
+###> OS generated files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+###< OS generated files ###
+
+###> Logs ###
+*.log
+###< Logs ###
+
+###> Uploads ###
+/public/uploads/
+###< Uploads ###
+
+###> Cache ###
+/var/cache/
+###< Cache ###
+
+###> Database ###
+*.sqlite
+*.db
+###< Database ###
+
+###> Composer ###
+composer.phar
+###< Composer ###
+
+###> Node modules ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+###< Node modules ###

@@ -1,0 +1,104 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ciel avec nuages -->
+  <defs>
+    <linearGradient id="skyGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4169E1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="mosqueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DDD8C7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="domeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#32CD32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#228B22;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Ciel -->
+  <rect width="1200" height="800" fill="url(#skyGradient2)"/>
+  
+  <!-- Nuages -->
+  <g fill="white" opacity="0.8">
+    <ellipse cx="200" cy="100" rx="40" ry="20"/>
+    <ellipse cx="220" cy="110" rx="30" ry="15"/>
+    <ellipse cx="180" cy="110" rx="25" ry="12"/>
+    
+    <ellipse cx="800" cy="80" rx="50" ry="25"/>
+    <ellipse cx="825" cy="90" rx="35" ry="18"/>
+    <ellipse cx="775" cy="90" rx="30" ry="15"/>
+  </g>
+  
+  <!-- Sol -->
+  <rect x="0" y="650" width="1200" height="150" fill="#F5F5DC"/>
+  
+  <!-- Corps principal de la mosquée -->
+  <rect x="300" y="400" width="600" height="250" fill="url(#mosqueGradient)" stroke="#D2B48C" stroke-width="2"/>
+  
+  <!-- Dôme vert principal -->
+  <ellipse cx="600" cy="400" rx="120" ry="80" fill="url(#domeGradient)" stroke="#228B22" stroke-width="3"/>
+  
+  <!-- Croissant au sommet -->
+  <g transform="translate(600, 340)">
+    <path d="M -8,-10 C -8,-15 -3,-18 2,-16 C -2,-20 -10,-18 -10,-12 C -10,-8 -8,-10 -8,-10" fill="#FFD700"/>
+  </g>
+  
+  <!-- Minarets -->
+  <g>
+    <!-- Minaret gauche -->
+    <rect x="350" y="200" width="40" height="400" fill="url(#mosqueGradient)" stroke="#D2B48C" stroke-width="2"/>
+    <rect x="340" y="180" width="60" height="30" fill="#DAA520"/>
+    <ellipse cx="370" cy="180" rx="25" ry="15" fill="url(#domeGradient)"/>
+    <path d="M 365,170 C 365,165 370,162 375,164 C 370,160 362,162 362,168 C 362,172 365,170 365,170" fill="#FFD700"/>
+    
+    <!-- Minaret droit -->
+    <rect x="810" y="180" width="40" height="420" fill="url(#mosqueGradient)" stroke="#D2B48C" stroke-width="2"/>
+    <rect x="800" y="160" width="60" height="30" fill="#DAA520"/>
+    <ellipse cx="830" cy="160" rx="25" ry="15" fill="url(#domeGradient)"/>
+    <path d="M 825,150 C 825,145 830,142 835,144 C 830,140 822,142 822,148 C 822,152 825,150 825,150" fill="#FFD700"/>
+  </g>
+  
+  <!-- Arches de la mosquée -->
+  <g fill="none" stroke="#DAA520" stroke-width="4">
+    <path d="M 350 500 Q 425 450 500 500"/>
+    <path d="M 500 500 Q 575 450 650 500"/>
+    <path d="M 650 500 Q 725 450 800 500"/>
+    <path d="M 800 500 Q 875 450 950 500"/>
+  </g>
+  
+  <!-- Colonnes -->
+  <g fill="#D2B48C">
+    <rect x="420" y="500" width="10" height="150"/>
+    <rect x="570" y="500" width="10" height="150"/>
+    <rect x="720" y="500" width="10" height="150"/>
+    <rect x="870" y="500" width="10" height="150"/>
+  </g>
+  
+  <!-- Détails décoratifs -->
+  <g fill="#DAA520">
+    <rect x="320" y="420" width="560" height="5"/>
+    <rect x="320" y="440" width="560" height="3"/>
+    <rect x="320" y="460" width="560" height="3"/>
+  </g>
+  
+  <!-- Palmiers -->
+  <g transform="translate(100, 500)">
+    <rect x="0" y="0" width="15" height="150" fill="#8B4513"/>
+    <g fill="#228B22">
+      <ellipse cx="7" cy="-10" rx="40" ry="15" transform="rotate(-30)"/>
+      <ellipse cx="7" cy="-10" rx="40" ry="15" transform="rotate(0)"/>
+      <ellipse cx="7" cy="-10" rx="40" ry="15" transform="rotate(30)"/>
+      <ellipse cx="7" cy="-10" rx="40" ry="15" transform="rotate(60)"/>
+    </g>
+  </g>
+  
+  <g transform="translate(1050, 480)">
+    <rect x="0" y="0" width="18" height="170" fill="#8B4513"/>
+    <g fill="#228B22">
+      <ellipse cx="9" cy="-15" rx="45" ry="18" transform="rotate(-25)"/>
+      <ellipse cx="9" cy="-15" rx="45" ry="18" transform="rotate(5)"/>
+      <ellipse cx="9" cy="-15" rx="45" ry="18" transform="rotate(35)"/>
+      <ellipse cx="9" cy="-15" rx="45" ry="18" transform="rotate(65)"/>
+    </g>
+  </g>
+</svg>

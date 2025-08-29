@@ -1,0 +1,436 @@
+{% extends 'layouts/admin_dashboard.html.twig' %}
+
+{% block title %}Toutes les Réservations{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>📋 Toutes les Réservations</h1>
+        <p>Gérez toutes les réservations de tous les statuts</p>
+    </div>
+
+    {% if reservations is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>Aucune réservation trouvée</h3>
+            <p>Aucune réservation n'a été créée pour le moment.</p>
+        </div>
+    {% else %}
+        <div class="reservations-container">
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label for="status-filter">Filtrer par statut :</label>
+                    <select id="status-filter" class="form-control">
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente_approbation">En attente d'approbation</option>
+                        <option value="en_attente_documents">En attente de documents</option>
+                        <option value="en_attente_paiement">En attente de paiement</option>
+                        <option value="confirmee">Confirmée</option>
+                        <option value="annulee">Annulée</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="reservations-grid">
+                {% for reservation in reservations %}
+                    <div class="reservation-card" data-status="{{ reservation.statut }}">
+                        <div class="reservation-header">
+                            <h3>Réservation #{{ reservation.codeDossier }}</h3>
+                            <span class="status-badge status-{{ reservation.statut }}">
+                                {% if reservation.statut == 'en_attente_approbation' %}
+                                    ⏳ En attente d'approbation
+                                {% elseif reservation.statut == 'en_attente_documents' %}
+                                    📄 En attente de documents
+                                {% elseif reservation.statut == 'en_attente_paiement' %}
+                                    💳 En attente de paiement
+                                {% elseif reservation.statut == 'confirmee' %}
+                                    ✅ Confirmée
+                                {% elseif reservation.statut == 'annulee' %}
+                                    ❌ Annulée
+                                {% else %}
+                                    {{ reservation.statut|title }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="reservation-details">
+                            <div class="detail-row">
+                                <span class="label">Client :</span>
+                                <span class="value">{{ reservation.user.prenom }} {{ reservation.user.nom }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Package :</span>
+                                <span class="value">{{ reservation.depart.package.titre }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Départ :</span>
+                                <span class="value">{{ reservation.depart.dateDepart|date('d/m/Y') }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Pèlerins :</span>
+                                <span class="value">{{ reservation.nbPelerins }} personne(s)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Total :</span>
+                                <span class="value price">{{ reservation.total|number_format(0, ',', ' ') }} XOF</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Date de création :</span>
+                                <span class="value">{{ reservation.createdAt|date('d/m/Y H:i') }}</span>
+                            </div>
+                            {% if reservation.dateLimiteDocument %}
+                                <div class="detail-row">
+                                    <span class="label">Date limite documents :</span>
+                                    <span class="value">
+                                        {{ reservation.dateLimiteDocument|date('d/m/Y') }}
+                                        {% set daysLeft = reservation.dateLimiteDocument|date('U') - "now"|date('U') %}
+                                        {% if daysLeft > 0 %}
+                                            <span class="days-left">({{ (daysLeft / 86400)|round(0, 'floor') }} jours)</span>
+                                        {% else %}
+                                            <span class="deadline-passed">(Dépassée)</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="reservation-actions">
+                            <a href="{{ path('app_admin_reservation_show', {'id': reservation.id}) }}" class="btn btn-secondary btn-small">
+                                👁️ Voir détails
+                            </a>
+                            
+                            {% if reservation.statut == 'en_attente_approbation' %}
+                                <form method="POST" action="{{ path('app_admin_reservation_approve', {'id': reservation.id}) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-success btn-small" onclick="return confirm('Approuver cette réservation ?')">
+                                        ✅ Approuver
+                                    </button>
+                                </form>
+                                <button type="button" class="btn btn-danger btn-small" onclick="showRejectModal({{ reservation.id }})">
+                                    ❌ Rejeter
+                                </button>
+                            {% elseif reservation.statut == 'en_attente_documents' %}
+                                <form method="POST" action="{{ path('app_admin_reservation_validate_documents', {'id': reservation.id}) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-success btn-small" onclick="return confirm('Valider les documents de cette réservation ?')">
+                                        ✅ Valider documents
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal pour rejeter une réservation -->
+<div id="rejectModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3>Rejeter la réservation</h3>
+        <form id="rejectForm" method="POST">
+            <div class="form-group">
+                <label for="reject-reason">Raison du rejet :</label>
+                <textarea id="reject-reason" name="raison" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Annuler</button>
+                <button type="submit" class="btn btn-danger">Rejeter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.filters-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-control {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+.reservations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.reservation-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.reservation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.reservation-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-en_attente_approbation {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-en_attente_documents {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-en_attente_paiement {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.status-confirmee {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-annulee {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.reservation-details {
+    margin-bottom: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f9fafb;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row .label {
+    font-weight: 500;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.detail-row .value {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.detail-row .price {
+    color: #059669;
+    font-weight: 600;
+}
+
+.days-left {
+    color: #059669;
+    font-size: 0.75rem;
+}
+
+.deadline-passed {
+    color: #dc2626;
+    font-size: 0.75rem;
+}
+
+.reservation-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-content h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+</style>
+
+<script>
+// Filtrage par statut
+document.getElementById('status-filter').addEventListener('change', function() {
+    const selectedStatus = this.value;
+    const cards = document.querySelectorAll('.reservation-card');
+    
+    cards.forEach(card => {
+        const cardStatus = card.dataset.status;
+        if (!selectedStatus || cardStatus === selectedStatus) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// Modal pour rejeter une réservation
+function showRejectModal(reservationId) {
+    const modal = document.getElementById('rejectModal');
+    const form = document.getElementById('rejectForm');
+    form.action = `/admin/reservations/${reservationId}/reject`;
+    modal.style.display = 'flex';
+}
+
+function closeRejectModal() {
+    const modal = document.getElementById('rejectModal');
+    modal.style.display = 'none';
+    document.getElementById('reject-reason').value = '';
+}
+
+// Fermer le modal en cliquant à l'extérieur
+document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeRejectModal();
+    }
+});
+</script>
+{% endblock %}

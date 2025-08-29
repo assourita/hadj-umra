@@ -211,10 +211,27 @@
         <div class="map-section">
             <h2>🗺️ Notre localisation</h2>
             <div class="map-container">
-                <div class="map-placeholder">
-                    <div class="map-icon">🗺️</div>
-                    <p>Carte interactive</p>
-                    <small>123 Avenue de la Paix, Bamako, Mali</small>
+                <div id="map" class="interactive-map">
+                    <div class="map-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Chargement de la carte...</p>
+                    </div>
+                </div>
+                <div class="map-info">
+                    <div class="location-details">
+                        <h3>📍 Notre adresse</h3>
+                        <p><strong>Dèmè Travel</strong></p>
+                        <p>123 Avenue de la Paix</p>
+                        <p>Bamako, Mali</p>
+                        <p><strong>Téléphone :</strong> +223 XX XX XX XX</p>
+                        <p><strong>Email :</strong> contact@demetravel.com</p>
+                    </div>
+                    <div class="server-info">
+                        <h3>🌐 Serveur actuel</h3>
+                        <p><strong>IP :</strong> <span id="server-ip">Chargement...</span></p>
+                        <p><strong>Localisation :</strong> <span id="server-location">Chargement...</span></p>
+                        <p><strong>Pays :</strong> <span id="server-country">Chargement...</span></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -452,29 +469,87 @@ textarea.form-control {
     overflow: hidden;
 }
 
-.map-placeholder {
+.interactive-map {
     height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: white;
+    position: relative;
+    background: #f8f9fa;
 }
 
-.map-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+.map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--color-primary);
 }
 
-.map-placeholder p {
-    margin: 0 0 0.5rem 0;
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.map-info {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: white;
+}
+
+.location-details h3,
+.server-info h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
     font-size: 1.25rem;
-    font-weight: 600;
 }
 
-.map-placeholder small {
-    opacity: 0.8;
+.location-details p,
+.server-info p {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-gray);
+}
+
+.location-details strong,
+.server-info strong {
+    color: var(--color-primary);
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 0.5rem;
+}
+
+/* Styles pour la carte Leaflet */
+.leaflet-container {
+    border-radius: 0.5rem;
+}
+
+.leaflet-popup-content {
+    font-family: var(--font-body);
+}
+
+.leaflet-popup-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.leaflet-popup-content p {
+    margin: 0 0 0.25rem 0;
+    color: var(--color-gray);
+    font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
@@ -506,6 +581,131 @@ textarea.form-control {
     
     .faq-grid {
         grid-template-columns: 1fr;
+    }
+
+    .map-info {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Coordonnées par défaut (Bamako, Mali)
+    const defaultLat = 12.6392;
+    const defaultLng = -8.0029;
+    
+    // Initialiser la carte
+    const map = L.map('map').setView([defaultLat, defaultLng], 13);
+    
+    // Ajouter la couche de tuiles OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Marqueur pour Dèmè Travel
+    const demetravelMarker = L.marker([defaultLat, defaultLng]).addTo(map);
+    demetravelMarker.bindPopup(`
+        <div style="text-align: center;">
+            <h3>🏢 Dèmè Travel</h3>
+            <p><strong>Agence de voyage</strong></p>
+            <p>123 Avenue de la Paix</p>
+            <p>Bamako, Mali</p>
+            <p>📞 +223 XX XX XX XX</p>
+            <p>✉️ contact@demetravel.com</p>
+        </div>
+    `);
+    
+    // Obtenir les informations du serveur
+    getServerInfo();
+    
+    // Fonction pour obtenir les informations du serveur
+    async function getServerInfo() {
+        try {
+            // Obtenir l'IP du serveur
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            const serverIP = data.ip;
+            
+            document.getElementById('server-ip').textContent = serverIP;
+            
+            // Obtenir les informations de géolocalisation
+            const geoResponse = await fetch(`https://ipapi.co/${serverIP}/json/`);
+            const geoData = await geoResponse.json();
+            
+            if (geoData.latitude && geoData.longitude) {
+                // Ajouter un marqueur pour le serveur
+                const serverMarker = L.marker([geoData.latitude, geoData.longitude], {
+                    icon: L.divIcon({
+                        className: 'server-marker',
+                        html: '🖥️',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                }).addTo(map);
+                
+                serverMarker.bindPopup(`
+                    <div style="text-align: center;">
+                        <h3>🖥️ Serveur Dèmè Travel</h3>
+                        <p><strong>IP :</strong> ${serverIP}</p>
+                        <p><strong>Pays :</strong> ${geoData.country_name || 'Inconnu'}</p>
+                        <p><strong>Ville :</strong> ${geoData.city || 'Inconnue'}</p>
+                        <p><strong>Région :</strong> ${geoData.region || 'Inconnue'}</p>
+                    </div>
+                `);
+                
+                // Ajuster la vue pour voir les deux marqueurs
+                const group = new L.featureGroup([demetravelMarker, serverMarker]);
+                map.fitBounds(group.getBounds().pad(0.1));
+                
+                // Mettre à jour les informations affichées
+                document.getElementById('server-location').textContent = 
+                    `${geoData.city || 'Inconnue'}, ${geoData.region || 'Inconnue'}`;
+                document.getElementById('server-country').textContent = 
+                    geoData.country_name || 'Inconnu';
+            } else {
+                document.getElementById('server-location').textContent = 'Localisation non disponible';
+                document.getElementById('server-country').textContent = 'Pays non disponible';
+            }
+            
+        } catch (error) {
+            console.error('Erreur lors de la récupération des informations du serveur:', error);
+            document.getElementById('server-ip').textContent = 'Non disponible';
+            document.getElementById('server-location').textContent = 'Non disponible';
+            document.getElementById('server-country').textContent = 'Non disponible';
+        }
+    }
+});
+</script>
+
+<style>
+.server-marker {
+    background: none;
+    border: none;
+    font-size: 24px;
+    text-align: center;
+    line-height: 30px;
+}
+
+@media (max-width: 768px) {
+    .map-info {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .interactive-map {
+        height: 300px;
+    }
+    
+    #map {
+        height: 300px;
     }
 }
 </style>

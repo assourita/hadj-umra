@@ -1,0 +1,81 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ciel dégradé -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4682B4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="kaabaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2C3E50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A252F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="floorGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E6E6C7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Ciel -->
+  <rect width="1200" height="800" fill="url(#skyGradient)"/>
+  
+  <!-- Sol en marbre -->
+  <rect x="0" y="600" width="1200" height="200" fill="url(#floorGradient)"/>
+  
+  <!-- Motifs géométriques du sol -->
+  <g stroke="#D3D3D3" stroke-width="2" fill="none">
+    <line x1="0" y1="650" x2="1200" y2="650"/>
+    <line x1="0" y1="700" x2="1200" y2="700"/>
+    <line x1="0" y1="750" x2="1200" y2="750"/>
+  </g>
+  
+  <!-- Kaaba -->
+  <g transform="translate(500, 300)">
+    <!-- Corps principal de la Kaaba -->
+    <rect x="0" y="0" width="200" height="250" fill="url(#kaabaGradient)" stroke="#000" stroke-width="3"/>
+    
+    <!-- Kiswa (tissu noir) avec motifs dorés -->
+    <rect x="10" y="10" width="180" height="230" fill="#000" opacity="0.9"/>
+    
+    <!-- Calligraphie dorée (stylisée) -->
+    <rect x="20" y="50" width="160" height="3" fill="#FFD700"/>
+    <rect x="30" y="80" width="140" height="2" fill="#FFD700"/>
+    <rect x="40" y="110" width="120" height="2" fill="#FFD700"/>
+    <rect x="30" y="140" width="140" height="2" fill="#FFD700"/>
+    <rect x="20" y="170" width="160" height="3" fill="#FFD700"/>
+    
+    <!-- Porte de la Kaaba -->
+    <rect x="85" y="180" width="30" height="50" fill="#B8860B" stroke="#DAA520" stroke-width="2"/>
+    <circle cx="110" cy="205" r="2" fill="#FFD700"/>
+  </g>
+  
+  <!-- Minarets en arrière-plan -->
+  <g transform="translate(200, 200)">
+    <rect x="0" y="0" width="30" height="300" fill="#D2B48C"/>
+    <rect x="5" y="280" width="20" height="15" fill="#DAA520"/>
+    <circle cx="15" cy="295" r="8" fill="#FFD700"/>
+  </g>
+  
+  <g transform="translate(900, 180)">
+    <rect x="0" y="0" width="35" height="320" fill="#D2B48C"/>
+    <rect x="5" y="300" width="25" height="18" fill="#DAA520"/>
+    <circle cx="17" cy="318" r="10" fill="#FFD700"/>
+  </g>
+  
+  <!-- Pèlerins (silhouettes) -->
+  <g fill="#2C3E50" opacity="0.6">
+    <circle cx="300" cy="580" r="8"/>
+    <rect x="295" y="588" width="10" height="20"/>
+    
+    <circle cx="400" cy="585" r="7"/>
+    <rect x="396" y="592" width="8" height="18"/>
+    
+    <circle cx="750" cy="582" r="9"/>
+    <rect x="745" y="591" width="10" height="22"/>
+  </g>
+  
+  <!-- Lumière divine -->
+  <g fill="#FFD700" opacity="0.3">
+    <polygon points="600,0 620,100 580,100"/>
+    <polygon points="610,0 625,80 595,80"/>
+  </g>
+</svg>

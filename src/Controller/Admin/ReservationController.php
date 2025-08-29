@@ -100,7 +100,7 @@ class ReservationController extends AbstractController
         }
 
         // Vérifier que tous les documents obligatoires sont fournis
-        $documentsRequis = $reservation->getDepart()->getPackage()->getDocumentsRequis();
+        $documentsRequis = $reservation->getDepart()->getPackage()->getDocumentsRequis() ?? [];
         $documentsFournis = [];
         
         foreach ($reservation->getPelerins() as $pelerin) {

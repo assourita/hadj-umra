@@ -41,9 +41,9 @@ class TarifController extends AbstractController
             $reduction = $request->request->get('reduction');
             $isActive = $request->request->has('is_active');
 
-            $tarif->setPrix((float) $prix);
-            $tarif->setReduction((float) $reduction);
-            $tarif->setIsActive($isActive);
+            $tarif->setPrixBase((string) $prix);
+            $tarif->setReduction($reduction ? (string) $reduction : null);
+            $tarif->setActive($isActive);
 
             $entityManager->flush();
 

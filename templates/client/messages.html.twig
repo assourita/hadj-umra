@@ -1,0 +1,633 @@
+{% extends 'layouts/client_dashboard.html.twig' %}
+
+{% block title %}Mes Messages{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>💬 Mes Messages</h1>
+            <p>Consultez vos messages envoyés et les réponses reçues</p>
+        </div>
+        
+        <div class="header-actions">
+            <a href="{{ path('app_contact') }}" class="btn btn-primary">
+                <i class="icon">📤</i>
+                Nouveau message
+            </a>
+        </div>
+    </div>
+
+    <div class="messages-container">
+        {% if messages is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">💬</div>
+                <h3>Aucun message trouvé</h3>
+                <p>Vous n'avez pas encore envoyé de messages.</p>
+                
+                <!-- Debug information -->
+                {% if debugInfo is defined %}
+                    <div class="debug-info" style="background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; text-align: left;">
+                        <h4>🔍 Informations de debug :</h4>
+                        <p><strong>Email recherché :</strong> {{ debugInfo.user_email }}</p>
+                        <p><strong>Messages trouvés :</strong> {{ debugInfo.messages_found }}</p>
+                        <p><strong>Tous les messages en base :</strong></p>
+                        <ul style="list-style: none; padding: 0;">
+                            {% for msg in debugInfo.all_messages_in_db %}
+                                <li style="padding: 0.25rem 0; border-bottom: 1px solid #e5e7eb;">
+                                    <strong>{{ msg.email }}</strong> - {{ msg.nom }} - {{ msg.sujet }} ({{ msg.createdAt|date('d/m/Y H:i') }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <a href="{{ path('app_contact') }}" class="btn btn-primary">
+                    <i class="icon">📤</i>
+                    Envoyer un message
+                </a>
+            </div>
+        {% else %}
+            <div class="messages-grid">
+                {% for message in messages %}
+                    <div class="message-card" 
+                         data-message-id="{{ message.id }}"
+                         data-message-sujet="{{ message.sujet|e('html_attr') }}"
+                         data-message-content="{{ message.message|e('html_attr') }}"
+                         data-message-date="{{ message.createdAt|date('d/m/Y H:i') }}"
+                         data-message-statut="{{ message.statut }}"
+                         data-message-reponse="{{ message.reponse|e('html_attr') }}"
+                         data-message-reponse-date="{{ message.reponduAt ? message.reponduAt|date('d/m/Y H:i') : '' }}"
+                         data-message-reponse-par="{{ message.reponduPar|e('html_attr') }}">
+                        <div class="message-header">
+                            <div class="message-info">
+                                <h3>{{ message.sujet }}</h3>
+                                <span class="message-date">{{ message.createdAt|date('d/m/Y H:i') }}</span>
+                            </div>
+                            <div class="message-status">
+                                <span class="status-badge status-{{ message.statut }}">
+                                    {% if message.statut == 'nouveau' %}
+                                        📝 Nouveau
+                                    {% elseif message.statut == 'en_cours' %}
+                                        ⏳ En cours
+                                    {% elseif message.statut == 'repondu' %}
+                                        ✅ Répondu
+                                    {% elseif message.statut == 'clos' %}
+                                        🔒 Clos
+                                    {% else %}
+                                        {{ message.statut|title }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="message-content">
+                            <div class="message-details">
+                                <div class="detail-row">
+                                    <span class="label">Sujet :</span>
+                                    <span class="value">{{ message.sujet }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Message :</span>
+                                    <span class="value">{{ message.message|length > 100 ? message.message|slice(0, 100) ~ '...' : message.message }}</span>
+                                </div>
+                                {% if message.pays %}
+                                    <div class="detail-row">
+                                        <span class="label">Pays :</span>
+                                        <span class="value">{{ message.pays }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if message.telephone %}
+                                    <div class="detail-row">
+                                        <span class="label">Téléphone :</span>
+                                        <span class="value">{{ message.telephone }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {% if message.reponse %}
+                                <div class="response-section">
+                                    <h4>📨 Réponse de Dèmè Travel</h4>
+                                    <div class="response-content">
+                                        <p>{{ message.reponse }}</p>
+                                        <div class="response-meta">
+                                            <small>
+                                                Répondu le {{ message.reponduAt|date('d/m/Y H:i') }}
+                                                {% if message.reponduPar %}
+                                                    par {{ message.reponduPar }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="no-response">
+                                    <p>⏳ Aucune réponse pour le moment</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="message-actions">
+                            <button type="button" class="btn btn-secondary btn-small" onclick="showMessageDetails({{ message.id }})">
+                                👁️ Voir détails
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal pour les détails du message -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modal-title">Détails du message</h3>
+            <span class="close" onclick="closeMessageModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="modal-content">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.header-content h1 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 2rem;
+}
+
+.header-content p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    margin: 0 0 2rem 0;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
+
+.messages-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.message-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.message-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+}
+
+.message-date {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-nouveau {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-en_cours {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-repondu {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-clos {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.message-content {
+    margin-bottom: 1.5rem;
+}
+
+.message-details {
+    margin-bottom: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f9fafb;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row .label {
+    font-weight: 500;
+    color: #6b7280;
+    font-size: 0.875rem;
+    min-width: 100px;
+}
+
+.detail-row .value {
+    color: #1f2937;
+    font-weight: 500;
+    text-align: right;
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.response-section {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border-left: 4px solid #3b82f6;
+}
+
+.response-section h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.response-content p {
+    margin: 0 0 0.5rem 0;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.response-meta {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+.no-response {
+    text-align: center;
+    padding: 1rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.message-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 0.75rem;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fafc;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+}
+
+.close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+}
+
+.close:hover {
+    color: #1f2937;
+    background: #e5e7eb;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Styles pour le contenu du modal */
+.message-details-modal {
+    max-width: 100%;
+}
+
+.message-header-modal {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.message-header-modal h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+.message-date-modal {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.message-body-modal,
+.response-body-modal {
+    margin-bottom: 2rem;
+}
+
+.message-body-modal h5,
+.response-body-modal h5 {
+    margin: 0 0 1rem 0;
+    color: #374151;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.message-text,
+.response-text {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #3b82f6;
+    line-height: 1.6;
+    color: #374151;
+    white-space: pre-wrap;
+}
+
+.response-text {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.response-meta {
+    margin-top: 0.75rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.no-response-modal {
+    text-align: center;
+    padding: 2rem;
+    background: #fef3c7;
+    border-radius: 0.5rem;
+    border: 1px solid #f59e0b;
+}
+
+.no-response-modal p {
+    margin: 0 0 0.5rem 0;
+    color: #92400e;
+    font-weight: 500;
+}
+
+.response-note {
+    font-size: 0.875rem;
+    color: #a16207;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .message-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .detail-row .value {
+        text-align: left;
+        margin-left: 0;
+    }
+}
+</style>
+
+<script>
+function showMessageDetails(messageId) {
+    // Trouver le message correspondant dans les données
+    const messageCard = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (!messageCard) return;
+    
+    // Extraire les données du message depuis les attributs data
+    const messageData = {
+        id: messageCard.dataset.messageId,
+        sujet: messageCard.dataset.messageSujet,
+        message: messageCard.dataset.messageContent,
+        date: messageCard.dataset.messageDate,
+        statut: messageCard.dataset.messageStatut,
+        reponse: messageCard.dataset.messageReponse,
+        reponseDate: messageCard.dataset.messageReponseDate,
+        reponsePar: messageCard.dataset.messageReponsePar
+    };
+    
+    const modal = document.getElementById('messageModal');
+    const modalContent = document.getElementById('modal-content');
+    
+    // Construire le contenu HTML du modal
+    let content = `
+        <div class="message-details-modal">
+            <div class="message-header-modal">
+                <h4>📧 ${messageData.sujet}</h4>
+                <span class="message-date-modal">Envoyé le ${messageData.date}</span>
+            </div>
+            
+            <div class="message-body-modal">
+                <h5>💬 Votre message :</h5>
+                <div class="message-text">
+                    ${messageData.message}
+                </div>
+            </div>
+    `;
+    
+    // Ajouter la réponse si elle existe
+    if (messageData.reponse && messageData.reponse !== 'null') {
+        content += `
+            <div class="response-body-modal">
+                <h5>📨 Réponse de Dèmè Travel :</h5>
+                <div class="response-text">
+                    ${messageData.reponse}
+                </div>
+                <div class="response-meta">
+                    <small>
+                        Répondu le ${messageData.reponseDate}
+                        ${messageData.reponsePar ? `par ${messageData.reponsePar}` : ''}
+                    </small>
+                </div>
+            </div>
+        `;
+    } else {
+        content += `
+            <div class="no-response-modal">
+                <p>⏳ Aucune réponse pour le moment</p>
+                <p class="response-note">Notre équipe traite votre demande et vous répondra dans les plus brefs délais.</p>
+            </div>
+        `;
+    }
+    
+    content += `
+        </div>
+    `;
+    
+    modalContent.innerHTML = content;
+    modal.style.display = 'flex';
+}
+
+function closeMessageModal() {
+    const modal = document.getElementById('messageModal');
+    modal.style.display = 'none';
+}
+
+// Fermer le modal en cliquant à l'extérieur
+document.getElementById('messageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeMessageModal();
+    }
+});
+
+// Fermer le modal avec la touche Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeMessageModal();
+    }
+});
+</script>
+{% endblock %}

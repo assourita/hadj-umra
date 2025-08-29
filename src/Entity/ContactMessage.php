@@ -36,6 +36,10 @@ class ContactMessage
     #[Assert\Email(message: 'Veuillez saisir un email valide')]
     private ?string $email = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $telephone = null;
 
@@ -100,6 +104,17 @@ class ContactMessage
     public function setEmail(string $email): static
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
         return $this;
     }
 

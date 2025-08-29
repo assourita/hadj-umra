@@ -51,4 +51,47 @@ class ContactMessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Recherche par code dossier
+     */
+    public function findByCodeDossier(string $codeDossier): ?Reservation
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.user', 'u')
+            ->leftJoin('r.depart', 'd')
+            ->leftJoin('d.package', 'p')
+            ->leftJoin('r.pelerins', 'pel')
+            ->leftJoin('r.paiements', 'pai')
+            ->addSelect('u', 'd', 'p', 'pel', 'pai')
+            ->andWhere('r.codeDossier = :code')
+            ->setParameter('code', $codeDossier)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Recherche les messages par email (insensible à la casse)
+     */
+    public function findByEmailInsensitive(string $email): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('LOWER(m.email) = LOWER(:email)')
+            ->setParameter('email', trim($email))
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Recherche tous les messages (pour debug)
+     */
+    public function findAllWithEmail(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('m.email, m.nom, m.sujet, m.createdAt')
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

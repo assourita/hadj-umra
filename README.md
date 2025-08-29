@@ -1,307 +1,210 @@
-# Omra Himra - Site de Réservation
+# 🕌 Dèmè Travel - Agence de Pèlerinage
 
-Site web professionnel de vente et gestion de voyages Omra/Himra développé avec Symfony 7.3.
+Agence de voyage spécialisée dans l'organisation de pèlerinages Umra et Hadj.
 
-## 📋 Fonctionnalités
+## 📋 Description
 
-### MVP (Version 1.0)
-- ✅ **Authentification & Sécurité** : Inscription, connexion, gestion des rôles
-- ✅ **Catalogue & Packages** : CRUD packages, gestion des départs, tarifs par chambre
-- ✅ **Réservation** : Wizard de réservation en 3 étapes, génération code dossier
-- ✅ **Espace Client** : Dashboard, upload documents, suivi réservations
-- ✅ **Paiement** : Intégration Stripe, gestion acompte/solde
-- ✅ **Back-office** : Dashboard admin, gestion dossiers, exports
-- ✅ **API REST** : Endpoints pour intégrations futures
+Dèmè Travel est une application web moderne développée avec Symfony 7.3, dédiée à la gestion complète des pèlerinages vers les lieux saints de l'Islam. L'application offre une interface complète pour les administrateurs et les clients.
 
-### Fonctionnalités Avancées (V2)
-- 🔄 **Mobile Money** : Orange Money, MTN, Moov
-- 🔄 **Multi-devises** : XOF, EUR, USD, SAR
-- 🔄 **PWA** : Application web progressive
-- 🔄 **WhatsApp API** : Notifications automatisées
+## ✨ Fonctionnalités Principales
 
-## 🚀 Installation
+### 🏢 Administration
+- **📊 Dashboard complet** avec statistiques en temps réel
+- **🕌 Gestion des packages** (création, modification, suppression)
+- **✈️ Gestion des départs** avec quotas et disponibilités
+- **💰 Gestion des tarifs** par type de chambre
+- **📋 Gestion des réservations** avec workflow complet
+- **👥 Gestion des utilisateurs** et pèlerins
+- **📄 Gestion des documents** requis
+- **💬 Gestion des messages** de contact
+- **📊 Rapports** financiers et statistiques
+
+### 👤 Espace Client
+- **📊 Dashboard personnel** avec réservations
+- **📋 Suivi des réservations** en temps réel
+- **📄 Gestion des documents** requis
+- **💬 Messagerie** avec l'équipe
+- **👤 Profil utilisateur** personnalisable
+
+### 🌐 Site Public
+- **🏠 Page d'accueil** attractive
+- **🕌 Catalogue des packages** avec recherche
+- **📞 Formulaire de contact** intégré
+- **🗺️ Carte interactive** avec localisation
+- **❓ FAQ** complète
+
+## 🛠️ Technologies Utilisées
+
+- **Backend :** Symfony 7.3, PHP 8.2+
+- **Base de données :** PostgreSQL / MySQL
+- **Frontend :** Twig, JavaScript, CSS3
+- **Cartes :** Leaflet.js (OpenStreetMap)
+- **Validation :** Symfony Validator
+- **Sécurité :** Symfony Security Bundle
+
+## 📦 Installation
 
 ### Prérequis
-- PHP 8.2+
+- PHP 8.2 ou supérieur
 - Composer
-- Docker & Docker Compose
-- Node.js (pour les assets)
+- PostgreSQL ou MySQL
+- Symfony CLI (optionnel)
 
-### Installation avec Docker (Recommandé)
+### Étapes d'installation
 
-1. **Cloner le projet**
+1. **Cloner le repository**
 ```bash
-git clone https://github.com/votre-repo/omra-himra-site.git
-cd omra-himra-site
+git clone https://github.com/assourita/hadj-umra.git
+cd hadj-umra
 ```
 
-2. **Configurer l'environnement**
-```bash
-cp .env .env.local
-# Éditer .env.local avec vos configurations
-```
-
-3. **Démarrer les services**
-```bash
-docker-compose up -d
-```
-
-4. **Installer les dépendances**
-```bash
-docker-compose exec app composer install
-```
-
-5. **Créer la base de données**
-```bash
-docker-compose exec app php bin/console doctrine:database:create
-docker-compose exec app php bin/console doctrine:migrations:migrate
-```
-
-6. **Charger les données de test**
-```bash
-docker-compose exec app php bin/console doctrine:fixtures:load
-```
-
-### Installation Manuelle
-
-1. **Installer les dépendances**
+2. **Installer les dépendances**
 ```bash
 composer install
-npm install
 ```
 
-2. **Configurer la base de données**
+3. **Configurer la base de données**
 ```bash
-# Créer la base PostgreSQL
-createdb omra_himra_db
+# Copier le fichier d'environnement
+cp .env .env.local
 
-# Configurer .env.local
-DATABASE_URL="postgresql://user:password@127.0.0.1:5432/omra_himra_db"
+# Modifier .env.local avec vos paramètres de base de données
+DATABASE_URL="postgresql://user:password@localhost:5432/omra"
 ```
 
-3. **Migrations et fixtures**
+4. **Créer la base de données et exécuter les migrations**
 ```bash
+php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
-php bin/console doctrine:fixtures:load
 ```
 
-4. **Démarrer le serveur**
+5. **Créer un utilisateur administrateur**
+```bash
+php bin/console app:create-admin
+```
+
+6. **Ajouter des données de test (optionnel)**
+```bash
+php bin/console app:add-default-images-to-packages
+php bin/console app:add-package-images
+```
+
+7. **Démarrer le serveur de développement**
 ```bash
 symfony server:start
-```
-
-## 🏗️ Architecture
-
-### Structure du Projet
-```
-src/
-├── Controller/          # Contrôleurs web et API
-│   ├── Api/            # Contrôleurs API REST
-│   ├── Admin/          # Back-office administration
-│   └── ...
-├── Entity/             # Entités Doctrine
-├── Repository/         # Repositories personnalisés
-├── Service/            # Services métier
-└── ...
-
-templates/
-├── base.html.twig      # Template de base
-├── home/               # Pages publiques
-├── package/            # Catalogue packages
-├── reservation/        # Wizard réservation
-├── client/             # Espace client
-├── admin/              # Back-office
-└── security/           # Authentification
-
-config/
-├── packages/           # Configuration Symfony
-├── routes/             # Routes
-└── ...
-```
-
-### Modèle de Données
-
-```mermaid
-erDiagram
-    User ||--o{ Reservation : "fait"
-    Package ||--o{ Depart : "a"
-    Depart ||--o{ Tarif : "a"
-    Depart ||--o{ Reservation : "pour"
-    Reservation ||--o{ Pelerin : "contient"
-    Reservation ||--o{ Paiement : "a"
-    Pelerin ||--o{ Document : "a"
-    Pelerin ||--o| Visa : "a"
-    Pelerin ||--o| Billet : "a"
+# ou
+php -S localhost:8000 -t public/
 ```
 
 ## 🔧 Configuration
 
-### Variables d'Environnement
-
-```bash
+### Variables d'environnement importantes
+```env
 # Base de données
-DATABASE_URL="postgresql://user:pass@host:5432/db"
+DATABASE_URL="postgresql://user:password@localhost:5432/omra"
 
-# Stripe
-STRIPE_PUBLIC_KEY=pk_test_...
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+# Sécurité
+APP_SECRET="votre-secret-ici"
 
-# Email
-MAILER_DSN=smtp://localhost:1025
-
-# Upload
-UPLOAD_PATH=%kernel.project_dir%/public/uploads
+# Uploads
+UPLOAD_DIR="public/uploads/"
 ```
 
-### Rôles Utilisateurs
-
-- **ROLE_USER** : Client/Pèlerin
-- **ROLE_GUIDE** : Guide/Accompagnateur
-- **ROLE_COMPTABLE** : Comptable
-- **ROLE_ADMIN** : Responsable Agence
-- **ROLE_SUPER_ADMIN** : Super Administrateur
-
-## 📡 API Endpoints
-
-### Packages
-- `GET /api/packages` - Liste des packages avec filtres
-- `GET /api/packages/{slug}` - Détail d'un package
-- `GET /api/packages/search?q=term` - Recherche packages
-
-### Départs
-- `GET /api/departs/{id}` - Détail d'un départ
-
-### Réservations
-- `POST /api/reservations` - Créer une réservation
-- `GET /api/reservations/{id}` - Détail réservation
-- `POST /api/reservations/calculate` - Calculer prix
-
-### Paiements
-- `POST /api/payments/intent` - Créer Payment Intent Stripe
-- `POST /api/payments/webhook` - Webhook Stripe
-
-### Documents
-- `POST /api/documents` - Upload document
-
-## 🧪 Tests
-
-### Tests Unitaires
+### Permissions des dossiers
 ```bash
-php bin/phpunit tests/Unit/
+chmod -R 755 var/
+chmod -R 755 public/uploads/
 ```
 
-### Tests Fonctionnels
-```bash
-php bin/phpunit tests/Functional/
-```
+## 📁 Structure du Projet
 
-### Tests d'Intégration
-```bash
-php bin/phpunit tests/Integration/
+```
+hadj-umra/
+├── src/
+│   ├── Controller/          # Contrôleurs
+│   ├── Entity/             # Entités Doctrine
+│   ├── Repository/         # Repositories
+│   ├── Service/            # Services métier
+│   └── Command/            # Commandes console
+├── templates/              # Templates Twig
+│   ├── admin/             # Interface admin
+│   ├── client/            # Interface client
+│   └── home/              # Pages publiques
+├── public/                # Fichiers publics
+│   ├── uploads/           # Uploads utilisateurs
+│   └── assets/            # Assets statiques
+├── config/                # Configuration
+├── migrations/            # Migrations base de données
+└── var/                   # Cache et logs
 ```
 
 ## 🚀 Déploiement
 
-### Environnement de Staging
+### Production
+1. **Optimiser l'environnement**
 ```bash
-# Build et déploiement
-docker-compose -f docker-compose.staging.yml up -d
-
-# Migrations
-docker-compose exec app php bin/console doctrine:migrations:migrate --no-interaction
-
-# Cache
-docker-compose exec app php bin/console cache:clear --env=prod
+APP_ENV=prod composer install --no-dev --optimize-autoloader
 ```
 
-### Environnement de Production
+2. **Vider le cache**
 ```bash
-# Variables d'environnement production
-APP_ENV=prod
-APP_DEBUG=false
-DATABASE_URL="postgresql://prod_user:prod_pass@db:5432/omra_himra_prod"
-
-# Optimisations
-composer install --no-dev --optimize-autoloader
 php bin/console cache:clear --env=prod
-php bin/console cache:warmup --env=prod
 ```
 
-## 📊 Monitoring
+3. **Configurer le serveur web** (Apache/Nginx)
 
-### Logs
-- Application : `var/log/`
-- Nginx : `/var/log/nginx/`
-- PostgreSQL : Logs Docker
-
-### Métriques
-- Dashboard admin : `/admin/dashboard`
-- Symfony Profiler : `/_profiler` (dev uniquement)
-
-## 🔒 Sécurité
-
-### Mesures Implémentées
-- HTTPS obligatoire (production)
-- Protection CSRF
-- Validation serveur pour uploads
-- Headers de sécurité
-- Audit logs
-
-### Sauvegarde
+### Docker (optionnel)
 ```bash
-# Base de données
-pg_dump omra_himra_db > backup_$(date +%Y%m%d).sql
-
-# Fichiers uploads
-tar -czf uploads_backup_$(date +%Y%m%d).tar.gz public/uploads/
+docker-compose up -d
 ```
 
-## 📱 Accès aux Services
+## 📊 Fonctionnalités Avancées
 
-### Développement
-- **Application** : http://localhost:8080
-- **API** : http://localhost:8080/api
-- **Adminer** : http://localhost:8081
-- **MailHog** : http://localhost:8025
-- **MinIO** : http://localhost:9001
+### Workflow des Réservations
+1. **Création** par le client
+2. **Validation** par l'administrateur
+3. **Documents** requis
+4. **Paiement** et confirmation
+5. **Suivi** jusqu'au départ
 
-### Comptes de Test
-- **Admin** : admin@omra-himra.com / admin123
-- **Client** : client@omra-himra.com / client123
-- **Comptable** : comptable@omra-himra.com / comptable123
+### Gestion des Images
+- **Upload multiple** pour les packages
+- **Redimensionnement** automatique
+- **Organisation** par type
+- **Prévisualisation** en temps réel
 
-## 🛠️ Maintenance
+### Système de Messagerie
+- **Messages clients** avec statuts
+- **Réponses administrateurs** tracées
+- **Notifications** en temps réel
 
-### Commandes Utiles
-```bash
-# Nettoyer le cache
-php bin/console cache:clear
+## 🤝 Contribution
 
-# Mise à jour du schéma
-php bin/console doctrine:schema:update --force
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
 
-# Créer un utilisateur admin
-php bin/console app:create-admin
+## 📝 Licence
 
-# Export des réservations
-php bin/console app:export:reservations --format=csv
-
-# Envoi des rappels de paiement
-php bin/console app:send:payment-reminders
-```
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 📞 Support
 
-### Contact Projet
-- **Nom** : Sitan Youssouf Sanogo
-- **Email** : sitansanogoy@gmail.com
-- **Téléphone** : +223 91672992
+Pour toute question ou support :
+- 📧 Email : contact@demetravel.com
+- 🌐 Site web : https://demetravel.com
+- 💬 Issues GitHub : [Créer une issue](https://github.com/assourita/hadj-umra/issues)
 
-### Garantie
-- Correction des bugs bloquants : 2 semaines après livraison
-- Support technique : 2-4 heures/mois (option maintenance)
+## 🙏 Remerciements
 
-## 📄 Licence
+- **Symfony** pour le framework exceptionnel
+- **Doctrine** pour l'ORM puissant
+- **Twig** pour le moteur de templates
+- **OpenStreetMap** pour les cartes gratuites
+- **Leaflet.js** pour l'interactivité des cartes
 
-Propriétaire - Tous droits réservés Omra Himra © 2025 
+---
+
+**Développé avec ❤️ pour la communauté musulmane** 

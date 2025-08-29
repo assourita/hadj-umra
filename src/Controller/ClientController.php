@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Repository\ContactMessageRepository;
 
 #[Route('/client')]
 #[IsGranted('ROLE_USER')]
@@ -61,6 +62,27 @@ class ClientController extends AbstractController
         
         return $this->render('client/documents.html.twig', [
             'reservations' => $reservations,
+        ]);
+    }
+
+    #[Route('/messages', name: 'app_client_messages')]
+    public function messagesIndex(ContactMessageRepository $contactMessageRepository): Response
+    {
+        $user = $this->getUser();
+        $userEmail = $user->getEmail();
+        
+        // Recherche les messages par utilisateur OU par email
+        $messages = $contactMessageRepository->createQueryBuilder('m')
+            ->where('m.user = :user OR LOWER(m.email) = LOWER(:email)')
+            ->setParameter('user', $user)
+            ->setParameter('email', $userEmail)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+        
+        return $this->render('client/messages.html.twig', [
+            'messages' => $messages,
+            'userEmail' => $userEmail,
         ]);
     }
 

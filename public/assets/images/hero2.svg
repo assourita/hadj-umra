@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600">
+  <defs>
+    <linearGradient id="overlay2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(0,0,0,0.2);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(0,0,0,0.5);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background - aerial view -->
+  <rect width="1200" height="600" fill="#87ceeb"/>
+  
+  <!-- Kaaba at center -->
+  <rect x="550" y="250" width="100" height="100" fill="#8b4513" stroke="#654321" stroke-width="2"/>
+  <rect x="560" y="260" width="80" height="80" fill="#d2691e"/>
+  
+  <!-- Pilgrims in concentric circles around Kaaba -->
+  <!-- Inner circle -->
+  <circle cx="600" cy="200" r="3" fill="white" opacity="0.9"/>
+  <circle cx="620" cy="210" r="3" fill="white" opacity="0.8"/>
+  <circle cx="640" cy="220" r="3" fill="white" opacity="0.9"/>
+  <circle cx="660" cy="230" r="3" fill="white" opacity="0.8"/>
+  <circle cx="680" cy="240" r="3" fill="white" opacity="0.9"/>
+  <circle cx="700" cy="250" r="3" fill="white" opacity="0.8"/>
+  <circle cx="700" cy="270" r="3" fill="white" opacity="0.9"/>
+  <circle cx="700" cy="290" r="3" fill="white" opacity="0.8"/>
+  <circle cx="700" cy="310" r="3" fill="white" opacity="0.9"/>
+  <circle cx="700" cy="330" r="3" fill="white" opacity="0.8"/>
+  <circle cx="680" cy="350" r="3" fill="white" opacity="0.9"/>
+  <circle cx="660" cy="360" r="3" fill="white" opacity="0.8"/>
+  <circle cx="640" cy="370" r="3" fill="white" opacity="0.9"/>
+  <circle cx="620" cy="380" r="3" fill="white" opacity="0.8"/>
+  <circle cx="600" cy="390" r="3" fill="white" opacity="0.9"/>
+  <circle cx="580" cy="380" r="3" fill="white" opacity="0.8"/>
+  <circle cx="560" cy="370" r="3" fill="white" opacity="0.9"/>
+  <circle cx="540" cy="360" r="3" fill="white" opacity="0.8"/>
+  <circle cx="520" cy="350" r="3" fill="white" opacity="0.9"/>
+  <circle cx="500" cy="330" r="3" fill="white" opacity="0.8"/>
+  <circle cx="500" cy="310" r="3" fill="white" opacity="0.9"/>
+  <circle cx="500" cy="290" r="3" fill="white" opacity="0.8"/>
+  <circle cx="500" cy="270" r="3" fill="white" opacity="0.9"/>
+  <circle cx="500" cy="250" r="3" fill="white" opacity="0.8"/>
+  <circle cx="520" cy="230" r="3" fill="white" opacity="0.9"/>
+  <circle cx="540" cy="220" r="3" fill="white" opacity="0.8"/>
+  <circle cx="560" cy="210" r="3" fill="white" opacity="0.9"/>
+  <circle cx="580" cy="200" r="3" fill="white" opacity="0.8"/>
+  
+  <!-- Second circle -->
+  <circle cx="600" cy="150" r="2" fill="white" opacity="0.7"/>
+  <circle cx="650" cy="170" r="2" fill="white" opacity="0.6"/>
+  <circle cx="700" cy="200" r="2" fill="white" opacity="0.7"/>
+  <circle cx="720" cy="250" r="2" fill="white" opacity="0.6"/>
+  <circle cx="720" cy="300" r="2" fill="white" opacity="0.7"/>
+  <circle cx="720" cy="350" r="2" fill="white" opacity="0.6"/>
+  <circle cx="700" cy="400" r="2" fill="white" opacity="0.7"/>
+  <circle cx="650" cy="420" r="2" fill="white" opacity="0.6"/>
+  <circle cx="600" cy="430" r="2" fill="white" opacity="0.7"/>
+  <circle cx="550" cy="420" r="2" fill="white" opacity="0.6"/>
+  <circle cx="500" cy="400" r="2" fill="white" opacity="0.7"/>
+  <circle cx="480" cy="350" r="2" fill="white" opacity="0.6"/>
+  <circle cx="480" cy="300" r="2" fill="white" opacity="0.7"/>
+  <circle cx="480" cy="250" r="2" fill="white" opacity="0.6"/>
+  <circle cx="500" cy="200" r="2" fill="white" opacity="0.7"/>
+  <circle cx="550" cy="170" r="2" fill="white" opacity="0.6"/>
+  
+  <!-- Third circle -->
+  <circle cx="600" cy="100" r="2" fill="white" opacity="0.5"/>
+  <circle cx="680" cy="130" r="2" fill="white" opacity="0.4"/>
+  <circle cx="740" cy="180" r="2" fill="white" opacity="0.5"/>
+  <circle cx="760" cy="250" r="2" fill="white" opacity="0.4"/>
+  <circle cx="760" cy="320" r="2" fill="white" opacity="0.5"/>
+  <circle cx="740" cy="380" r="2" fill="white" opacity="0.4"/>
+  <circle cx="680" cy="420" r="2" fill="white" opacity="0.5"/>
+  <circle cx="600" cy="440" r="2" fill="white" opacity="0.4"/>
+  <circle cx="520" cy="420" r="2" fill="white" opacity="0.5"/>
+  <circle cx="460" cy="380" r="2" fill="white" opacity="0.4"/>
+  <circle cx="440" cy="320" r="2" fill="white" opacity="0.5"/>
+  <circle cx="440" cy="250" r="2" fill="white" opacity="0.4"/>
+  <circle cx="460" cy="180" r="2" fill="white" opacity="0.5"/>
+  <circle cx="520" cy="130" r="2" fill="white" opacity="0.4"/>
+  
+  <!-- Mosque courtyard -->
+  <rect x="200" y="100" width="800" height="400" fill="none" stroke="#f5f5dc" stroke-width="3" opacity="0.8"/>
+  <rect x="220" y="120" width="760" height="360" fill="none" stroke="#f5f5dc" stroke-width="2" opacity="0.6"/>
+  
+  <!-- Minarets at corners -->
+  <rect x="180" y="80" width="15" height="120" fill="#f5f5dc" opacity="0.9"/>
+  <rect x="1005" y="80" width="15" height="120" fill="#f5f5dc" opacity="0.9"/>
+  <rect x="180" y="420" width="15" height="120" fill="#f5f5dc" opacity="0.9"/>
+  <rect x="1005" y="420" width="15" height="120" fill="#f5f5dc" opacity="0.9"/>
+  
+  <!-- Overlay for text readability -->
+  <rect width="1200" height="600" fill="url(#overlay2)"/>
+</svg> 

@@ -1,72 +1,92 @@
 {% extends 'layouts/client_dashboard.html.twig' %}
 
-{% block title %}Mes Documents - Dèmè Travel{% endblock %}
+{% block title %}Mes Documents{% endblock %}
 
 {% block body %}
-<div class="page-header">
-    <h1>📄 Mes Documents</h1>
-    <p>Gérez vos documents pour vos réservations</p>
-</div>
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>📄 Mes Documents</h1>
+            <p>Gérez les documents requis pour vos réservations</p>
+        </div>
+    </div>
 
-<div class="documents-container">
-    {% if reservations is empty %}
-        <div class="empty-state">
-            <div class="empty-icon">📄</div>
-            <h3>Aucun document requis</h3>
-            <p>Vous n'avez pas encore de réservations nécessitant des documents.</p>
-            <a href="{{ path('app_home') }}" class="btn btn-primary">Voir les packages</a>
-        </div>
-    {% else %}
-        <div class="reservations-documents">
-            {% for reservation in reservations %}
-                <div class="reservation-documents">
-                    <div class="reservation-header">
-                        <h3>Réservation #{{ reservation.codeDossier }}</h3>
-                        <span class="package-name">{{ reservation.depart.package.titre }}</span>
-                    </div>
-                    
-                    <div class="documents-list">
-                        {% set requiredDocuments = reservation.depart.package.documentsRequis|default(['Passeport', 'Photo d\'identité', 'Relevé bancaire', 'Justificatif d\'emploi', 'Certificat de vaccination']) %}
+    <div class="documents-container">
+        {% if reservations is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📄</div>
+                <h3>Aucun document requis</h3>
+                <p>Vous n'avez pas encore de réservations nécessitant des documents.</p>
+                <a href="{{ path('app_packages_index') }}" class="btn btn-primary">
+                    <i class="icon">🕌</i>
+                    Voir nos offres
+                </a>
+            </div>
+        {% else %}
+            <div class="reservations-documents">
+                {% for reservation in reservations %}
+                    <div class="reservation-documents">
+                        <div class="reservation-header">
+                            <h3>Réservation #{{ reservation.codeDossier }}</h3>
+                            <span class="package-name">{{ reservation.depart.package.titre }}</span>
+                        </div>
                         
-                        {% for document in requiredDocuments %}
-                            <div class="document-item">
-                                <div class="document-info">
-                                    <span class="document-icon">📄</span>
-                                    <span class="document-name">{{ document }}</span>
+                        <div class="documents-list">
+                            {% set requiredDocuments = reservation.depart.package.documentsRequis|default(['Passeport', 'Photo d\'identité', 'Relevé bancaire', 'Justificatif d\'emploi', 'Certificat de vaccination']) %}
+                            
+                            {% for document in requiredDocuments %}
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <span class="document-icon">📄</span>
+                                        <span class="document-name">{{ document }}</span>
+                                    </div>
+                                    <div class="document-status">
+                                        <span class="status-badge status-pending">En attente</span>
+                                    </div>
                                 </div>
-                                <div class="document-status">
-                                    <span class="status-badge status-pending">En attente</span>
-                                </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="document-actions">
+                            <a href="{{ path('app_documents_reservation', {'id': reservation.id}) }}" class="btn btn-primary">
+                                <i class="icon">📤</i>
+                                Télécharger des documents
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div class="document-actions">
-                        <a href="{{ path('app_documents_reservation', {'id': reservation.id}) }}" class="btn btn-primary">
-                            📤 Télécharger des documents
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 </div>
 
 <style>
 .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.page-header h1 {
+.header-content h1 {
     margin: 0 0 0.5rem 0;
     color: #1f2937;
     font-size: 2rem;
 }
 
-.page-header p {
+.header-content p {
     margin: 0;
     color: #6b7280;
     font-size: 1.125rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
 }
 
 .empty-state {
@@ -197,7 +217,40 @@
     transform: translateY(-1px);
 }
 
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
+}
+
+.btn-outline:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-1px);
+}
+
 @media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
     .document-item {
         flex-direction: column;
         gap: 1rem;

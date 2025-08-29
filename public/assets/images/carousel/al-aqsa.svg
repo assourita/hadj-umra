@@ -1,0 +1,116 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ciel avec coucher de soleil -->
+  <defs>
+    <linearGradient id="skyGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE4B5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA07A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CD853F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="domeGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wallGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DDBF94;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Ciel coucher de soleil -->
+  <rect width="1200" height="800" fill="url(#skyGradient3)"/>
+  
+  <!-- Soleil -->
+  <circle cx="950" cy="150" r="60" fill="#FFD700" opacity="0.8"/>
+  <circle cx="950" cy="150" r="40" fill="#FFA500" opacity="0.9"/>
+  
+  <!-- Sol -->
+  <rect x="0" y="650" width="1200" height="150" fill="#DEB887"/>
+  
+  <!-- Mur principal d'Al-Aqsa -->
+  <rect x="200" y="350" width="800" height="300" fill="url(#wallGradient)" stroke="#CD853F" stroke-width="3"/>
+  
+  <!-- Dôme doré principal -->
+  <ellipse cx="600" cy="350" rx="140" ry="90" fill="url(#domeGradient2)" stroke="#B8860B" stroke-width="4"/>
+  
+  <!-- Croissant islamique -->
+  <g transform="translate(600, 280)">
+    <path d="M -10,-15 C -10,-25 0,-30 10,-25 C 0,-35 -15,-30 -15,-20 C -15,-10 -10,-15 -10,-15" fill="#B8860B"/>
+    <circle cx="5" cy="-20" r="3" fill="#B8860B"/>
+  </g>
+  
+  <!-- Arches caractéristiques -->
+  <g fill="none" stroke="#B8860B" stroke-width="6">
+    <path d="M 250 450 Q 350 400 450 450"/>
+    <path d="M 450 450 Q 550 400 650 450"/>
+    <path d="M 650 450 Q 750 400 850 450"/>
+    <path d="M 850 450 Q 950 400 1050 450"/>
+  </g>
+  
+  <!-- Colonnes de marbre -->
+  <g fill="#F8F8FF">
+    <rect x="345" y="450" width="12" height="200"/>
+    <rect x="545" y="450" width="12" height="200"/>
+    <rect x="745" y="450" width="12" height="200"/>
+    <rect x="945" y="450" width="12" height="200"/>
+  </g>
+  
+  <!-- Chapiteaux des colonnes -->
+  <g fill="#DAA520">
+    <rect x="340" y="440" width="22" height="15"/>
+    <rect x="540" y="440" width="22" height="15"/>
+    <rect x="740" y="440" width="22" height="15"/>
+    <rect x="940" y="440" width="22" height="15"/>
+  </g>
+  
+  <!-- Minarets -->
+  <g>
+    <!-- Minaret gauche -->
+    <rect x="150" y="150" width="35" height="450" fill="url(#wallGradient)" stroke="#CD853F" stroke-width="2"/>
+    <rect x="140" y="130" width="55" height="25" fill="#DAA520"/>
+    <ellipse cx="167" cy="130" rx="22" ry="12" fill="#B8860B"/>
+    
+    <!-- Minaret droit -->
+    <rect x="1015" y="170" width="35" height="430" fill="url(#wallGradient)" stroke="#CD853F" stroke-width="2"/>
+    <rect x="1005" y="150" width="55" height="25" fill="#DAA520"/>
+    <ellipse cx="1032" cy="150" rx="22" ry="12" fill="#B8860B"/>
+  </g>
+  
+  <!-- Détails architecturaux -->
+  <g fill="#DAA520">
+    <!-- Frise décorative -->
+    <rect x="220" y="370" width="760" height="8"/>
+    <rect x="220" y="385" width="760" height="5"/>
+    
+    <!-- Motifs géométriques -->
+    <g fill="none" stroke="#B8860B" stroke-width="2">
+      <circle cx="300" cy="550" r="15"/>
+      <circle cx="500" cy="550" r="15"/>
+      <circle cx="700" cy="550" r="15"/>
+      <circle cx="900" cy="550" r="15"/>
+    </g>
+  </g>
+  
+  <!-- Cyprès -->
+  <g transform="translate(50, 400)">
+    <rect x="0" y="0" width="8" height="250" fill="#228B22"/>
+    <polygon points="4,0 -20,50 28,50" fill="#006400"/>
+    <polygon points="4,20 -15,70 23,70" fill="#006400"/>
+    <polygon points="4,40 -10,90 18,90" fill="#006400"/>
+  </g>
+  
+  <g transform="translate(1140, 380)">
+    <rect x="0" y="0" width="10" height="270" fill="#228B22"/>
+    <polygon points="5,0 -25,60 35,60" fill="#006400"/>
+    <polygon points="5,25 -20,85 30,85" fill="#006400"/>
+    <polygon points="5,50 -15,110 25,110" fill="#006400"/>
+  </g>
+  
+  <!-- Oiseaux dans le ciel -->
+  <g fill="#2F4F4F" opacity="0.6">
+    <path d="M 400,200 Q 405,195 410,200 Q 415,195 420,200"/>
+    <path d="M 430,200 Q 435,195 440,200 Q 445,195 450,200"/>
+    
+    <path d="M 700,180 Q 705,175 710,180 Q 715,175 720,180"/>
+    <path d="M 730,180 Q 735,175 740,180 Q 745,175 750,180"/>
+  </g>
+</svg>

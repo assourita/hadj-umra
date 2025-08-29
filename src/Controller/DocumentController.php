@@ -24,7 +24,7 @@ class DocumentController extends AbstractController
         $user = $this->getUser();
         $reservations = $reservationRepository->findByUser($user);
 
-        return $this->render('documents/index.html.twig', [
+        return $this->render('client/documents.html.twig', [
             'reservations' => $reservations,
         ]);
     }
@@ -43,8 +43,21 @@ class DocumentController extends AbstractController
             return $this->redirectToRoute('app_documents_index');
         }
 
+        // Récupérer les documents requis du package
+        $documentsRequis = $reservation->getDepart()->getPackage()->getDocumentsRequis() ?? [];
+        
+        // Récupérer les documents fournis par tous les pèlerins
+        $documentsFournis = [];
+        foreach ($reservation->getPelerins() as $pelerin) {
+            foreach ($pelerin->getDocuments() as $document) {
+                $documentsFournis[$document->getType()] = true;
+            }
+        }
+
         return $this->render('documents/reservation.html.twig', [
             'reservation' => $reservation,
+            'documentsRequis' => $documentsRequis,
+            'documentsFournis' => $documentsFournis,
         ]);
     }
 

@@ -34,6 +34,21 @@ class ReservationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Toutes les réservations triées par date de création
+     */
+    public function findAllOrderedByDate(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.user', 'u')
+            ->leftJoin('r.depart', 'd')
+            ->leftJoin('d.package', 'p')
+            ->addSelect('u', 'd', 'p')
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Réservations par statut
      */
     public function findByStatut(string $statut): array

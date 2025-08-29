@@ -1,173 +1,182 @@
 {% extends 'layouts/admin_dashboard.html.twig' %}
 
-{% block title %}Modifier Package - Administration{% endblock %}
+{% block title %}Modifier Package{% endblock %}
 
 {% block body %}
-<div class="page-header">
-    <h1>✏️ Modifier Package</h1>
-    <p>Modifiez les informations du package "{{ package.titre }}"</p>
-</div>
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>✏️ Modifier Package</h1>
+        <p>Modifiez les informations du package</p>
+    </div>
 
-<div class="content">
-    {{ form_start(form, {'attr': {'class': 'package-form'}}) }}
-    
-    <div class="form-sections">
-        <!-- Informations de base -->
-        <div class="form-section">
-            <h3>📋 Informations de base</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.titre) }}
-                    {{ form_widget(form.titre) }}
-                    {{ form_errors(form.titre) }}
+    <div class="content">
+        <form method="POST" enctype="multipart/form-data" class="package-form">
+            <div class="form-sections">
+                <!-- Informations de base -->
+                <div class="form-section">
+                    <h3>📋 Informations de base</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="titre">Titre du package *</label>
+                            <input type="text" id="titre" name="titre" class="form-control" required minlength="5" maxlength="255" value="{{ package.titre }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" class="form-control" rows="5" required minlength="10">{{ package.description }}</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="programme">Programme détaillé</label>
+                            <textarea id="programme" name="programme" class="form-control" rows="8">{{ package.programme }}</textarea>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.programme) }}
-                    {{ form_widget(form.programme) }}
-                    {{ form_errors(form.programme) }}
-                </div>
-            </div>
-        </div>
 
-        <!-- Prix et devise -->
-        <div class="form-section">
-            <h3>💰 Prix et devise</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.prixBase) }}
-                    {{ form_widget(form.prixBase) }}
-                    {{ form_errors(form.prixBase) }}
+                <!-- Prix et devise -->
+                <div class="form-section">
+                    <h3>💰 Prix et devise</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prixBase">Prix de base</label>
+                            <input type="text" id="prixBase" name="prixBase" class="form-control" placeholder="Ex: 1500000" value="{{ package.prixBase }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="devise">Devise</label>
+                            <select id="devise" name="devise" class="form-control">
+                                <option value="XOF" {{ package.devise == 'XOF' ? 'selected' : '' }}>XOF (Franc CFA)</option>
+                                <option value="EUR" {{ package.devise == 'EUR' ? 'selected' : '' }}>EUR (Euro)</option>
+                                <option value="USD" {{ package.devise == 'USD' ? 'selected' : '' }}>USD (Dollar US)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.devise) }}
-                    {{ form_widget(form.devise) }}
-                    {{ form_errors(form.devise) }}
-                </div>
-            </div>
-        </div>
 
-        <!-- Détails du voyage -->
-        <div class="form-section">
-            <h3>✈️ Détails du voyage</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.duree) }}
-                    {{ form_widget(form.duree) }}
-                    {{ form_errors(form.duree) }}
+                <!-- Détails du voyage -->
+                <div class="form-section">
+                    <h3>✈️ Détails du voyage</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dureeJours">Durée (jours) *</label>
+                            <input type="number" id="dureeJours" name="dureeJours" class="form-control" required min="1" max="365" placeholder="Ex: 15" value="{{ package.dureeJours }}">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.villeDepart) }}
-                    {{ form_widget(form.villeDepart) }}
-                    {{ form_errors(form.villeDepart) }}
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.villeArrivee) }}
-                    {{ form_widget(form.villeArrivee) }}
-                    {{ form_errors(form.villeArrivee) }}
-                </div>
-            </div>
-        </div>
 
-        <!-- Hébergement -->
-        <div class="form-section">
-            <h3>🏨 Hébergement</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.hotelMakkah) }}
-                    {{ form_widget(form.hotelMakkah) }}
-                    {{ form_errors(form.hotelMakkah) }}
+                <!-- Hébergement -->
+                <div class="form-section">
+                    <h3>🏨 Hébergement</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hotelMakkah">Hôtel à Makkah</label>
+                            <input type="text" id="hotelMakkah" name="hotelMakkah" class="form-control" value="{{ package.hotelMakkah }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="hotelMadinah">Hôtel à Madinah</label>
+                            <input type="text" id="hotelMadinah" name="hotelMadinah" class="form-control" value="{{ package.hotelMadinah }}">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.hotelMadinah) }}
-                    {{ form_widget(form.hotelMadinah) }}
-                    {{ form_errors(form.hotelMadinah) }}
-                </div>
-            </div>
-        </div>
 
-        <!-- Documents requis -->
-        <div class="form-section">
-            <h3>📄 Documents requis</h3>
-            <div class="documents-requis-container">
-                {{ form_label(form.documentsRequis) }}
-                <div class="documents-list" data-prototype="{{ form_widget(form.documentsRequis.vars.prototype)|e('html_attr') }}" data-index="{{ form.documentsRequis|length }}">
-                    {% for document in form.documentsRequis %}
-                        <div class="document-item">
-                            <div class="document-header">
-                                <h4>Document #{{ loop.index }}</h4>
-                                <button type="button" class="btn btn-danger btn-small remove-document">
-                                    🗑️ Supprimer
-                                </button>
-                            </div>
-                            <div class="document-fields">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        {{ form_label(document.nom) }}
-                                        {{ form_widget(document.nom) }}
-                                        {{ form_errors(document.nom) }}
+                <!-- Services -->
+                <div class="form-section">
+                    <h3>🎯 Services</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inclus">Services inclus</label>
+                            <textarea id="inclus" name="inclus" class="form-control" rows="4" placeholder="Liste des services inclus...">{{ package.inclus }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nonInclus">Services non inclus</label>
+                            <textarea id="nonInclus" name="nonInclus" class="form-control" rows="4" placeholder="Liste des services non inclus...">{{ package.nonInclus }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Images actuelles -->
+                <div class="form-section">
+                    <h3>🖼️ Images actuelles</h3>
+                    {% if package.images and package.images|length > 0 %}
+                        <div class="current-images">
+                            <div class="images-grid">
+                                {% for image in package.images %}
+                                    <div class="image-item">
+                                        <img src="{{ asset(image) }}" alt="Image {{ loop.index }}">
+                                        <span class="image-name">{{ image|split('/')|last }}</span>
                                     </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        {{ form_label(document.description) }}
-                                        {{ form_widget(document.description) }}
-                                        {{ form_errors(document.description) }}
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        {{ form_label(document.obligatoire) }}
-                                        {{ form_widget(document.obligatoire) }}
-                                        {{ form_errors(document.obligatoire) }}
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
-                    {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Aucune image pour ce package</p>
+                    {% endif %}
                 </div>
-                <button type="button" class="btn btn-secondary add-document">
-                    ➕ Ajouter un document
+
+                <!-- Ajouter de nouvelles images -->
+                <div class="form-section">
+                    <h3>➕ Ajouter de nouvelles images</h3>
+                    <div class="form-group">
+                        <label for="images">Nouvelles images</label>
+                        <input type="file" id="images" name="images[]" class="form-control" accept="image/*" multiple>
+                        <small class="form-text text-muted">Téléchargez une ou plusieurs images (JPG, PNG, WebP - max 5MB chacune)</small>
+                    </div>
+                </div>
+
+                <!-- Statut -->
+                <div class="form-section">
+                    <h3>⚙️ Statut</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="checkbox" id="isActive" name="isActive" class="form-check-input" {{ package.isActive ? 'checked' : '' }}>
+                                <label for="isActive" class="form-check-label">Package actif</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents requis -->
+                <div class="form-section">
+                    <h3>📄 Documents requis</h3>
+                    <div class="documents-info">
+                        <p class="text-muted">Les documents requis sont automatiquement configurés pour chaque package :</p>
+                        {% if package.documentsRequis %}
+                            <div class="documents-list">
+                                {% for key, document in package.documentsRequis %}
+                                    <div class="document-item">
+                                        <div class="document-header">
+                                            <h4>{{ document.nom }}</h4>
+                                            <span class="badge {{ document.obligatoire ? 'badge-required' : 'badge-optional' }}">
+                                                {{ document.obligatoire ? 'Obligatoire' : 'Optionnel' }}
+                                            </span>
+                                        </div>
+                                        <p class="document-description">{{ document.description }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Aucun document requis configuré</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ path('app_admin_packages_index') }}" class="btn btn-secondary">
+                    ← Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    💾 Modifier le package
                 </button>
             </div>
-        </div>
-
-        <!-- Statut -->
-        <div class="form-section">
-            <h3>⚙️ Statut</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    {{ form_label(form.isActive) }}
-                    {{ form_widget(form.isActive) }}
-                    {{ form_errors(form.isActive) }}
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
-
-    <div class="form-actions">
-        <a href="{{ path('app_admin_packages_index') }}" class="btn btn-secondary">
-            ← Annuler
-        </a>
-        <button type="submit" class="btn btn-primary">
-            💾 Enregistrer les modifications
-        </button>
-    </div>
-
-    {{ form_end(form) }}
 </div>
 
 <style>
@@ -213,18 +222,21 @@
 }
 
 .form-section h3 {
-    margin: 0 0 1.5rem 0;
-    color: #1f2937;
+    margin: 0 0 1rem 0;
+    color: #374151;
     font-size: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
 }
 
 .form-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
     margin-bottom: 1rem;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
 }
 
 .form-group {
@@ -243,8 +255,8 @@
     padding: 0.75rem;
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-control:focus {
@@ -253,11 +265,71 @@
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.form-check-input {
-    margin-right: 0.5rem;
+.form-control[required] {
+    border-color: #dc2626;
 }
 
-.documents-requis-container {
+.form-control[required]:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-check-input {
+    width: 1rem;
+    height: 1rem;
+}
+
+.form-check-label {
+    margin: 0;
+    font-weight: 500;
+}
+
+.form-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.current-images {
+    margin-top: 1rem;
+}
+
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.image-item {
+    text-align: center;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: white;
+}
+
+.image-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.image-name {
+    font-size: 0.75rem;
+    color: #6b7280;
+    display: block;
+    word-break: break-all;
+}
+
+.documents-info {
     margin-top: 1rem;
 }
 
@@ -265,7 +337,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 .document-item {
@@ -279,47 +351,62 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #f3f4f6;
+    margin-bottom: 0.5rem;
 }
 
 .document-header h4 {
     margin: 0;
-    color: #1f2937;
+    color: #374151;
     font-size: 1rem;
+    font-weight: 600;
 }
 
-.document-fields .form-row {
-    grid-template-columns: 1fr;
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
-.add-document {
-    width: 100%;
-    margin-top: 1rem;
+.badge-required {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.badge-optional {
+    background: #f0f9ff;
+    color: #0ea5e9;
+    border: 1px solid #bae6fd;
+}
+
+.document-description {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
 }
 
 .form-actions {
     display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 1px solid #e5e7eb;
 }
 
 .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-    border: none;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .btn-primary {
@@ -329,7 +416,6 @@
 
 .btn-primary:hover {
     background: #2563eb;
-    transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -339,77 +425,7 @@
 
 .btn-secondary:hover {
     background: #4b5563;
-    transform: translateY(-1px);
-}
-
-.btn-danger {
-    background: #ef4444;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #dc2626;
-    transform: translateY(-1px);
-}
-
-.btn-small {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
-}
-
-@media (max-width: 768px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-actions {
-        flex-direction: column;
-    }
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const documentsList = document.querySelector('.documents-list');
-    const addButton = document.querySelector('.add-document');
-    const removeButtons = document.querySelectorAll('.remove-document');
-    
-    // Ajouter un document
-    addButton.addEventListener('click', function() {
-        const prototype = documentsList.dataset.prototype;
-        const index = documentsList.dataset.index;
-        const newForm = prototype.replace(/__name__/g, index);
-        
-        const documentItem = document.createElement('div');
-        documentItem.className = 'document-item';
-        documentItem.innerHTML = `
-            <div class="document-header">
-                <h4>Document #${parseInt(index) + 1}</h4>
-                <button type="button" class="btn btn-danger btn-small remove-document">
-                    🗑️ Supprimer
-                </button>
-            </div>
-            <div class="document-fields">
-                ${newForm}
-            </div>
-        `;
-        
-        documentsList.appendChild(documentItem);
-        documentsList.dataset.index = parseInt(index) + 1;
-        
-        // Ajouter l'événement de suppression au nouveau bouton
-        documentItem.querySelector('.remove-document').addEventListener('click', function() {
-            documentItem.remove();
-        });
-    });
-    
-    // Supprimer un document
-    removeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            this.closest('.document-item').remove();
-        });
-    });
-});
-</script>
 {% endblock %} 
 

@@ -10,19 +10,14 @@
 
 <div class="content">
     <div class="actions-bar">
-        <a href="{{ path('app_admin_visa_new') }}" class="btn btn-primary">
-            ➕ Nouveau Visa
-        </a>
+        <p class="info-text">Les visas sont créés automatiquement lors de la gestion des pèlerins.</p>
     </div>
 
     {% if visas is empty %}
         <div class="empty-state">
             <div class="empty-icon">🛂</div>
             <h2>Aucun visa enregistré</h2>
-            <p>Commencez par créer votre premier visa.</p>
-            <a href="{{ path('app_admin_visa_new') }}" class="btn btn-primary">
-                Créer un visa
-            </a>
+            <p>Les visas apparaîtront ici après la création des pèlerins.</p>
         </div>
     {% else %}
         <div class="visas-table">
@@ -130,6 +125,13 @@
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #f3f4f6;
+}
+
+.info-text {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-style: italic;
 }
 
 .empty-state {

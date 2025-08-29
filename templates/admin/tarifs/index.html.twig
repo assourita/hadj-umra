@@ -17,10 +17,7 @@
         <div class="empty-state">
             <div class="empty-icon">💰</div>
             <h2>Aucun tarif configuré</h2>
-            <p>Commencez par créer votre premier tarif.</p>
-            <a href="{{ path('app_admin_tarif_new') }}" class="btn btn-primary">
-                Créer un tarif
-            </a>
+            <p>Les tarifs apparaîtront ici après la création des départs.</p>
         </div>
     {% else %}
         <div class="tarifs-table">
@@ -28,10 +25,9 @@
                 <thead>
                     <tr>
                         <th>Départ</th>
+                        <th>Package</th>
                         <th>Type de chambre</th>
                         <th>Prix</th>
-                        <th>Devise</th>
-                        <th>Statut</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -40,38 +36,27 @@
                         <tr>
                             <td>
                                 <div class="depart-info">
-                                    <strong>{{ tarif.depart.package.titre }}</strong>
-                                    <span class="depart-date">{{ tarif.depart.dateDepart|date('d/m/Y') }}</span>
+                                    <strong>{{ tarif.depart.dateDepart|date('d/m/Y') }}</strong>
+                                    <span class="depart-details">{{ tarif.depart.villeDepart }} → Omra (Makkah/Madinah)</span>
                                 </div>
+                            </td>
+                            <td>
+                                <span class="package-name">{{ tarif.depart.package.titre }}</span>
                             </td>
                             <td>
                                 <span class="room-type">{{ tarif.typeChambre|title }}</span>
                             </td>
                             <td>
-                                <span class="price">{{ tarif.prix|number_format(0, ',', ' ') }}</span>
-                            </td>
-                            <td>
-                                <span class="currency">{{ tarif.devise }}</span>
-                            </td>
-                            <td>
-                                {% if tarif.isActive %}
-                                    <span class="status-badge active">✅ Actif</span>
-                                {% else %}
-                                    <span class="status-badge inactive">❌ Inactif</span>
-                                {% endif %}
+                                <span class="price">{{ tarif.prixBase|number_format(0, ',', ' ') }} {{ tarif.devise }}</span>
                             </td>
                             <td>
                                 <div class="actions">
-                                    <a href="{{ path('app_admin_tarif_edit', {'id': tarif.id}) }}" class="btn btn-secondary btn-small">
+                                    <a href="{{ path('app_admin_tarif_show', {'id': tarif.id}) }}" class="btn btn-secondary btn-small">
+                                        👁️ Voir
+                                    </a>
+                                    <a href="{{ path('app_admin_tarif_edit', {'id': tarif.id}) }}" class="btn btn-primary btn-small">
                                         ✏️ Modifier
                                     </a>
-                                    <form method="POST" action="{{ path('app_admin_tarif_delete', {'id': tarif.id}) }}" 
-                                          style="display: inline;" 
-                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce tarif ?')">
-                                        <button type="submit" class="btn btn-danger btn-small">
-                                            🗑️ Supprimer
-                                        </button>
-                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -180,12 +165,12 @@
     color: #1f2937;
 }
 
-.depart-date {
-    font-size: 0.875rem;
+.depart-details {
+    font-size: 0.75rem;
     color: #6b7280;
 }
 
-.room-type {
+.package-name {
     background: #e0f2fe;
     color: #0277bd;
     padding: 0.25rem 0.75rem;
@@ -194,36 +179,19 @@
     font-weight: 600;
 }
 
-.price {
-    font-weight: 700;
-    color: #059669;
-    font-size: 1.125rem;
-}
-
-.currency {
+.room-type {
     background: #f3f4f6;
     color: #374151;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
     font-size: 0.875rem;
     font-weight: 600;
 }
 
-.status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
-    font-size: 0.75rem;
+.price {
     font-weight: 600;
-}
-
-.status-badge.active {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.status-badge.inactive {
-    background: #fee2e2;
-    color: #991b1b;
+    color: #059669;
+    font-size: 1.125rem;
 }
 
 .actions {
@@ -262,16 +230,6 @@
 
 .btn-secondary:hover {
     background: #4b5563;
-    transform: translateY(-1px);
-}
-
-.btn-danger {
-    background: #ef4444;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #dc2626;
     transform: translateY(-1px);
 }
 

@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/admin_dashboard.html.twig' %}
 
-{% block title %}Réservations en attente de documents - Administration{% endblock %}
+{% block title %}Réservations en attente de documents{% endblock %}
 
 {% block body %}
-<div class="admin-page">
+<div class="container-fluid">
     <div class="page-header">
         <h1>📋 Réservations en attente de documents</h1>
         <p>Vérifiez et validez les documents fournis par les clients</p>
@@ -92,7 +92,7 @@
                             
                             <div class="documents-progress">
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {{ (providedCount / requiredCount * 100)|round }}%"></div>
+                                    <div class="progress-fill" style="width: {{ requiredCount > 0 ? (providedCount / requiredCount * 100)|round : 0 }}%"></div>
                                 </div>
                                 <span class="progress-text">{{ providedCount }}/{{ requiredCount }} documents obligatoires fournis</span>
                             </div>

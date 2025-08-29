@@ -11,7 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+        <!-- Styles pour les notifications -->
+        <link rel="stylesheet" href="{{ asset('assets/styles/notifications.css') }}">
+    {% endblock %}
 </head>
 
 <body>
@@ -49,14 +52,14 @@
                         </a>
                     </li>
                     <li class="{{ app.request.get('_route') starts with 'app_admin_reservations' ? 'active' : '' }}">
-                        <a href="{{ path('app_admin_reservations_pending') }}">
-                            <i class="icon">⏳</i>
-                            <span>Réservations en attente</span>
+                        <a href="{{ path('app_admin_reservations_index') }}">
+                            <i class="icon">📋</i>
+                            <span>Réservations</span>
                         </a>
                     </li>
                     <li class="{{ app.request.get('_route') starts with 'app_admin_reservations_documents' ? 'active' : '' }}">
                         <a href="{{ path('app_admin_reservations_documents') }}">
-                            <i class="icon">📋</i>
+                            <i class="icon">📄</i>
                             <span>Documents requis</span>
                         </a>
                     </li>
@@ -106,6 +109,22 @@
                         <a href="{{ path('app_admin_contact_messages_index') }}">
                             <i class="icon">💬</i>
                             <span>Messages</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <h3>NAVIGATION EXTERNE</h3>
+                <ul>
+                    <li>
+                        <a href="{{ path('app_client_dashboard') }}" target="_blank">
+                            <i class="icon">👤</i>
+                            <span>Dashboard Client</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_home') }}" target="_blank">
+                            <i class="icon">🏠</i>
+                            <span>Page d'accueil</span>
                         </a>
                     </li>
                 </ul>
@@ -364,6 +383,9 @@
     }
     </style>
 
-    {% block javascripts %}{% endblock %}
+    {% block javascripts %}
+        <!-- Scripts pour la gestion des images des packages -->
+        <script src="{{ asset('js/package-images.js') }}"></script>
+    {% endblock %}
 </body>
 </html>

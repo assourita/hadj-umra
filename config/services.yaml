@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     documents_directory: '%kernel.project_dir%/public/uploads/documents'
+    packages_directory: '%kernel.project_dir%/public/uploads/packages'
 
 services:
     # default configuration for services in *this* file
@@ -24,3 +25,8 @@ services:
     App\Service\PaymentService:
         arguments:
             $stripeSecretKey: '%env(STRIPE_SECRET_KEY)%'
+    
+    # Configuration du service ImageService
+    App\Service\ImageService:
+        arguments:
+            $packagesDirectory: '%packages_directory%'

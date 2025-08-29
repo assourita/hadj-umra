@@ -107,8 +107,8 @@
                 {% for package in packages %}
                     <div class="package-card">
                         <div class="package-image">
-                            {% if package.images and package.images|length > 0 %}
-                                <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                            {% if package_has_images(package) %}
+                                <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
                             {% else %}
                                 <div class="package-placeholder">
                                     🕌
@@ -499,11 +499,27 @@
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: var(--gradient-primary);
     color: var(--color-white);
     font-size: 3rem;
+    gap: 0.5rem;
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.8;
+}
+
+.placeholder-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    opacity: 0.9;
+    max-width: 80%;
+    line-height: 1.2;
 }
 
 .package-badges {

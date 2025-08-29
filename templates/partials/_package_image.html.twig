@@ -1,0 +1,58 @@
+{# Template partiel pour l'affichage des images des packages #}
+
+{% macro package_image(package, class = '', show_badges = true) %}
+    <div class="package-image {{ class }}">
+        {% if package_has_images(package) %}
+            <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+        {% else %}
+            <div class="package-placeholder">
+                🕌
+            </div>
+        {% endif %}
+        
+        {% if show_badges %}
+            <div class="package-badges">
+                <span class="badge badge-duration">{{ package.dureeJours }} jours</span>
+                {% if package.isActive is defined and package.isActive %}
+                    <span class="badge badge-active">Disponible</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro package_image_simple(package, class = '') %}
+    <div class="package-image-simple {{ class }}">
+        {% if package_has_images(package) %}
+            <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+        {% else %}
+            <div class="package-placeholder-simple">
+                🕌
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro package_gallery(package, max_images = 5) %}
+    {% if package_has_images(package) %}
+        {% set allImages = package_all_images(package) %}
+        <div class="package-gallery">
+            <div class="gallery-main">
+                <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+            </div>
+            {% if allImages|length > 1 %}
+                <div class="gallery-thumbnails">
+                    {% for image in allImages|slice(1, max_images - 1) %}
+                        <div class="gallery-thumbnail">
+                            <img src="{{ image }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="package-gallery-placeholder">
+            🕌
+        </div>
+    {% endif %}
+{% endmacro %}

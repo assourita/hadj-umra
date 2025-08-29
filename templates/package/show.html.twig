@@ -6,14 +6,15 @@
 <div class="package-detail">
     <div class="package-hero">
         <div class="hero-images">
-            {% if package.images and package.images|length > 0 %}
+            {% if package_has_images(package) %}
                 <div class="main-image">
-                    <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                    <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
                 </div>
-                {% if package.images|length > 1 %}
+                {% set allImages = package_all_images(package) %}
+                {% if allImages|length > 1 %}
                     <div class="thumbnail-images">
-                        {% for image in package.images|slice(1, 4) %}
-                            <img src="{{ image }}" alt="{{ package.titre }}">
+                        {% for image in allImages|slice(1, 4) %}
+                            <img src="{{ image }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
                         {% endfor %}
                     </div>
                 {% endif %}

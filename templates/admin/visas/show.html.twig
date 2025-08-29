@@ -1,28 +1,4 @@
- Symfony Exception
- Symfony Docs
-BadMethodCallException
-Erreur de serveur interne HTTP 500
-Méthode non définie « findAllWithReservation ». Le nom de la méthode doit commencer par findBy, findOneBy ou countBy !
-BadMethodCallException
-dans C :\Users\PC\Desktop\omra-himra-site\vendor\doctrine\orm\src\EntityRepository.php (ligne 165)
-        if (str_starts_with($method, 'countBy')) {            return $this->resolveMagicCall('count', substr($method, 7), $arguments);        }        throw new BadMethodCallException(sprintf(            'Undefined method "%s". The method name must start with ' .            'either findBy, findOneBy or countBy!',            $method,        ));    }
-EntityRepository->__call()
-dans C :\Users\PC\Desktop\omra-himra-site\vendor\doctrine\doctrine-bundle\src\Repository\ServiceEntityRepositoryProxy.php (ligne 95)
-ServiceEntityRepositoryProxy->__call()
-dans C :\Users\PC\Desktop\omra-himra-site\src\Controller\Admin\PelerinController.php (ligne 21)
-PelerinController->index()
-en C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\http-kernel\HttpKernel.php (ligne 183)
-HttpKernel->handleRaw()
-dans C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\http-kernel\HttpKernel.php (ligne 76)
-Pseudony-Kernel->()
-en C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\http-kernel\Kernel.php (ligne 182)
-Poignée > noyau()
-dans C :\Users\PC\Desktop\omra-himra-site\vendor\symfony\runtime\Runner\Symfony\HttpKernelRunner.php (ligne 35)
-HttpKernelRunner->run()
-dans C :\Users\PC\Desktop\omra-himra-site\vendor\autoload_runtime.php (ligne 29)
-require_once('C :\\Users\\PC\\Desktop\\omra-himra-site\\vendor\\autoload_runtime.php')
-dans C :\Users\PC\Desktop\omra-himra-site\public\index.php (ligne 5)
-{% extends 'base.html.twig' %}
+{% extends 'layouts/admin_dashboard.html.twig' %}
 
 {% block title %}Détails du visa - Administration{% endblock %}
 

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600">
+  <defs>
+    <linearGradient id="overlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(0,0,0,0.3);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(0,0,0,0.6);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background image placeholder - Kaaba with pilgrims -->
+  <rect width="1200" height="600" fill="#1e3a8a"/>
+  
+  <!-- Kaaba representation -->
+  <rect x="500" y="200" width="200" height="150" fill="#8b4513" stroke="#654321" stroke-width="3"/>
+  <rect x="520" y="220" width="160" height="110" fill="#d2691e"/>
+  
+  <!-- Pilgrims as circles -->
+  <circle cx="400" cy="300" r="8" fill="white" opacity="0.8"/>
+  <circle cx="420" cy="280" r="6" fill="white" opacity="0.7"/>
+  <circle cx="440" cy="320" r="7" fill="white" opacity="0.8"/>
+  <circle cx="460" cy="290" r="5" fill="white" opacity="0.6"/>
+  <circle cx="480" cy="310" r="6" fill="white" opacity="0.7"/>
+  <circle cx="500" cy="280" r="7" fill="white" opacity="0.8"/>
+  <circle cx="520" cy="300" r="5" fill="white" opacity="0.6"/>
+  <circle cx="540" cy="320" r="6" fill="white" opacity="0.7"/>
+  <circle cx="560" cy="290" r="8" fill="white" opacity="0.8"/>
+  <circle cx="580" cy="310" r="5" fill="white" opacity="0.6"/>
+  <circle cx="600" cy="280" r="7" fill="white" opacity="0.8"/>
+  <circle cx="620" cy="300" r="6" fill="white" opacity="0.7"/>
+  <circle cx="640" cy="320" r="5" fill="white" opacity="0.6"/>
+  <circle cx="660" cy="290" r="8" fill="white" opacity="0.8"/>
+  <circle cx="680" cy="310" r="6" fill="white" opacity="0.7"/>
+  <circle cx="700" cy="280" r="5" fill="white" opacity="0.6"/>
+  <circle cx="720" cy="300" r="7" fill="white" opacity="0.8"/>
+  <circle cx="740" cy="320" r="6" fill="white" opacity="0.7"/>
+  <circle cx="760" cy="290" r="5" fill="white" opacity="0.6"/>
+  <circle cx="780" cy="310" r="8" fill="white" opacity="0.8"/>
+  <circle cx="800" cy="280" r="6" fill="white" opacity="0.7"/>
+  
+  <!-- More pilgrims in background -->
+  <circle cx="350" cy="350" r="4" fill="white" opacity="0.5"/>
+  <circle cx="370" cy="330" r="5" fill="white" opacity="0.6"/>
+  <circle cx="390" cy="370" r="3" fill="white" opacity="0.4"/>
+  <circle cx="410" cy="340" r="4" fill="white" opacity="0.5"/>
+  <circle cx="430" cy="360" r="5" fill="white" opacity="0.6"/>
+  <circle cx="450" cy="330" r="3" fill="white" opacity="0.4"/>
+  <circle cx="470" cy="350" r="4" fill="white" opacity="0.5"/>
+  <circle cx="490" cy="370" r="5" fill="white" opacity="0.6"/>
+  <circle cx="510" cy="340" r="3" fill="white" opacity="0.4"/>
+  <circle cx="530" cy="360" r="4" fill="white" opacity="0.5"/>
+  <circle cx="550" cy="330" r="5" fill="white" opacity="0.6"/>
+  <circle cx="570" cy="350" r="3" fill="white" opacity="0.4"/>
+  <circle cx="590" cy="370" r="4" fill="white" opacity="0.5"/>
+  <circle cx="610" cy="340" r="5" fill="white" opacity="0.6"/>
+  <circle cx="630" cy="360" r="3" fill="white" opacity="0.4"/>
+  <circle cx="650" cy="330" r="4" fill="white" opacity="0.5"/>
+  <circle cx="670" cy="350" r="5" fill="white" opacity="0.6"/>
+  <circle cx="690" cy="370" r="3" fill="white" opacity="0.4"/>
+  <circle cx="710" cy="340" r="4" fill="white" opacity="0.5"/>
+  <circle cx="730" cy="360" r="5" fill="white" opacity="0.6"/>
+  <circle cx="750" cy="330" r="3" fill="white" opacity="0.4"/>
+  <circle cx="770" cy="350" r="4" fill="white" opacity="0.5"/>
+  <circle cx="790" cy="370" r="5" fill="white" opacity="0.6"/>
+  <circle cx="810" cy="340" r="3" fill="white" opacity="0.4"/>
+  <circle cx="830" cy="360" r="4" fill="white" opacity="0.5"/>
+  
+  <!-- Mosque architecture elements -->
+  <rect x="300" y="150" width="600" height="20" fill="#f5f5dc" opacity="0.8"/>
+  <rect x="320" y="130" width="560" height="20" fill="#f5f5dc" opacity="0.6"/>
+  <rect x="340" y="110" width="520" height="20" fill="#f5f5dc" opacity="0.4"/>
+  
+  <!-- Minarets -->
+  <rect x="280" y="100" width="20" height="200" fill="#f5f5dc" opacity="0.9"/>
+  <rect x="900" y="100" width="20" height="200" fill="#f5f5dc" opacity="0.9"/>
+  
+  <!-- Overlay for text readability -->
+  <rect width="1200" height="600" fill="url(#overlay)"/>
+</svg> 

@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/admin_dashboard.html.twig' %}
 
-{% block title %}Modifier le tarif - Administration{% endblock %}
+{% block title %}Modifier le tarif{% endblock %}
 
 {% block body %}
-<div class="admin-page">
+<div class="container-fluid">
     <div class="page-header">
         <h1>✏️ Modifier le tarif</h1>
         <p>{{ tarif.typeChambre|title }} - {{ tarif.depart.package.titre }}</p>
@@ -17,7 +17,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="prix">Prix de base (XOF) *</label>
-                        <input type="number" id="prix" name="prix" value="{{ tarif.prix }}" required class="form-control" min="0" step="100">
+                        <input type="number" id="prix" name="prix" value="{{ tarif.prixBase }}" required class="form-control" min="0" step="100">
                     </div>
                     <div class="form-group">
                         <label for="reduction">Réduction (XOF)</label>
@@ -38,7 +38,7 @@
                     <div class="price-breakdown">
                         <div class="price-item">
                             <span>Prix de base :</span>
-                            <span id="preview-prix">{{ tarif.prix|number_format(0, ',', ' ') }} XOF</span>
+                            <span id="preview-prix">{{ tarif.prixBase|number_format(0, ',', ' ') }} XOF</span>
                         </div>
                         <div class="price-item">
                             <span>Réduction :</span>

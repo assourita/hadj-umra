@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/admin_dashboard.html.twig' %}
 
-{% block title %}Détails du tarif - Administration{% endblock %}
+{% block title %}Détails du tarif{% endblock %}
 
 {% block body %}
-<div class="admin-page">
+<div class="container-fluid">
     <div class="page-header">
         <h1>💰 Détails du tarif</h1>
         <p>Informations complètes sur le tarif</p>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="detail-item">
                             <span class="label">Durée :</span>
-                            <span class="value">{{ tarif.depart.package.duree }} jours</span>
+                            <span class="value">{{ tarif.depart.package.dureeJours }} jours</span>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                     <div class="detail-grid">
                         <div class="detail-item">
                             <span class="label">Prix de base :</span>
-                            <span class="value price">{{ tarif.prix|number_format(0, ',', ' ') }} XOF</span>
+                            <span class="value price">{{ tarif.prixBase|number_format(0, ',', ' ') }} XOF</span>
                         </div>
                         <div class="detail-item">
                             <span class="label">Réduction :</span>

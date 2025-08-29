@@ -62,8 +62,8 @@
                     {% for package in packages %}
                         <div class="package-card">
                             <div class="package-image">
-                                {% if package.images and package.images|length > 0 %}
-                                    <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                                {% if package_has_images(package) %}
+                                    <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
                                 {% else %}
                                     <div class="package-placeholder">
                                         🕌

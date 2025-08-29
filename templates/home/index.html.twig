@@ -94,8 +94,8 @@
             {% for package in packages|slice(0, 3) %}
             <div class="package-preview-card">
                 <div class="package-preview-image">
-                    {% if package.images and package.images|length > 0 %}
-                        <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                    {% if package_has_images(package) %}
+                        <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
                     {% else %}
                         <div class="package-preview-placeholder">🕌</div>
                     {% endif %}
@@ -113,7 +113,7 @@
                     <div class="package-preview-price">
                         <span class="price-label">À partir de</span>
                         <span class="price-amount">{{ package.prixBase|number_format(0, ',', ' ') }}</span>
-                        <span class="price-currency">XOF</span>
+                        <span class="price-currency">{{ package.devise|default('XOF') }}</span>
                     </div>
                     <a href="{{ path('app_package_show', {'slug': package.slug}) }}" class="btn btn-outline">
                         Voir les détails
