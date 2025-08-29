@@ -58,11 +58,19 @@
     <!-- Main Content -->
     <div class="dashboard-main">
         <div class="dashboard-header">
-            <h1>Tableau de bord</h1>
-            <div class="header-actions">
-                <a href="{{ path('dashboard_package_new') }}" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> Nouveau Package
-                </a>
+            <div class="header-content">
+                <div>
+                    <h1>Tableau de bord</h1>
+                    <p>Bienvenue, {{ app.user.fullName }}</p>
+                </div>
+                <div class="header-actions">
+                    <a href="{{ path('dashboard_package_new') }}" class="btn btn-primary">
+                        <i class="fa fa-plus"></i> Nouveau Package
+                    </a>
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">
+                        <i class="fa fa-sign-out"></i> Déconnexion
+                    </a>
+                </div>
             </div>
         </div>
 

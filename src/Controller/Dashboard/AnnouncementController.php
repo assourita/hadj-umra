@@ -63,7 +63,7 @@ class AnnouncementController extends AbstractController
 
         return $this->render('dashboard/announcement/new.html.twig', [
             'announcement' => $announcement,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -113,7 +113,7 @@ class AnnouncementController extends AbstractController
 
         return $this->render('dashboard/announcement/edit.html.twig', [
             'announcement' => $announcement,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 

@@ -17,8 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReservationController extends AbstractController
 {
     #[Route('/package/{id}', name: 'app_reservation_package', methods: ['GET'])]
-    public function packageDetails(Package $package): Response
+    public function packageDetails(PackageRepository $packageRepository, int $id): Response
     {
+        $package = $packageRepository->find($id);
+        
+        if (!$package) {
+            throw $this->createNotFoundException('Package non trouvé');
+        }
+        
         return $this->render('reservation/details.html.twig', [
             'package' => $package,
         ]);
@@ -52,21 +58,33 @@ class ReservationController extends AbstractController
         return $this->render('reservation/form.html.twig', [
             'reservation' => $reservation,
             'package' => $package,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_reservation_show', methods: ['GET'])]
-    public function show(Reservation $reservation): Response
+    public function show(ReservationRepository $reservationRepository, int $id): Response
     {
+        $reservation = $reservationRepository->find($id);
+        
+        if (!$reservation) {
+            throw $this->createNotFoundException('Réservation non trouvée');
+        }
+        
         return $this->render('reservation/show.html.twig', [
             'reservation' => $reservation,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_reservation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ReservationRepository $reservationRepository, EntityManagerInterface $entityManager, int $id): Response
     {
+        $reservation = $reservationRepository->find($id);
+        
+        if (!$reservation) {
+            throw $this->createNotFoundException('Réservation non trouvée');
+        }
+        
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
@@ -80,13 +98,19 @@ class ReservationController extends AbstractController
 
         return $this->render('reservation/edit.html.twig', [
             'reservation' => $reservation,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_reservation_delete', methods: ['POST'])]
-    public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, ReservationRepository $reservationRepository, EntityManagerInterface $entityManager, int $id): Response
     {
+        $reservation = $reservationRepository->find($id);
+        
+        if (!$reservation) {
+            throw $this->createNotFoundException('Réservation non trouvée');
+        }
+        
         if ($this->isCsrfTokenValid('delete'.$reservation->getId(), $request->request->get('_token'))) {
             $entityManager->remove($reservation);
             $entityManager->flush();
@@ -98,8 +122,14 @@ class ReservationController extends AbstractController
     }
 
     #[Route('/confirmation/{id}', name: 'app_reservation_confirmation', methods: ['GET'])]
-    public function confirmation(Reservation $reservation): Response
+    public function confirmation(ReservationRepository $reservationRepository, int $id): Response
     {
+        $reservation = $reservationRepository->find($id);
+        
+        if (!$reservation) {
+            throw $this->createNotFoundException('Réservation non trouvée');
+        }
+        
         return $this->render('reservation/confirmation.html.twig', [
             'reservation' => $reservation,
         ]);

@@ -61,7 +61,7 @@ class PackageController extends AbstractController
 
         return $this->render('dashboard/package/new.html.twig', [
             'package' => $package,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -108,7 +108,7 @@ class PackageController extends AbstractController
 
         return $this->render('dashboard/package/edit.html.twig', [
             'package' => $package,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
