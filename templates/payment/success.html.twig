@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement confirmé - Réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+<div class="payment-success" style="background-color: #1a1a1a; min-height: 100vh; padding: 50px 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card" style="background-color: #2a2a2a; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div class="card-body p-5 text-center">
+                        <!-- Icône de succès -->
+                        <div class="success-icon mb-4">
+                            <div style="width: 100px; height: 100px; background: linear-gradient(45deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <i class="fa fa-check" style="font-size: 50px; color: white;"></i>
+                            </div>
+                        </div>
+
+                        <!-- Titre de confirmation -->
+                        <h1 class="text-white mb-3">Paiement confirmé !</h1>
+                        <p class="text-light mb-4" style="font-size: 18px;">Votre réservation a été confirmée avec succès</p>
+
+                        <!-- Détails de la réservation -->
+                        <div class="reservation-details" style="background-color: #3a3a3a; border-radius: 10px; padding: 30px; margin-bottom: 30px;">
+                            <div class="row">
+                                <div class="col-md-6 text-left">
+                                    <h4 class="text-white mb-3">Détails de la réservation</h4>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Numéro de réservation :</span>
+                                        <span class="text-warning font-weight-bold">#{{ reservation.id }}</span>
+                                    </div>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Package :</span>
+                                        <span class="text-warning">{{ reservation.package.name }}</span>
+                                    </div>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Client :</span>
+                                        <span class="text-warning">{{ reservation.fullName }}</span>
+                                    </div>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Nombre de personnes :</span>
+                                        <span class="text-warning">{{ reservation.numberOfPeople }}</span>
+                                    </div>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Montant payé :</span>
+                                        <span class="text-warning font-weight-bold">{{ reservation.totalPrice }}€</span>
+                                    </div>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Méthode de paiement :</span>
+                                        <span class="text-warning">
+                                            {% if reservation.paymentMethod == 'orange_money' %}
+                                                <i class="fa fa-mobile"></i> Orange Money
+                                            {% else %}
+                                                <i class="fa fa-credit-card"></i> Carte Bancaire
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="detail-item mb-2">
+                                        <span class="text-light">Transaction ID :</span>
+                                        <span class="text-warning">{{ reservation.transactionId }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <h4 class="text-white mb-3">Adresse de livraison</h4>
+                                    <div class="address-details">
+                                        <p class="text-light mb-1">{{ reservation.address }}</p>
+                                        <p class="text-light mb-1">{{ reservation.postalCode }} {{ reservation.city }}</p>
+                                        <p class="text-light mb-1">{{ reservation.country }}</p>
+                                        <p class="text-light mb-1">{{ reservation.phone }}</p>
+                                        <p class="text-light mb-0">{{ reservation.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Message de confirmation -->
+                        <div class="confirmation-message" style="background: linear-gradient(45deg, #10b981, #059669); border-radius: 10px; padding: 20px; margin-bottom: 30px;">
+                            <h4 class="text-white mb-2"><i class="fa fa-envelope"></i> Email de confirmation envoyé</h4>
+                            <p class="text-white mb-0">Un email de confirmation a été envoyé à <strong>{{ reservation.email }}</strong> avec tous les détails de votre réservation.</p>
+                        </div>
+
+                        <!-- Prochaines étapes -->
+                        <div class="next-steps" style="background-color: #1e3a8a; border-radius: 10px; padding: 20px; margin-bottom: 30px;">
+                            <h4 class="text-white mb-3"><i class="fa fa-calendar"></i> Prochaines étapes</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="step-item text-center">
+                                        <div class="step-icon mb-2">
+                                            <i class="fa fa-phone" style="font-size: 24px; color: #fa9e1b;"></i>
+                                        </div>
+                                        <h6 class="text-white">1. Contact</h6>
+                                        <p class="text-light small">Notre équipe vous contactera dans les 24h</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="step-item text-center">
+                                        <div class="step-icon mb-2">
+                                            <i class="fa fa-file-text" style="font-size: 24px; color: #fa9e1b;"></i>
+                                        </div>
+                                        <h6 class="text-white">2. Documents</h6>
+                                        <p class="text-light small">Réception des documents de voyage</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="step-item text-center">
+                                        <div class="step-icon mb-2">
+                                            <i class="fa fa-plane" style="font-size: 24px; color: #fa9e1b;"></i>
+                                        </div>
+                                        <h6 class="text-white">3. Voyage</h6>
+                                        <p class="text-light small">Départ pour votre pèlerinage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informations importantes -->
+                        <div class="important-info" style="background-color: #92400e; border-radius: 10px; padding: 20px; margin-bottom: 30px;">
+                            <h4 class="text-white mb-3"><i class="fa fa-exclamation-triangle"></i> Informations importantes</h4>
+                            <ul class="text-light mb-0" style="text-align: left;">
+                                <li>Conservez précieusement votre numéro de réservation #{{ reservation.id }}</li>
+                                <li>Préparez vos documents de voyage (passeport, visa, etc.)</li>
+                                <li>Vérifiez les dates de votre voyage dans l'email de confirmation</li>
+                                <li>Pour toute question, contactez-nous au +33 1 23 45 67 89</li>
+                            </ul>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="action-buttons">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <a href="{{ path('app_home') }}" class="btn btn-outline-light btn-lg w-100" style="border: 2px solid #fa9e1b; color: #fa9e1b; padding: 15px; border-radius: 30px; font-weight: bold;">
+                                        <i class="fa fa-home mr-2"></i>
+                                        Accueil
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="tel:+33123456789" class="btn btn-primary btn-lg w-100" style="background: linear-gradient(45deg, #fa9e1b, #8d4fff); border: none; padding: 15px; border-radius: 30px; font-weight: bold;">
+                                        <i class="fa fa-phone mr-2"></i>
+                                        Nous appeler
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="mailto:contact@demetravel.com" class="btn btn-outline-light btn-lg w-100" style="border: 2px solid #fa9e1b; color: #fa9e1b; padding: 15px; border-radius: 30px; font-weight: bold;">
+                                        <i class="fa fa-envelope mr-2"></i>
+                                        Nous écrire
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Remerciements -->
+                        <div class="thank-you mt-5">
+                            <h3 class="text-white mb-2">Merci de votre confiance !</h3>
+                            <p class="text-light">L'équipe DƐMƐ Travel vous souhaite un excellent pèlerinage.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-success {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.success-icon {
+    animation: bounceIn 1s ease-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.reservation-details {
+    transition: all 0.3s ease;
+}
+
+.reservation-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.step-item {
+    transition: all 0.3s ease;
+}
+
+.step-item:hover {
+    transform: translateY(-5px);
+}
+
+.step-icon {
+    transition: all 0.3s ease;
+}
+
+.step-item:hover .step-icon {
+    transform: scale(1.2);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.confirmation-message, .next-steps, .important-info {
+    transition: all 0.3s ease;
+}
+
+.confirmation-message:hover, .next-steps:hover, .important-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.text-warning {
+    color: #fa9e1b !important;
+}
+
+.font-weight-bold {
+    font-weight: bold;
+}
+</style>
+
+<script>
+// Animation d'apparition progressive
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('.reservation-details, .confirmation-message, .next-steps, .important-info, .action-buttons');
+    
+    elements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'all 0.6s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+});
+</script>
+{% endblock %}

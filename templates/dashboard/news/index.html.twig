@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Actualités - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h3>DƐMƐ Travel</h3>
+            <p>Administration</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_index') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_package_index') }}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>Packages</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ path('dashboard_news_index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Actualités</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_contact_index') }}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                        <span>Voir le site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>Gestion des Actualités</h1>
+            <div class="header-actions">
+                <a href="{{ path('dashboard_news_new') }}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Nouvelle Actualité
+                </a>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Date de publication</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if news|length > 0 %}
+                        {% for article in news %}
+                            <tr>
+                                <td>
+                                    {% if article.image %}
+                                        <img src="{{ asset('uploads/news/' ~ article.image) }}" 
+                                             alt="{{ article.title }}" 
+                                             style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                    {% else %}
+                                        <div style="width: 60px; height: 40px; background: #ecf0f1; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa fa-image" style="color: #95a5a6;"></i>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ article.title }}</strong>
+                                    <br>
+                                    <small style="color: #7f8c8d;">{{ article.content|slice(0, 50) }}...</small>
+                                </td>
+                                <td>
+                                    {{ article.publishedAt|date('d/m/Y H:i') }}
+                                </td>
+                                <td>
+                                    {% if article.isPublished %}
+                                        <span class="status active">Publié</span>
+                                    {% else %}
+                                        <span class="status inactive">Brouillon</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ path('dashboard_news_show', {'id': article.id}) }}" class="btn-edit">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('dashboard_news_edit', {'id': article.id}) }}" class="btn-edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('dashboard_news_delete', {'id': article.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                            <button type="submit" class="btn-delete" style="border: none; cursor: pointer;">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px;">
+                                <p style="color: #95a5a6; font-style: italic;">Aucune actualité créée</p>
+                                <a href="{{ path('dashboard_news_new') }}" class="btn btn-primary" style="margin-top: 10px;">
+                                    Créer la première actualité
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - DƐMƐ Travel{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h3>DƐMƐ Travel</h3>
+            <p>Administration</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active">
+                    <a href="{{ path('dashboard_index') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_package_index') }}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>Packages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_news') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Actualités</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_contacts') }}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                        {% if unreadMessages > 0 %}
+                            <span class="badge">{{ unreadMessages }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                        <span>Voir le site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>Tableau de bord</h1>
+            <div class="header-actions">
+                <a href="{{ path('dashboard_package_new') }}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Nouveau Package
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa fa-suitcase"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ packages|length }}</h3>
+                    <p>Packages</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa fa-newspaper-o"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ news|length }}</h3>
+                    <p>Actualités</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa fa-envelope"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ unreadMessages }}</h3>
+                    <p>Messages non lus</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Content -->
+        <div class="dashboard-content">
+            <div class="content-grid">
+                <!-- Recent Packages -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>Packages récents</h3>
+                        <a href="{{ path('dashboard_package_index') }}" class="btn btn-sm">Voir tout</a>
+                    </div>
+                    <div class="card-content">
+                        {% if packages|length > 0 %}
+                            {% for package in packages|slice(0, 3) %}
+                                <div class="list-item">
+                                    <div class="item-info">
+                                        <h4>{{ package.name }}</h4>
+                                        <p>{{ package.price }}€ - {{ package.type|upper }}</p>
+                                    </div>
+                                    <div class="item-status">
+                                        {% if package.isActive %}
+                                            <span class="status active">Actif</span>
+                                        {% else %}
+                                            <span class="status inactive">Inactif</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-state">Aucun package créé</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Recent Messages -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>Messages récents</h3>
+                        <a href="{{ path('dashboard_contacts') }}" class="btn btn-sm">Voir tout</a>
+                    </div>
+                    <div class="card-content">
+                        {% if recentMessages|length > 0 %}
+                            {% for message in recentMessages %}
+                                <div class="list-item">
+                                    <div class="item-info">
+                                        <h4>{{ message.name }}</h4>
+                                        <p>{{ message.subject }}</p>
+                                        <small>{{ message.createdAt|date('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <div class="item-status">
+                                        {% if not message.isRead %}
+                                            <span class="status unread">Non lu</span>
+                                        {% else %}
+                                            <span class="status read">Lu</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-state">Aucun message</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Annonces{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Gestion des Annonces</h3>
+                    <a href="{{ path('dashboard_announcement_new') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nouvelle Annonce
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Titre</th>
+                                    <th>Type</th>
+                                    <th>Priorité</th>
+                                    <th>Statut</th>
+                                    <th>Publié le</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for announcement in announcements %}
+                                    <tr>
+                                        <td>{{ announcement.id }}</td>
+                                        <td>
+                                            {% if announcement.image %}
+                                                <img src="{{ asset('uploads/announcements/' ~ announcement.image) }}" 
+                                                     alt="{{ announcement.title }}" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 50px; max-height: 50px;">
+                                            {% else %}
+                                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" 
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image"></i>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <strong>{{ announcement.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ announcement.getExcerpt(50) }}</small>
+                                        </td>
+                                        <td>
+                                            {% if announcement.type %}
+                                                <span class="badge badge-{{ announcement.type == 'urgent' ? 'danger' : (announcement.type == 'promotion' ? 'warning' : 'info') }}">
+                                                    {{ announcement.type|upper }}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">GÉNÉRAL</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if announcement.priority > 0 %}
+                                                <span class="badge badge-{{ announcement.priority >= 8 ? 'danger' : (announcement.priority >= 5 ? 'warning' : 'info') }}">
+                                                    {{ announcement.priority }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if announcement.isPublished %}
+                                                <span class="badge badge-success">Publié</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">Brouillon</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if announcement.publishedAt %}
+                                                {{ announcement.publishedAt|date('d/m/Y H:i') }}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ path('dashboard_announcement_show', {'id': announcement.id}) }}" 
+                                                   class="btn btn-sm btn-info" 
+                                                   title="Voir">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ path('dashboard_announcement_edit', {'id': announcement.id}) }}" 
+                                                   class="btn btn-sm btn-warning" 
+                                                   title="Modifier">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                
+                                                {% if announcement.isPublished %}
+                                                    <form method="post" action="{{ path('dashboard_announcement_unpublish', {'id': announcement.id}) }}" 
+                                                          style="display: inline-block;" 
+                                                          onsubmit="return confirm('Êtes-vous sûr de vouloir dépublier cette annonce ?')">
+                                                        <button type="submit" class="btn btn-sm btn-secondary" title="Dépublier">
+                                                            <i class="fas fa-eye-slash"></i>
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <form method="post" action="{{ path('dashboard_announcement_publish', {'id': announcement.id}) }}" 
+                                                          style="display: inline-block;" 
+                                                          onsubmit="return confirm('Êtes-vous sûr de vouloir publier cette annonce ?')">
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Publier">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+
+                                                <form method="post" action="{{ path('dashboard_announcement_delete', {'id': announcement.id}) }}" 
+                                                      style="display: inline-block;" 
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ announcement.id) }}">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">Aucune annonce trouvée</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

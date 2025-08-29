@@ -1,0 +1,272 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation - {{ package.name }}{% endblock %}
+
+{% block body %}
+<div class="reservation-form" style="background-color: #1a1a1a; min-height: 100vh; padding: 50px 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card" style="background-color: #2a2a2a; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div class="card-body p-5">
+                        <!-- En-tête -->
+                        <div class="text-center mb-5">
+                            <h1 class="text-white mb-3">Réservation - {{ package.name }}</h1>
+                            <div class="package-summary" style="background-color: #3a3a3a; border-radius: 10px; padding: 20px; margin-bottom: 30px;">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        {% if package.image %}
+                                            <img src="{{ asset('uploads/packages/' ~ package.image) }}" alt="{{ package.name }}" class="img-fluid rounded" style="max-height: 100px; width: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <img src="{{ asset('images/kaba.jpg') }}" alt="{{ package.name }}" class="img-fluid rounded" style="max-height: 100px; width: 100%; object-fit: cover;">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="text-white mb-1">{{ package.name }}</h4>
+                                        <p class="text-light mb-0">{{ package.type|upper }}</p>
+                                    </div>
+                                    <div class="col-md-3 text-right">
+                                        <div class="price-display" style="color: #fa9e1b; font-size: 24px; font-weight: bold;">
+                                            {{ package.price }}€
+                                        </div>
+                                        <small class="text-light">par personne</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire -->
+                        {{ form_start(form, {'attr': {'class': 'reservation-form-content'}}) }}
+                        
+                        <div class="row">
+                            <!-- Informations personnelles -->
+                            <div class="col-lg-6">
+                                <h3 class="text-white mb-4"><i class="fa fa-user"></i> Informations personnelles</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form_row(form.firstName, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.lastName, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form_row(form.email, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.phone, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form_row(form.numberOfPeople, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.gender, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Adresse de livraison -->
+                            <div class="col-lg-6">
+                                <h3 class="text-white mb-4"><i class="fa fa-map-marker"></i> Adresse de livraison</h3>
+                                
+                                {{ form_row(form.address, {
+                                    'attr': {
+                                        'class': 'form-control form-control-lg',
+                                        'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                    }
+                                }) }}
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form_row(form.city, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.postalCode, {
+                                            'attr': {
+                                                'class': 'form-control form-control-lg',
+                                                'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+
+                                {{ form_row(form.country, {
+                                    'attr': {
+                                        'class': 'form-control form-control-lg',
+                                        'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                    }
+                                }) }}
+
+                                {{ form_row(form.specialRequests, {
+                                    'attr': {
+                                        'class': 'form-control form-control-lg',
+                                        'style': 'background-color: #3a3a3a; border: 1px solid #555; color: white;'
+                                    }
+                                }) }}
+                            </div>
+                        </div>
+
+                        <!-- Informations importantes -->
+                        <div class="alert alert-warning mt-4" style="background-color: #92400e; border: none; color: white;">
+                            <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> Informations importantes</h4>
+                            <ul class="mb-0" style="color: #e5e7eb;">
+                                <li>Veuillez vérifier que toutes les informations sont correctes avant de continuer</li>
+                                <li>Vous recevrez un email de confirmation après la validation de votre réservation</li>
+                                <li>Le paiement sera effectué à l'étape suivante</li>
+                                <li>Pour toute question, contactez-nous au +33 1 23 45 67 89</li>
+                            </ul>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="text-center mt-5">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <a href="{{ path('app_reservation_package', {'id': package.id}) }}" class="btn btn-outline-light btn-lg w-100" style="border: 2px solid #fa9e1b; color: #fa9e1b; padding: 15px; border-radius: 30px; font-weight: bold;">
+                                        <i class="fa fa-arrow-left mr-2"></i>
+                                        Retour
+                                    </a>
+                                </div>
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100" style="background: linear-gradient(45deg, #fa9e1b, #8d4fff); border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+                                        <i class="fa fa-credit-card mr-2"></i>
+                                        Continuer vers le paiement
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.reservation-form {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: #4a4a4a !important;
+    border-color: #fa9e1b !important;
+    box-shadow: 0 0 0 0.2rem rgba(250, 158, 27, 0.25) !important;
+    color: white !important;
+}
+
+.form-control::placeholder {
+    color: #aaa !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.package-summary {
+    transition: all 0.3s ease;
+}
+
+.package-summary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.price-display {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Styles pour les labels */
+label {
+    color: #fa9e1b !important;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* Styles pour les erreurs */
+.invalid-feedback {
+    color: #ff6b6b;
+    font-size: 14px;
+}
+
+.form-control.is-invalid {
+    border-color: #ff6b6b !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25) !important;
+}
+</style>
+
+<script>
+// Calcul automatique du prix total
+document.addEventListener('DOMContentLoaded', function() {
+    const numberOfPeopleInput = document.getElementById('reservation_numberOfPeople');
+    const priceDisplay = document.querySelector('.price-display');
+    const basePrice = {{ package.price }};
+    
+    function updateTotalPrice() {
+        const numberOfPeople = parseInt(numberOfPeopleInput.value) || 1;
+        const totalPrice = basePrice * numberOfPeople;
+        priceDisplay.textContent = totalPrice + '€';
+    }
+    
+    numberOfPeopleInput.addEventListener('change', updateTotalPrice);
+    numberOfPeopleInput.addEventListener('input', updateTotalPrice);
+    
+    // Initialiser le prix total
+    updateTotalPrice();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,628 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DƐMƐ Travel - Accueil{% endblock %}
+
+{% block body %}
+<!-- Home -->
+<div class="home" id="home">
+    <!-- Home Slider -->
+    <div class="home_slider_container">
+        <div class="owl-carousel owl-theme home_slider">
+            <!-- Slider Item -->
+            <div class="owl-item home_slider_item">
+                <div class="home_slider_background" style="background-image:url({{ asset('images/kaba.jpg') }})"></div>
+                <div class="home_slider_content text-center">
+                    <div class="home_slider_content_inner" data-animation-in="flipInX" data-animation-out="animate-out fadeOut">
+                        <h1>Accomplissez votre Hajj</h1>
+                        <h1>et votre Umra avec nous</h1>
+                        <div class="button home_slider_button"><div class="button_bcg"></div><a href="#">Découvrir nos packages<span></span><span></span><span></span></a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slider Item -->
+            <div class="owl-item home_slider_item">
+                <div class="home_slider_background" style="background-image:url({{ asset('images/mosque.jpg') }})"></div>
+                <div class="home_slider_content text-center">
+                    <div class="home_slider_content_inner" data-animation-in="flipInX" data-animation-out="animate-out fadeOut">
+                        <h1>Packages complets</h1>
+                        <h1>Billets, Hôtels, Transport</h1>
+                        <div class="button home_slider_button"><div class="button_bcg"></div><a href="#">Voir nos offres<span></span><span></span><span></span></a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slider Item -->
+            <div class="owl-item home_slider_item">
+                <div class="home_slider_background" style="background-image:url({{ asset('images/makn.avif') }})"></div>
+                <div class="home_slider_content text-center">
+                    <div class="home_slider_content_inner" data-animation-in="flipInX" data-animation-out="animate-out fadeOut">
+                        <h1>Accompagnement spirituel</h1>
+                        <h1>et guide religieux inclus</h1>
+                        <div class="button home_slider_button"><div class="button_bcg"></div><a href="#">En savoir plus<span></span><span></span><span></span></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Home Slider Nav - Prev -->
+        <div class="home_slider_nav home_slider_prev">
+            <svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                width="28px" height="33px" viewBox="0 0 28 33" enable-background="new 0 0 28 33" xml:space="preserve">
+                <defs>
+                    <linearGradient id='home_grad_prev'>
+                        <stop offset='0%' stop-color='#fa9e1b'/>
+                        <stop offset='100%' stop-color='#8d4fff'/>
+                    </linearGradient>
+                </defs>
+                <path class="nav_path" fill="#F3F6F9" d="M19,0H9C4.029,0,0,4.029,0,9v15c0,4.971,4.029,9,9,9h10c4.97,0,9-4.029,9-9V9C28,4.029,23.97,0,19,0z
+                M26,23.091C26,27.459,22.545,31,18.285,31H9.714C5.454,31,2,27.459,2,23.091V9.909C2,5.541,5.454,2,9.714,2h8.571
+                C22.545,2,26,5.541,26,9.909V23.091z"/>
+                <polygon class="nav_arrow" fill="#F3F6F9" points="15.044,22.222 16.377,20.888 12.374,16.885 16.377,12.882 15.044,11.55 9.708,16.885 11.04,18.219 
+                11.042,18.219 "/>
+            </svg>
+        </div>
+        
+        <!-- Home Slider Nav - Next -->
+        <div class="home_slider_nav home_slider_next">
+            <svg version="1.1" id="Layer_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+            width="28px" height="33px" viewBox="0 0 28 33" enable-background="new 0 0 28 33" xml:space="preserve">
+                <defs>
+                    <linearGradient id='home_grad_next'>
+                        <stop offset='0%' stop-color='#fa9e1b'/>
+                        <stop offset='100%' stop-color='#8d4fff'/>
+                    </linearGradient>
+                </defs>
+            <path class="nav_path" fill="#F3F6F9" d="M19,0H9C4.029,0,0,4.029,0,9v15c0,4.971,4.029,9,9,9h10c4.97,0,9-4.029,9-9V9C28,4.029,23.97,0,19,0z
+            M26,23.091C26,27.459,22.545,31,18.285,31H9.714C5.454,31,2,27.459,2,23.091V9.909C2,5.541,5.454,2,9.714,2h8.571
+            C22.545,2,26,5.541,26,9.909V23.091z"/>
+            <polygon class="nav_arrow" fill="#F3F6F9" points="13.044,11.551 11.71,12.885 15.714,16.888 11.71,20.891 13.044,22.224 18.379,16.888 17.048,15.554 
+            17.046,15.554 "/>
+            </svg>
+        </div>
+
+        <!-- Home Slider Dots -->
+        <div class="home_slider_dots">
+            <ul id="home_slider_custom_dots" class="home_slider_custom_dots">
+                <li class="home_slider_custom_dot active"><div></div>01.</li>
+                <li class="home_slider_custom_dot"><div></div>02.</li>
+                <li class="home_slider_custom_dot"><div></div>03.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="search">
+    <!-- Search Contents -->
+    <div class="container fill_height">
+        <div class="row fill_height">
+            <div class="col fill_height">
+                <!-- Search Tabs -->
+                <div class="search_tabs_container">
+                    <div class="search_tabs d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
+                        <div class="search_tab active d-flex flex-row align-items-center justify-content-lg-center justify-content-start"><i class="fa fa-plane" style="font-size: 24px; margin-right: 10px;"></i><span>Packages Hajj</span></div>
+                        <div class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start"><i class="fa fa-plane" style="font-size: 24px; margin-right: 10px;"></i><span>Packages Umra</span></div>
+                        <div class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start"><i class="fa fa-plane" style="font-size: 24px; margin-right: 10px;"></i><span>Billets d'avion</span></div>
+                        <div class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start"><i class="fa fa-hotel" style="font-size: 24px; margin-right: 10px;"></i><span>Hôtels Makkah</span></div>
+                        <div class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start"><i class="fa fa-hotel" style="font-size: 24px; margin-right: 10px;"></i><span>Hôtels Madinah</span></div>
+                        <div class="search_tab d-flex flex-row align-items-center justify-content-lg-center justify-content-start"><i class="fa fa-star" style="font-size: 24px; margin-right: 10px;"></i><span>Services VIP</span></div>
+                    </div>		
+                </div>
+
+                <!-- Search Panel -->
+                <div class="search_panel active">
+                    <form action="#" id="search_form_1" class="search_panel_content d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-between justify-content-start">
+                        <div class="search_item">
+                            <div>Type de pèlerinage</div>
+                            <select name="pilgrimage_type" class="dropdown_item_select search_input">
+                                <option>Hajj</option>
+                                <option>Umra</option>
+                                <option>Hajj + Umra</option>
+                            </select>
+                        </div>
+                        <div class="search_item">
+                            <div>Date de départ</div>
+                            <input type="text" class="check_in search_input" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="search_item">
+                            <div>Date de retour</div>
+                            <input type="text" class="check_out search_input" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="search_item">
+                            <div>Adultes</div>
+                            <select name="adults" id="adults_1" class="dropdown_item_select search_input">
+                                <option>01</option>
+                                <option>02</option>
+                                <option>03</option>
+                                <option>04</option>
+                                <option>05</option>
+                            </select>
+                        </div>
+                        <div class="search_item">
+                            <div>Enfants</div>
+                            <select name="children" id="children_1" class="dropdown_item_select search_input">
+                                <option>0</option>
+                                <option>01</option>
+                                <option>02</option>
+                                <option>03</option>
+                            </select>
+                        </div>
+                        <button class="button search_button">Rechercher<span></span><span></span><span></span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>		
+</div>
+
+<!-- Intro -->
+<div class="intro">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2 class="intro_title text-center">DƐMƐ Travel - Spécialiste du Hajj et Umra</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="intro_text text-center">
+                    <p>Accomplissez votre devoir religieux avec sérénité. Nous vous accompagnons dans votre pèlerinage vers La Mecque avec des packages complets incluant billets d'avion, hôtels, transport et accompagnement spirituel.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row intro_items">
+            <!-- Intro Item -->
+            <div class="col-lg-4 intro_col">
+                <div class="intro_item">
+                    <div class="intro_item_overlay"></div>
+                    <div class="intro_item_background" style="background-image:url({{ asset('images/kaba.jpg') }})"></div>
+                    <div class="intro_item_content d-flex flex-column align-items-center justify-content-center">
+                        <div class="intro_date">Hajj 2024 - 2025</div>
+                        <div class="button intro_button"><div class="button_bcg"></div><a href="#">voir plus<span></span><span></span><span></span></a></div>
+                        <div class="intro_center text-center">
+                            <h1>Package Hajj</h1>
+                            <div class="intro_price">À partir de 3500€</div>
+                            <div class="rating rating_4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intro Item -->
+            <div class="col-lg-4 intro_col">
+                <div class="intro_item">
+                    <div class="intro_item_overlay"></div>
+                    <div class="intro_item_background" style="background-image:url({{ asset('images/mosque.jpg') }})"></div>
+                    <div class="intro_item_content d-flex flex-column align-items-center justify-content-center">
+                        <div class="intro_date">Toute l'année</div>
+                        <div class="button intro_button"><div class="button_bcg"></div><a href="#">voir plus<span></span><span></span><span></span></a></div>
+                        <div class="intro_center text-center">
+                            <h1>Package Umra</h1>
+                            <div class="intro_price">À partir de 1200€</div>
+                            <div class="rating rating_4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intro Item -->
+            <div class="col-lg-4 intro_col">
+                <div class="intro_item">
+                    <div class="intro_item_overlay"></div>
+                    <div class="intro_item_background" style="background-image:url({{ asset('images/makn.avif') }})"></div>
+                    <div class="intro_item_content d-flex flex-column align-items-center justify-content-center">
+                        <div class="intro_date">Service Premium</div>
+                        <div class="button intro_button"><div class="button_bcg"></div><a href="#">voir plus<span></span><span></span><span></span></a></div>
+                        <div class="intro_center text-center">
+                            <h1>VIP Service</h1>
+                            <div class="intro_price">Sur demande</div>
+                            <div class="rating rating_4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+    <div class="cta_background" style="background-image:url({{ asset('images/cta.jpg') }})"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <!-- CTA Slider -->
+                <div class="cta_slider_container">
+                    <div class="owl-carousel owl-theme cta_slider">
+                        <!-- CTA Slider Item -->
+                        <div class="owl-item cta_item text-center">
+                            <div class="cta_title">DƐMƐ Travel - Package Hajj Complet</div>
+                            <div class="rating_r rating_r_4">
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                            </div>
+                            <p class="cta_text">Accomplissez votre devoir religieux avec sérénité. Notre package Hajj complet inclut billets d'avion, hôtels 5 étoiles à Makkah et Madinah, transport, repas halal, guide religieux et accompagnement spirituel. Réservez dès maintenant pour Hajj 2024-2025.</p>
+                            <div class="button cta_button"><div class="button_bcg"></div><a href="#">Réserver maintenant<span></span><span></span><span></span></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offers -->
+<div class="offers">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2 class="section_title">Nos Packages Hajj et Umra</h2>
+            </div>
+        </div>
+        <div class="row offers_items">
+            <!-- Offers Item -->
+            <div class="col-lg-6 offers_col">
+                <div class="offers_item">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="offers_image_container">
+                                <div class="offers_image_background" style="background-image:url({{ asset('images/kaba.jpg') }})"></div>
+                                <div class="offer_name"><a href="#">Package Hajj Premium</a></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="offers_content">
+                                <div class="offers_price">3500€<span>par personne</span></div>
+                                <div class="rating_r rating_r_4 offers_rating">
+                                    <i></i>
+                                    <i></i>
+                                    <i></i>
+                                    <i></i>
+                                    <i></i>
+                                </div>
+                                <p class="offers_text">Package Hajj complet incluant billets d'avion, hôtels 5 étoiles à Makkah et Madinah, transport, repas halal, guide religieux et accompagnement spirituel.</p>
+                                <div class="offers_icons">
+                                    <ul class="offers_icons_list">
+                                        <li class="offers_icons_item"><img src="{{ asset('images/post.png') }}" alt=""></li>
+                                        <li class="offers_icons_item"><img src="{{ asset('images/compass.png') }}" alt=""></li>
+                                        <li class="offers_icons_item"><img src="{{ asset('images/bicycle.png') }}" alt=""></li>
+                                        <li class="offers_icons_item"><img src="{{ asset('images/sailboat.png') }}" alt=""></li>
+                                    </ul>
+                                </div>
+                                <div class="offers_link"><a href="{{ path('app_offers') }}">voir plus</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials -->
+<div class="testimonials">
+    <div class="test_border"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2 class="section_title">Témoignages de nos pèlerins</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <!-- Testimonials Slider -->
+                <div class="test_slider_container">
+                    <div class="owl-carousel owl-theme test_slider">
+                        <!-- Testimonial Item -->
+                        <div class="owl-item">
+                            <div class="test_item">
+                                <div class="test_image"><img src="{{ asset('images/test_1.jpg') }}" alt="https://unsplash.com/@anniegray"></div>
+                                <div class="test_icon"><img src="{{ asset('images/backpack.png') }}" alt=""></div>
+                                <div class="test_content_container">
+                                    <div class="test_content">
+                                        <div class="test_item_info">
+                                            <div class="test_name">Ahmed Diallo</div>
+                                            <div class="test_date">Hajj 2023</div>
+                                        </div>
+                                        <div class="test_quote_title">" Une expérience spirituelle inoubliable "</div>
+                                        <p class="test_quote_text">Grâce à DƐMƐ Travel, j'ai pu accomplir mon Hajj dans les meilleures conditions. L'équipe était professionnelle et l'accompagnement spirituel était parfait. Je recommande vivement.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trending -->
+<div class="trending">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2 class="section_title">Nos Services Populaires</h2>
+            </div>
+        </div>
+        <div class="row trending_container">
+            <!-- Trending Item -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="trending_item clearfix">
+                    <div class="trending_image"><img src="{{ asset('images/kaba.jpg') }}" alt=""></div>
+                    <div class="trending_content">
+                        <div class="trending_title"><a href="#">Hôtel 5 étoiles Makkah</a></div>
+                        <div class="trending_price">À partir de 150€</div>
+                        <div class="trending_location">Makkah, Arabie Saoudite</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact -->
+<div class="contact" id="contact">
+    <div class="contact_background" style="background-image:url({{ asset('images/contact.png') }})"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="contact_image"></div>
+            </div>
+            <div class="col-lg-7">
+                <div class="contact_form_container">
+                    <div class="contact_title">Contactez DƐMƐ Travel</div>
+                    <form action="#" id="contact_form" class="contact_form">
+                        <input type="text" id="contact_form_name" class="contact_form_name input_field" placeholder="Nom complet" required="required" data-error="Le nom est requis.">
+                        <input type="text" id="contact_form_email" class="contact_form_email input_field" placeholder="E-mail" required="required" data-error="L'email est requis.">
+                        <input type="text" id="contact_form_subject" class="contact_form_subject input_field" placeholder="Sujet (Hajj/Umra)" required="required" data-error="Le sujet est requis.">
+                        <textarea id="contact_form_message" class="text_field contact_form_message" name="message" rows="4" placeholder="Votre message" required="required" data-error="Veuillez écrire votre message."></textarea>
+                        <button type="submit" id="form_submit_button" class="form_submit_button button">Envoyer le message<span></span><span></span><span></span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- À Propos Section -->
+<div class="about" id="about">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2 class="section_title">À Propos de DƐMƐ Travel</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="about_content">
+                    <h3>Spécialiste du Hajj et Umra</h3>
+                    <p>DƐMƐ Travel est votre partenaire de confiance pour accomplir votre devoir religieux. Depuis plus de 10 ans, nous accompagnons les pèlerins dans leur voyage spirituel vers La Mecque et Médine.</p>
+                    
+                    <h4>Notre Mission</h4>
+                    <p>Faciliter l'accomplissement du Hajj et de la Umra en offrant des services complets et professionnels, tout en respectant les valeurs islamiques et en garantissant la sérénité de nos pèlerins.</p>
+                    
+                    <h4>Nos Valeurs</h4>
+                    <ul>
+                        <li>✓ Professionnalisme et fiabilité</li>
+                        <li>✓ Respect des traditions islamiques</li>
+                        <li>✓ Accompagnement personnalisé</li>
+                        <li>✓ Transparence des prix</li>
+                        <li>✓ Service client 24/7</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about_image">
+                    <img src="{{ asset('images/kaba.jpg') }}" alt="DƐMƐ Travel - Hajj et Umra" style="width: 100%; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actualités Section -->
+<div class="news" id="news">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2 class="section_title">Actualités et Informations</h2>
+            </div>
+        </div>
+        <div class="row">
+            {% if announcements|length > 0 %}
+                {% for announcement in announcements|slice(0, 3) %}
+                    <div class="col-lg-4">
+                        <div class="news_item">
+                            <div class="news_image">
+                                {% if announcement.image %}
+                                    <img src="{{ asset('uploads/announcements/' ~ announcement.image) }}" alt="{{ announcement.title }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                                {% else %}
+                                    <img src="{{ asset('images/kaba.jpg') }}" alt="{{ announcement.title }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                                {% endif %}
+                                {% if announcement.type == 'urgent' %}
+                                    <div class="news_badge urgent">URGENT</div>
+                                {% elseif announcement.type == 'promotion' %}
+                                    <div class="news_badge promotion">PROMOTION</div>
+                                {% endif %}
+                            </div>
+                            <div class="news_content">
+                                <div class="news_date">{{ announcement.publishedAt|date('d/m/Y') }}</div>
+                                <h4>{{ announcement.title }}</h4>
+                                <p>{{ announcement.getExcerpt(120) }}</p>
+                                <a href="{{ path('app_announcement_show', {'id': announcement.id}) }}" class="news_link">Lire plus</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Actualité par défaut si aucune annonce -->
+                <div class="col-lg-4">
+                    <div class="news_item">
+                        <div class="news_image">
+                            <img src="{{ asset('images/kaba.jpg') }}" alt="Hajj 2024" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                        </div>
+                        <div class="news_content">
+                            <div class="news_date">29 Novembre 2023</div>
+                            <h4>Hajj 2024 - Inscriptions Ouvertes</h4>
+                            <p>Les inscriptions pour le Hajj 2024 sont maintenant ouvertes. Réservez votre place dès maintenant pour garantir votre participation à ce pèlerinage sacré.</p>
+                            <a href="#" class="news_link">Lire plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if announcements|length > 0 %}
+            <div class="row mt-4">
+                <div class="col text-center">
+                    <a href="{{ path('app_announcements') }}" class="btn btn-primary btn-lg">
+                        <i class="fa fa-bullhorn"></i> Voir toutes les annonces
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Packages Section -->
+<div class="packages" id="packages">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2 class="section_title">Nos Packages Complets</h2>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Package Hajj -->
+            <div class="col-lg-6">
+                <div class="package_item">
+                    <div class="package_image">
+                        <img src="{{ asset('images/kaba.jpg') }}" alt="Package Hajj" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+                    </div>
+                    <div class="package_content">
+                        <h3>Package Hajj Premium</h3>
+                        <div class="package_price">3500€ <span>par personne</span></div>
+                        <div class="package_features">
+                            <h4>Inclus dans le package :</h4>
+                            <ul>
+                                <li>✓ Billets d'avion aller-retour</li>
+                                <li>✓ Hôtels 5 étoiles à Makkah et Madinah</li>
+                                <li>✓ Transport entre les villes saintes</li>
+                                <li>✓ Repas halal (petit-déjeuner, déjeuner, dîner)</li>
+                                <li>✓ Guide religieux francophone</li>
+                                <li>✓ Accompagnement spirituel</li>
+                                <li>✓ Assistance 24/7</li>
+                                <li>✓ Visa et documents</li>
+                            </ul>
+                        </div>
+                        <div class="package_button">
+                            <a href="{{ path('app_reservation_package', {'id': 1}) }}" class="button">Voir détails<span></span><span></span><span></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Package Umra -->
+            <div class="col-lg-6">
+                <div class="package_item">
+                    <div class="package_image">
+                        <img src="{{ asset('images/mosque.jpg') }}" alt="Package Umra" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+                    </div>
+                    <div class="package_content">
+                        <h3>Package Umra</h3>
+                        <div class="package_price">1200€ <span>par personne</span></div>
+                        <div class="package_features">
+                            <h4>Inclus dans le package :</h4>
+                            <ul>
+                                <li>✓ Billets d'avion aller-retour</li>
+                                <li>✓ Hôtels 4-5 étoiles à Makkah</li>
+                                <li>✓ Transport local</li>
+                                <li>✓ Repas halal (demi-pension)</li>
+                                <li>✓ Guide religieux</li>
+                                <li>✓ Assistance sur place</li>
+                                <li>✓ Visa et documents</li>
+                                <li>✓ Durée flexible (7-15 jours)</li>
+                            </ul>
+                        </div>
+                        <div class="package_button">
+                            <a href="{{ path('app_reservation_package', {'id': 2}) }}" class="button">Voir détails<span></span><span></span><span></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.news_image {
+    position: relative;
+}
+
+.news_badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.news_badge.urgent {
+    background: #e74c3c;
+}
+
+.news_badge.promotion {
+    background: #f39c12;
+}
+
+.news_item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news_item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+</style>
+{% endblock %}

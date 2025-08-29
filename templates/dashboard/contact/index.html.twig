@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Messages - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h3>DƐMƐ Travel</h3>
+            <p>Administration</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_index') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_package_index') }}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>Packages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_news_index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Actualités</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ path('dashboard_contact_index') }}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                        {% if unreadCount > 0 %}
+                            <span class="badge">{{ unreadCount }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                        <span>Voir le site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>Gestion des Messages</h1>
+            <div class="header-actions">
+                {% if unreadCount > 0 %}
+                    <form method="post" action="{{ path('dashboard_contact_mark_all_read') }}" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('mark_all_read') }}">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa fa-check"></i> Marquer tout comme lu
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Sujet</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if contacts|length > 0 %}
+                        {% for contact in contacts %}
+                            <tr class="{% if not contact.isRead %}unread-row{% endif %}">
+                                <td>
+                                    <strong>{{ contact.name }}</strong>
+                                </td>
+                                <td>
+                                    <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+                                </td>
+                                <td>
+                                    {{ contact.subject }}
+                                </td>
+                                <td>
+                                    {{ contact.createdAt|date('d/m/Y H:i') }}
+                                </td>
+                                <td>
+                                    {% if contact.isRead %}
+                                        <span class="status read">Lu</span>
+                                    {% else %}
+                                        <span class="status unread">Non lu</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ path('dashboard_contact_show', {'id': contact.id}) }}" class="btn-edit">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('dashboard_contact_toggle_read', {'id': contact.id}) }}" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_read' ~ contact.id) }}">
+                                            <button type="submit" class="btn-edit" style="border: none; cursor: pointer;">
+                                                <i class="fa fa-{% if contact.isRead %}envelope-o{% else %}envelope{% endif %}"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{{ path('dashboard_contact_delete', {'id': contact.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contact.id) }}">
+                                            <button type="submit" class="btn-delete" style="border: none; cursor: pointer;">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px;">
+                                <p style="color: #95a5a6; font-style: italic;">Aucun message reçu</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.unread-row {
+    background-color: #fef9e7;
+    font-weight: 500;
+}
+
+.unread-row:hover {
+    background-color: #fef5e7 !important;
+}
+</style>
+{% endblock %}

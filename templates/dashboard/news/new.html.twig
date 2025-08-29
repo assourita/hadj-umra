@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Actualité - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h3>DƐMƐ Travel</h3>
+            <p>Administration</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_index') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_package_index') }}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>Packages</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ path('dashboard_news_index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Actualités</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_contact_index') }}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                        <span>Voir le site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>Nouvelle Actualité</h1>
+            <div class="header-actions">
+                <a href="{{ path('dashboard_news_index') }}" class="btn btn-sm">
+                    <i class="fa fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <div class="form-container">
+            {{ form_start(form, {'attr': {'class': 'news-form'}}) }}
+                
+                <div class="form-group">
+                    {{ form_label(form.title) }}
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.title) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.content) }}
+                    {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.content) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.isPublished) }}
+                        {{ form_widget(form.isPublished, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.isPublished) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.publishedAt) }}
+                        {{ form_widget(form.publishedAt, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.publishedAt) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.imageFile) }}
+                    {{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.imageFile) }}
+                    <small class="form-text text-muted">Formats acceptés: JPG, PNG, WebP. Taille max: 1MB</small>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ path('dashboard_news_index') }}" class="btn btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Créer l'actualité
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

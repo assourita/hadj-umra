@@ -1,0 +1,208 @@
+/* Styles pour les sections de la page unique */
+
+/* Section À Propos */
+.about {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.about_content h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.about_content h4 {
+    color: #666;
+    margin: 25px 0 15px 0;
+    font-size: 20px;
+}
+
+.about_content p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.about_content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.about_content ul li {
+    color: #666;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.about_image img {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Section Actualités */
+.news {
+    padding: 80px 0;
+    background: #fff;
+}
+
+.news_item {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.news_item:hover {
+    transform: translateY(-5px);
+}
+
+.news_content {
+    padding: 25px;
+}
+
+.news_date {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.news_content h4 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.news_content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.news_link {
+    color: #fa9e1b;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.news_link:hover {
+    color: #8d4fff;
+    text-decoration: none;
+}
+
+/* Section Packages */
+.packages {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.package_item {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.package_item:hover {
+    transform: translateY(-10px);
+}
+
+.package_content {
+    padding: 30px;
+}
+
+.package_content h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.package_price {
+    color: #fa9e1b;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.package_price span {
+    color: #999;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.package_features h4 {
+    color: #333;
+    margin: 25px 0 15px 0;
+    font-size: 18px;
+}
+
+.package_features ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+.package_features ul li {
+    color: #666;
+    margin-bottom: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.package_button {
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .about, .news, .packages {
+        padding: 50px 0;
+    }
+    
+    .about_content h3 {
+        font-size: 24px;
+    }
+    
+    .package_content h3 {
+        font-size: 20px;
+    }
+    
+    .package_price {
+        font-size: 24px;
+    }
+    
+    .news_content {
+        padding: 20px;
+    }
+}
+
+/* Smooth scrolling pour les ancres */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Espacement entre les sections */
+.section_title {
+    margin-bottom: 50px;
+    color: #333;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+/* Animation d'apparition */
+.about, .news, .packages {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

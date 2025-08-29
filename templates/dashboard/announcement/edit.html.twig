@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'Annonce{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Modifier l'annonce : {{ announcement.title }}</h3>
+                    <div class="card-tools">
+                        <a href="{{ path('dashboard_announcement_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                {{ form_label(form.title, 'Titre de l\'annonce *') }}
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Nouveaux packages Hajj 2024'}}) }}
+                                {{ form_errors(form.title) }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.content, 'Contenu de l\'annonce *') }}
+                                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': '10', 'placeholder': 'Contenu détaillé de l\'annonce...'}}) }}
+                                {{ form_errors(form.content) }}
+                                <small class="form-text text-muted">
+                                    Vous pouvez utiliser du HTML pour formater le contenu.
+                                </small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.type, 'Type d\'annonce') }}
+                                        {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.type) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.priority, 'Priorité (0-10)') }}
+                                        {{ form_widget(form.priority, {'attr': {'class': 'form-control', 'min': '0', 'max': '10'}}) }}
+                                        {{ form_errors(form.priority) }}
+                                        <small class="form-text text-muted">
+                                            0 = normale, 10 = très importante
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form_label(form.image, 'Image de l\'annonce') }}
+                                {% if announcement.image %}
+                                    <div class="mb-3">
+                                        <img src="{{ asset('uploads/announcements/' ~ announcement.image) }}" 
+                                             alt="{{ announcement.title }}" 
+                                             class="img-thumbnail" 
+                                             style="max-width: 200px;">
+                                        <small class="form-text text-muted d-block">
+                                            Image actuelle
+                                        </small>
+                                    </div>
+                                {% endif %}
+                                {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                                {{ form_errors(form.image) }}
+                                <small class="form-text text-muted">
+                                    Formats acceptés: JPG, PNG, GIF. Taille max: 2MB.
+                                    {% if announcement.image %}Laissez vide pour conserver l'image actuelle.{% endif %}
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.isPublished, 'Statut de publication *') }}
+                                {{ form_widget(form.isPublished, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.isPublished) }}
+                            </div>
+
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-info-circle"></i> Informations
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><small>• Créé le : {{ announcement.createdAt|date('d/m/Y H:i') }}</small></li>
+                                        <li><small>• Dernière modification : {{ announcement.updatedAt|date('d/m/Y H:i') }}</small></li>
+                                        {% if announcement.publishedAt %}
+                                            <li><small>• Publié le : {{ announcement.publishedAt|date('d/m/Y H:i') }}</small></li>
+                                        {% endif %}
+                                        <li><small>• L'annonce sera visible sur le site si elle est publiée</small></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card bg-warning mt-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-exclamation-triangle"></i> Conseils
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><small>• Rédigez un titre accrocheur</small></li>
+                                        <li><small>• Soyez clair et concis</small></li>
+                                        <li><small>• Incluez les informations importantes</small></li>
+                                        <li><small>• Vérifiez l'orthographe</small></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="form-group text-right">
+                                <a href="{{ path('dashboard_announcement_index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Enregistrer les modifications
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    // Prévisualisation du contenu
+    const contentField = document.querySelector('#announcement_content');
+    if (contentField) {
+        contentField.addEventListener('input', function() {
+            const preview = document.getElementById('content-preview');
+            if (preview) {
+                preview.innerHTML = this.value;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,328 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement - Réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+<div class="payment-form" style="background-color: #1a1a1a; min-height: 100vh; padding: 50px 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card" style="background-color: #2a2a2a; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <div class="card-body p-5">
+                        <!-- En-tête -->
+                        <div class="text-center mb-5">
+                            <h1 class="text-white mb-3">Paiement sécurisé</h1>
+                            <div class="reservation-summary" style="background-color: #3a3a3a; border-radius: 10px; padding: 20px; margin-bottom: 30px;">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        {% if reservation.package.image %}
+                                            <img src="{{ asset('uploads/packages/' ~ reservation.package.image) }}" alt="{{ reservation.package.name }}" class="img-fluid rounded" style="max-height: 100px; width: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <img src="{{ asset('images/kaba.jpg') }}" alt="{{ reservation.package.name }}" class="img-fluid rounded" style="max-height: 100px; width: 100%; object-fit: cover;">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="text-white mb-1">{{ reservation.package.name }}</h4>
+                                        <p class="text-light mb-1">{{ reservation.fullName }}</p>
+                                        <p class="text-light mb-0">{{ reservation.numberOfPeople }} personne(s)</p>
+                                    </div>
+                                    <div class="col-md-3 text-right">
+                                        <div class="total-price" style="color: #fa9e1b; font-size: 28px; font-weight: bold;">
+                                            {{ reservation.totalPrice }}€
+                                        </div>
+                                        <small class="text-light">Total à payer</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Méthodes de paiement -->
+                        <div class="payment-methods">
+                            <h3 class="text-white mb-4"><i class="fa fa-credit-card"></i> Choisissez votre méthode de paiement</h3>
+                            
+                            <form action="{{ path('app_payment_process', {'reservationId': reservation.id}) }}" method="post" id="payment-form">
+                                <!-- Orange Money -->
+                                <div class="payment-method-card mb-4" id="orange-money-card" style="background-color: #3a3a3a; border: 2px solid #fa9e1b; border-radius: 10px; padding: 20px; cursor: pointer;">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-1">
+                                            <input type="radio" name="payment_method" value="orange_money" id="orange_money" class="payment-radio">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="payment-logo" style="background: linear-gradient(45deg, #ff6600, #ff8533); color: white; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold;">
+                                                <i class="fa fa-mobile" style="font-size: 24px;"></i>
+                                                <div>Orange Money</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="orange-money-fields" style="display: none;">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="orange_money_phone" class="text-white">Numéro Orange Money *</label>
+                                                        <input type="tel" name="orange_money_phone" id="orange_money_phone" class="form-control form-control-lg" placeholder="+33 6 12 34 56 78" style="background-color: #4a4a4a; border: 1px solid #555; color: white;">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="text-white">Montant</label>
+                                                        <input type="text" value="{{ reservation.totalPrice }}€" class="form-control form-control-lg" readonly style="background-color: #4a4a4a; border: 1px solid #555; color: white;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Carte Bancaire -->
+                                <div class="payment-method-card mb-4" id="card-payment-card" style="background-color: #3a3a3a; border: 2px solid #8d4fff; border-radius: 10px; padding: 20px; cursor: pointer;">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-1">
+                                            <input type="radio" name="payment_method" value="card" id="card_payment" class="payment-radio">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="payment-logo" style="background: linear-gradient(45deg, #8d4fff, #a366ff); color: white; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold;">
+                                                <i class="fa fa-credit-card" style="font-size: 24px;"></i>
+                                                <div>Carte Bancaire</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-fields" style="display: none;">
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label for="card_number" class="text-white">Numéro de carte *</label>
+                                                        <input type="text" name="card_number" id="card_number" class="form-control form-control-lg" placeholder="1234 5678 9012 3456" maxlength="19" style="background-color: #4a4a4a; border: 1px solid #555; color: white;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="expiry_date" class="text-white">Date d'expiration *</label>
+                                                        <input type="text" name="expiry_date" id="expiry_date" class="form-control form-control-lg" placeholder="MM/AA" maxlength="5" style="background-color: #4a4a4a; border: 1px solid #555; color: white;">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="cvv" class="text-white">CVV *</label>
+                                                        <input type="text" name="cvv" id="cvv" class="form-control form-control-lg" placeholder="123" maxlength="4" style="background-color: #4a4a4a; border: 1px solid #555; color: white;">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="card_holder" class="text-white">Titulaire *</label>
+                                                        <input type="text" name="card_holder" id="card_holder" class="form-control form-control-lg" placeholder="NOM PRENOM" style="background-color: #4a4a4a; border: 1px solid #555; color: white;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Informations de sécurité -->
+                                <div class="alert alert-info" style="background-color: #1e3a8a; border: none; color: white;">
+                                    <h4 class="alert-heading"><i class="fa fa-shield"></i> Paiement sécurisé</h4>
+                                    <ul class="mb-0" style="color: #e5e7eb;">
+                                        <li>Toutes les transactions sont cryptées et sécurisées</li>
+                                        <li>Vos informations bancaires ne sont jamais stockées</li>
+                                        <li>Conformité PCI DSS pour les cartes bancaires</li>
+                                        <li>Protection SSL/TLS pour Orange Money</li>
+                                    </ul>
+                                </div>
+
+                                <!-- Boutons d'action -->
+                                <div class="text-center mt-5">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a href="{{ path('app_reservation_new', {'packageId': reservation.package.id}) }}" class="btn btn-outline-light btn-lg w-100" style="border: 2px solid #fa9e1b; color: #fa9e1b; padding: 15px; border-radius: 30px; font-weight: bold;">
+                                                <i class="fa fa-arrow-left mr-2"></i>
+                                                Retour
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <button type="submit" class="btn btn-primary btn-lg w-100" id="pay-button" style="background: linear-gradient(45deg, #fa9e1b, #8d4fff); border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;" disabled>
+                                                <i class="fa fa-lock mr-2"></i>
+                                                Payer {{ reservation.totalPrice }}€
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-form {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.payment-method-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent !important;
+}
+
+.payment-method-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.payment-method-card.selected {
+    border-color: #fa9e1b !important;
+    background-color: #4a4a4a !important;
+}
+
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: #5a5a5a !important;
+    border-color: #fa9e1b !important;
+    box-shadow: 0 0 0 0.2rem rgba(250, 158, 27, 0.25) !important;
+    color: white !important;
+}
+
+.form-control::placeholder {
+    color: #aaa !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.reservation-summary {
+    transition: all 0.3s ease;
+}
+
+.reservation-summary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.total-price {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.payment-logo {
+    transition: all 0.3s ease;
+}
+
+.payment-method-card:hover .payment-logo {
+    transform: scale(1.05);
+}
+
+/* Masquer les boutons radio par défaut */
+.payment-radio {
+    display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orangeMoneyCard = document.getElementById('orange-money-card');
+    const cardPaymentCard = document.getElementById('card-payment-card');
+    const orangeMoneyFields = document.querySelector('.orange-money-fields');
+    const cardFields = document.querySelector('.card-fields');
+    const payButton = document.getElementById('pay-button');
+    const orangeMoneyRadio = document.getElementById('orange_money');
+    const cardRadio = document.getElementById('card_payment');
+
+    // Gestion de la sélection Orange Money
+    orangeMoneyCard.addEventListener('click', function() {
+        selectPaymentMethod('orange_money');
+    });
+
+    // Gestion de la sélection Carte Bancaire
+    cardPaymentCard.addEventListener('click', function() {
+        selectPaymentMethod('card');
+    });
+
+    function selectPaymentMethod(method) {
+        // Réinitialiser les styles
+        orangeMoneyCard.classList.remove('selected');
+        cardPaymentCard.classList.remove('selected');
+        orangeMoneyFields.style.display = 'none';
+        cardFields.style.display = 'none';
+
+        // Sélectionner la méthode
+        if (method === 'orange_money') {
+            orangeMoneyCard.classList.add('selected');
+            orangeMoneyFields.style.display = 'block';
+            orangeMoneyRadio.checked = true;
+        } else if (method === 'card') {
+            cardPaymentCard.classList.add('selected');
+            cardFields.style.display = 'block';
+            cardRadio.checked = true;
+        }
+
+        // Activer le bouton de paiement
+        payButton.disabled = false;
+    }
+
+    // Formatage du numéro de carte
+    const cardNumber = document.getElementById('card_number');
+    cardNumber.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        value = value.replace(/\D/g, '');
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        e.target.value = value;
+    });
+
+    // Formatage de la date d'expiration
+    const expiryDate = document.getElementById('expiry_date');
+    expiryDate.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // Formatage du CVV
+    const cvv = document.getElementById('cvv');
+    cvv.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    // Validation du formulaire
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+        const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+        
+        if (!selectedMethod) {
+            e.preventDefault();
+            alert('Veuillez sélectionner une méthode de paiement');
+            return;
+        }
+
+        if (selectedMethod.value === 'orange_money') {
+            const phone = document.getElementById('orange_money_phone').value;
+            if (!phone) {
+                e.preventDefault();
+                alert('Veuillez saisir votre numéro Orange Money');
+                return;
+            }
+        } else if (selectedMethod.value === 'card') {
+            const cardNumber = document.getElementById('card_number').value;
+            const expiryDate = document.getElementById('expiry_date').value;
+            const cvv = document.getElementById('cvv').value;
+            const cardHolder = document.getElementById('card_holder').value;
+
+            if (!cardNumber || !expiryDate || !cvv || !cardHolder) {
+                e.preventDefault();
+                alert('Veuillez remplir tous les champs de la carte bancaire');
+                return;
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

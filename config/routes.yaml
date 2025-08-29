@@ -1,0 +1,8 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+suggestions_submit:
+    path: /suggestions/submit
+    controller: App\Controller\SuggestionController::submitSuggestion
+    methods: [POST]

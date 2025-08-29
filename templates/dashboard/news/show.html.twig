@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ news.title }} - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h3>DƐMƐ Travel</h3>
+            <p>Administration</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_index') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_package_index') }}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>Packages</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ path('dashboard_news_index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Actualités</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_contact_index') }}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                        <span>Voir le site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <div class="header-left">
+                <a href="{{ path('dashboard_news_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Retour
+                </a>
+                <h1>{{ news.title }}</h1>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('dashboard_news_edit', {'id': news.id}) }}" class="btn btn-primary">
+                    <i class="fa fa-edit"></i> Modifier
+                </a>
+                <form method="post" action="{{ path('dashboard_news_delete', {'id': news.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ news.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="content-card">
+            <div class="news-header">
+                <div class="news-image">
+                    {% if news.image %}
+                        <img src="{{ asset('uploads/news/' ~ news.image) }}" alt="{{ news.title }}" style="width: 100%; max-width: 600px; height: auto; border-radius: 8px;">
+                    {% else %}
+                        <div class="no-image">
+                            <i class="fa fa-image"></i>
+                            <p>Aucune image</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="news-info">
+                    <div class="news-meta">
+                        <div class="meta-item">
+                            <strong>Slug :</strong>
+                            <code>{{ news.slug }}</code>
+                        </div>
+                        <div class="meta-item">
+                            <strong>Statut :</strong>
+                            {% if news.isPublished %}
+                                <span class="status active">Publié</span>
+                            {% else %}
+                                <span class="status inactive">Brouillon</span>
+                            {% endif %}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Date de publication :</strong>
+                            {% if news.publishedAt %}
+                                {{ news.publishedAt|date('d/m/Y à H:i') }}
+                            {% else %}
+                                <span class="text-muted">Non publié</span>
+                            {% endif %}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Créé le :</strong>
+                            {{ news.createdAt|date('d/m/Y à H:i') }}
+                        </div>
+                        {% if news.updatedAt != news.createdAt %}
+                            <div class="meta-item">
+                                <strong>Modifié le :</strong>
+                                {{ news.updatedAt|date('d/m/Y à H:i') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-content">
+                <div class="content-section">
+                    <h3>Contenu</h3>
+                    <div class="content-text">
+                        {{ news.content|raw }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-actions">
+                <a href="{{ path('dashboard_news_edit', {'id': news.id}) }}" class="btn btn-primary">
+                    <i class="fa fa-edit"></i> Modifier
+                </a>
+                <a href="{{ path('dashboard_news_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-list"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.news-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: start;
+}
+
+.news-image {
+    text-align: center;
+}
+
+.no-image {
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.no-image i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.news-meta {
+    display: grid;
+    gap: 15px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.meta-item strong {
+    color: #2c3e50;
+    min-width: 120px;
+}
+
+.meta-item code {
+    background-color: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #e74c3c;
+}
+
+.text-muted {
+    color: #95a5a6;
+    font-style: italic;
+}
+
+.content-section {
+    margin-bottom: 30px;
+}
+
+.content-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 8px;
+}
+
+.content-text {
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+.news-actions {
+    display: flex;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #ecf0f1;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-left h1 {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .news-header {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Package{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Créer un nouveau package</h3>
+                    <div class="card-tools">
+                        <a href="{{ path('dashboard_package_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                {{ form_label(form.name, 'Nom du package *') }}
+                                {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Package Hajj Premium'}}) }}
+                                {{ form_errors(form.name) }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.description, 'Description *') }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Description détaillée du package...'}}) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.price, 'Prix (€) *') }}
+                                        {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+                                        {{ form_errors(form.price) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.type, 'Type de package *') }}
+                                        {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.type) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.features, 'Fonctionnalités') }}
+                                <div id="features-container">
+                                    {% for feature in form.features %}
+                                        <div class="input-group mb-2">
+                                            {{ form_widget(feature, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Vol aller-retour'}}) }}
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-danger remove-feature">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="add-feature">
+                                    <i class="fas fa-plus"></i> Ajouter une fonctionnalité
+                                </button>
+                                {{ form_errors(form.features) }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form_label(form.image, 'Image du package') }}
+                                {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                                {{ form_errors(form.image) }}
+                                <small class="form-text text-muted">
+                                    Formats acceptés: JPG, PNG, GIF. Taille max: 2MB.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    {{ form_widget(form.isActive, {'attr': {'class': 'custom-control-input'}}) }}
+                                    {{ form_label(form.isActive, 'Package actif', {'label_attr': {'class': 'custom-control-label'}}) }}
+                                </div>
+                                {{ form_errors(form.isActive) }}
+                            </div>
+
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-info-circle"></i> Informations
+                                    </h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><small>• Le package sera visible sur le site s'il est actif</small></li>
+                                        <li><small>• Les fonctionnalités apparaîtront sur la page de détails</small></li>
+                                        <li><small>• L'image sera affichée dans la liste des packages</small></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="form-group text-right">
+                                <a href="{{ path('dashboard_package_index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Créer le package
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const featuresContainer = document.getElementById('features-container');
+    const addFeatureBtn = document.getElementById('add-feature');
+    let featureIndex = 0;
+
+    // Ajouter une nouvelle fonctionnalité
+    addFeatureBtn.addEventListener('click', function() {
+        const featureDiv = document.createElement('div');
+        featureDiv.className = 'input-group mb-2';
+        featureDiv.innerHTML = `
+            <input type="text" name="package[features][]" class="form-control" placeholder="Ex: Vol aller-retour">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-danger remove-feature">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        featuresContainer.appendChild(featureDiv);
+        featureIndex++;
+    });
+
+    // Supprimer une fonctionnalité
+    featuresContainer.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-feature')) {
+            e.target.closest('.input-group').remove();
+        }
+    });
+
+    // Validation du formulaire
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}

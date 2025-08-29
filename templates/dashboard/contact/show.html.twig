@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Message de {{ contact.name }} - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <h3>DƐMƐ Travel</h3>
+            <p>Administration</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_index') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_package_index') }}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>Packages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('dashboard_news_index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Actualités</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ path('dashboard_contact_index') }}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                        <span>Voir le site</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <div class="header-left">
+                <a href="{{ path('dashboard_contact_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Retour
+                </a>
+                <h1>Message de {{ contact.name }}</h1>
+            </div>
+            <div class="header-actions">
+                <form method="post" action="{{ path('dashboard_contact_toggle_read', {'id': contact.id}) }}" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('toggle_read' ~ contact.id) }}">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fa fa-{% if contact.isRead %}envelope-o{% else %}envelope{% endif %}"></i>
+                        {% if contact.isRead %}Marquer comme non lu{% else %}Marquer comme lu{% endif %}
+                    </button>
+                </form>
+                <form method="post" action="{{ path('dashboard_contact_delete', {'id': contact.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contact.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="content-card">
+            <div class="message-header">
+                <div class="message-info">
+                    <div class="message-meta">
+                        <div class="meta-item">
+                            <strong>De :</strong> 
+                            <a href="mailto:{{ contact.email }}">{{ contact.name }} ({{ contact.email }})</a>
+                        </div>
+                        <div class="meta-item">
+                            <strong>Sujet :</strong> {{ contact.subject }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Date :</strong> {{ contact.createdAt|date('d/m/Y à H:i') }}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Statut :</strong>
+                            {% if contact.isRead %}
+                                <span class="status read">Lu</span>
+                            {% else %}
+                                <span class="status unread">Non lu</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message-content">
+                <h3>Message :</h3>
+                <div class="message-text">
+                    {{ contact.message|nl2br }}
+                </div>
+            </div>
+
+            <div class="message-actions">
+                <a href="mailto:{{ contact.email }}?subject=Re: {{ contact.subject }}" class="btn btn-primary">
+                    <i class="fa fa-reply"></i> Répondre
+                </a>
+                <a href="{{ path('dashboard_contact_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-list"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.message-header {
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.message-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meta-item strong {
+    color: #2c3e50;
+    min-width: 60px;
+}
+
+.message-content {
+    margin-bottom: 30px;
+}
+
+.message-content h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.message-text {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+.message-actions {
+    display: flex;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #ecf0f1;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-left h1 {
+    margin: 0;
+}
+</style>
+{% endblock %}

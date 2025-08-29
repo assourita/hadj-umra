@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Annonce{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Détails de l'annonce : {{ announcement.title }}</h3>
+                    <div class="card-tools">
+                        <a href="{{ path('dashboard_announcement_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Informations générales</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>ID :</strong></td>
+                                            <td>{{ announcement.id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Titre :</strong></td>
+                                            <td>{{ announcement.title }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Type :</strong></td>
+                                            <td>
+                                                {% if announcement.type %}
+                                                    <span class="badge badge-{{ announcement.type == 'urgent' ? 'danger' : (announcement.type == 'promotion' ? 'warning' : 'info') }}">
+                                                        {{ announcement.type|upper }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">GÉNÉRAL</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Priorité :</strong></td>
+                                            <td>
+                                                {% if announcement.priority > 0 %}
+                                                    <span class="badge badge-{{ announcement.priority >= 8 ? 'danger' : (announcement.priority >= 5 ? 'warning' : 'info') }}">
+                                                        {{ announcement.priority }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted">Normale (0)</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Statut :</strong></td>
+                                            <td>
+                                                {% if announcement.isPublished %}
+                                                    <span class="badge badge-success">Publié</span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">Brouillon</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Créé le :</strong></td>
+                                            <td>{{ announcement.createdAt|date('d/m/Y à H:i') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Modifié le :</strong></td>
+                                            <td>{{ announcement.updatedAt|date('d/m/Y à H:i') }}</td>
+                                        </tr>
+                                        {% if announcement.publishedAt %}
+                                            <tr>
+                                                <td><strong>Publié le :</strong></td>
+                                                <td>{{ announcement.publishedAt|date('d/m/Y à H:i') }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    {% if announcement.image %}
+                                        <h5>Image de l'annonce</h5>
+                                        <img src="{{ asset('uploads/announcements/' ~ announcement.image) }}" 
+                                             alt="{{ announcement.title }}" 
+                                             class="img-fluid rounded" 
+                                             style="max-width: 100%; height: auto;">
+                                    {% else %}
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-image fa-3x text-muted"></i>
+                                            <p class="text-muted mt-2">Aucune image</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h5>Contenu de l'annonce</h5>
+                                <div class="card">
+                                    <div class="card-body">
+                                        {{ announcement.content|raw }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h5>Aperçu du contenu</h5>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p><strong>Extrait :</strong></p>
+                                        <p class="text-muted">{{ announcement.getExcerpt(200) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">
+                                        <i class="fas fa-cogs"></i> Actions
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ path('dashboard_announcement_edit', {'id': announcement.id}) }}" 
+                                           class="btn btn-warning">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </a>
+                                        
+                                        {% if announcement.isPublished %}
+                                            <form method="post" action="{{ path('dashboard_announcement_unpublish', {'id': announcement.id}) }}" 
+                                                  style="display: inline-block;" 
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir dépublier cette annonce ?')">
+                                                <button type="submit" class="btn btn-secondary w-100">
+                                                    <i class="fas fa-eye-slash"></i> Dépublier
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form method="post" action="{{ path('dashboard_announcement_publish', {'id': announcement.id}) }}" 
+                                                  style="display: inline-block;" 
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir publier cette annonce ?')">
+                                                <button type="submit" class="btn btn-success w-100">
+                                                    <i class="fas fa-eye"></i> Publier
+                                                </button>
+                                            </form>
+                                        {% endif %}
+
+                                        <form method="post" action="{{ path('dashboard_announcement_delete', {'id': announcement.id}) }}" 
+                                              style="display: inline-block;" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ? Cette action est irréversible.')">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ announcement.id) }}">
+                                            <button type="submit" class="btn btn-danger w-100">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">
+                                        <i class="fas fa-info-circle"></i> Informations
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li><small>• Cette annonce est {{ announcement.isPublished ? 'visible' : 'masquée' }} sur le site</small></li>
+                                        <li><small>• Les visiteurs peuvent {{ announcement.isPublished ? 'voir' : 'ne peuvent pas voir' }} cette annonce</small></li>
+                                        {% if announcement.type == 'urgent' %}
+                                            <li><small>• Cette annonce apparaîtra en priorité</small></li>
+                                        {% endif %}
+                                        {% if announcement.priority >= 5 %}
+                                            <li><small>• Priorité élevée ({{ announcement.priority }}/10)</small></li>
+                                        {% endif %}
+                                        {% if announcement.image %}
+                                            <li><small>• Image incluse dans l'annonce</small></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">
+                                        <i class="fas fa-eye"></i> Aperçu
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="border rounded p-3 bg-light">
+                                        <h6>{{ announcement.title }}</h6>
+                                        <small class="text-muted">
+                                            {% if announcement.type %}
+                                                <span class="badge badge-{{ announcement.type == 'urgent' ? 'danger' : (announcement.type == 'promotion' ? 'warning' : 'info') }} badge-sm">
+                                                    {{ announcement.type|upper }}
+                                                </span>
+                                            {% endif %}
+                                            {% if announcement.publishedAt %}
+                                                • {{ announcement.publishedAt|date('d/m/Y') }}
+                                            {% endif %}
+                                        </small>
+                                        <p class="mt-2 mb-0">{{ announcement.getExcerpt(100) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
