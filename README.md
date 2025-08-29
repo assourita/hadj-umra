@@ -207,4 +207,4 @@ Pour toute question ou support :
 
 ---
 
-**Développé avec ❤️ pour la communauté musulmane** 
+**Développé avec ❤️ pour la communauté musulmane** "# demetravel-app" 
