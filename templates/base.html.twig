@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Dèmè Travel - Agence de voyage{% endblock %}</title>
-    <link rel="icon" href="{{ asset('images/logo.svg') }}">
+    <link rel="icon" href="{{ asset('images/logo.svg') }}?v=2">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- Fonts -->
@@ -14,14 +14,13 @@
     <!-- CSS -->
     <style>
         :root {
-            --color-primary: #1e3a8a;     /* Bleu nuit */
-            --color-secondary: #f59e0b;   /* Or doux */
-            --color-accent: #fbbf24;      /* Sable */
+            --color-primary: #4c1d95;     /* Violet foncé exact des captures */
+            --color-secondary: #f97316;   /* Orange vif exact des captures */
+            --color-accent: #8b5cf6;      /* Violet moyen */
             --color-light: #fefefe;       /* Blanc cassé */
             --color-dark: #1f2937;
             --color-gray: #6b7280;
-            --font-heading: 'Playfair Display', serif;
-            --font-body: 'Inter', sans-serif;
+            --color-white: #ffffff;
         }
 
         * {
@@ -35,6 +34,7 @@
             line-height: 1.6;
             color: var(--color-dark);
             background-color: var(--color-light);
+            padding-top: 80px; /* Espace pour la navbar fixe */
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -50,12 +50,18 @@
             padding: 0 1rem;
         }
 
-        /* Header - Harmonisé avec la page d'accueil */
+        /* Header - Navbar fixe avec couleurs exactes des captures */
         .header {
-            background: #f59e0b;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-primary);
             color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
         .header .container {
@@ -67,120 +73,35 @@
         .logo {
             display: flex;
             align-items: center;
-            text-decoration: none;
-            gap: 1rem;
+            gap: 0.75rem;
             cursor: pointer;
+            transition: transform 0.3s ease;
         }
-        
-        .logo img {
-            height: 50px;
-            width: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--color-secondary);
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .logo:hover img {
+
+        .logo:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
         }
 
-        /* Modal pour le logo agrandi */
-        .logo-modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .logo-modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 3rem;
-            border-radius: 2rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            animation: scaleIn 0.3s ease;
-            max-width: 90vw;
-            max-height: 90vh;
-        }
-
-        .logo-modal img {
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            border: 8px solid var(--color-secondary);
-            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
-            margin-bottom: 1.5rem;
-        }
-
-        .logo-modal h2 {
-            color: var(--color-primary);
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-family: var(--font-heading);
-        }
-
-        .logo-modal p {
-            color: var(--color-gray);
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .logo-modal .close {
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--color-gray);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .logo-modal .close:hover {
-            color: var(--color-primary);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes scaleIn {
-            from { 
-                transform: translate(-50%, -50%) scale(0.7);
-                opacity: 0;
-            }
-            to { 
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
+        .logo img {
+            width: 40px;
+            height: 40px;
+            filter: brightness(1.2) contrast(1.3) hue-rotate(0deg) !important; /* Force violet */
         }
 
         .logo-text {
             color: white;
-            font-family: var(--font-heading);
+            font-family: 'Inter', sans-serif;
             font-size: 1.5rem;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
         .nav {
             display: flex;
             list-style: none;
-            gap: 1.5rem;
+            gap: 2rem;
             align-items: center;
         }
 
@@ -189,8 +110,10 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: all 0.3s ease;
-            padding: 0.4rem 0.8rem;
+            padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             position: relative;
         }
@@ -219,10 +142,18 @@
             border-radius: 2px;
         }
 
-        /* Main content */
+        /* Main content - Sans container pour la page d'accueil */
         .main {
             min-height: calc(100vh - 160px);
-            padding: 1rem 0;
+        }
+
+        .main.home-page {
+            padding: 0;
+        }
+
+        .main.home-page .container {
+            max-width: none;
+            padding: 0;
         }
 
         /* Footer */
@@ -288,25 +219,30 @@
             margin-bottom: 1.5rem;
         }
 
-        .form-label {
+        .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--color-dark);
         }
 
-        .form-control {
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid #e5e7eb;
             border-radius: 0.5rem;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s ease;
         }
 
-        .form-control:focus {
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.1);
         }
 
         /* Alerts */
@@ -334,19 +270,115 @@
             color: #1e40af;
         }
 
+        /* Modal pour le logo agrandi */
+        .logo-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .logo-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .logo-modal img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-modal h2 {
+            color: var(--color-primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+        }
+
+        .logo-modal p {
+            color: var(--color-gray);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-modal .close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-gray);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .logo-modal .close:hover {
+            color: var(--color-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { 
+                transform: translate(-50%, -50%) scale(0.7);
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .header .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
             .nav {
                 gap: 1rem;
             }
             
-            .container {
-                padding: 0 0.5rem;
+            .nav a {
+                font-size: 0.875rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .logo-text {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .header {
+                padding: 0.75rem 0;
+            }
+            
+            .nav {
+                gap: 0.5rem;
+            }
+            
+            .nav a {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
             }
         }
     </style>
@@ -358,34 +390,36 @@
     <header class="header">
         <div class="container">
             <div class="logo" onclick="showLogoModal()">
-                <img src="{{ asset('images/logo.svg') }}" alt="Dèmè Travel">
-                <span class="logo-text">Dèmè Travel</span>
+                <img src="{{ asset('images/logo.svg') }}?v=2" alt="Dèmè Travel Logo">
+                <span class="logo-text">DÈMÈ TRAVEL</span>
             </div>
             
             <nav>
                 <ul class="nav">
-                    <li><a href="{{ path('app_home') }}" {% if app.request.get('_route') == 'app_home' %}class="active"{% endif %}>Accueil</a></li>
-                    <li><a href="{{ path('app_packages_index') }}" {% if app.request.get('_route') starts with 'app_package' %}class="active"{% endif %}>Nos Offres</a></li>
-                    <li><a href="{{ path('app_about') }}" {% if app.request.get('_route') == 'app_about' %}class="active"{% endif %}>À Propos</a></li>
-                    <li><a href="{{ path('app_contact') }}" {% if app.request.get('_route') == 'app_contact' %}class="active"{% endif %}>Contact</a></li>
+                    <li><a href="{{ path('app_home') }}" {% if app.request.get('_route') == 'app_home' %}class="active"{% endif %}>ACCUEIL</a></li>
+                    <li><a href="{{ path('app_about') }}" {% if app.request.get('_route') == 'app_about' %}class="active"{% endif %}>À PROPOS</a></li>
+                    <li><a href="{{ path('app_packages_index') }}" {% if app.request.get('_route') starts with 'app_package' %}class="active"{% endif %}>PACKAGES</a></li>
+                    <li><a href="{{ path('app_contact') }}" {% if app.request.get('_route') == 'app_contact' %}class="active"{% endif %}>CONTACT</a></li>
                     
                     {% if app.user %}
                         {% if is_granted('ROLE_ADMIN') %}
-                            <li><a href="{{ path('app_admin_dashboard') }}" {% if app.request.get('_route') starts with 'app_admin' %}class="active"{% endif %}>Administration</a></li>
+                            <li><a href="{{ path('app_admin_dashboard') }}" {% if app.request.get('_route') starts with 'app_admin' %}class="active"{% endif %}>ADMIN</a></li>
                         {% endif %}
-                        <li><a href="{{ path('app_client_dashboard') }}" {% if app.request.get('_route') starts with 'app_client' %}class="active"{% endif %}>Mon Espace</a></li>
-                        <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        <li><a href="{{ path('app_client_dashboard') }}" {% if app.request.get('_route') starts with 'app_client' %}class="active"{% endif %}>MON ESPACE</a></li>
+                        <li><a href="{{ path('app_logout') }}">DÉCONNEXION</a></li>
                     {% else %}
-                        <li><a href="{{ path('app_login') }}" {% if app.request.get('_route') == 'app_login' %}class="active"{% endif %}>Connexion</a></li>
-                        <li><a href="{{ path('app_register') }}" {% if app.request.get('_route') == 'app_register' %}class="active"{% endif %}>Inscription</a></li>
+                        <li><a href="{{ path('app_login') }}" {% if app.request.get('_route') == 'app_login' %}class="active"{% endif %}>CONNEXION</a></li>
+                        <li><a href="{{ path('app_register') }}" {% if app.request.get('_route') == 'app_register' %}class="active"{% endif %}>INSCRIPTION</a></li>
                     {% endif %}
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main class="main">
+    <main class="main {% if app.request.get('_route') == 'app_home' %}home-page{% endif %}">
+        {% if app.request.get('_route') != 'app_home' %}
         <div class="container">
+        {% endif %}
             {% for type, messages in app.flashes %}
                 {% for message in messages %}
                     <div class="alert alert-{{ type }}">
@@ -395,7 +429,9 @@
             {% endfor %}
 
             {% block body %}{% endblock %}
+        {% if app.request.get('_route') != 'app_home' %}
         </div>
+        {% endif %}
     </main>
 
     <footer class="footer">

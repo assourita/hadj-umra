@@ -1,226 +1,584 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dèmè Travel - Agence Hajj et Omra Professionnelle{% endblock %}
+{% block title %}Dèmè Travel - Votre Hajj et votre Umra avec nous{% endblock %}
 
 {% block body %}
-<!-- Hero Section with Split Layout -->
+<!-- Hero Section with Kaaba Background -->
 <section class="hero-section">
-    <div class="hero-container">
-        <!-- Left Side - Photos Carousel -->
-        <div class="hero-photos">
-            <div class="carousel-container">
-                <div class="carousel-slide active" style="background-image: url('/assets/images/carousel/photos/omra1.webp')"></div>
-                <div class="carousel-slide" style="background-image: url('/assets/images/carousel/photos/omra2.webp')"></div>
-                <div class="carousel-slide" style="background-image: url('/assets/images/carousel/photos/omra3.webp')"></div>
-                <div class="carousel-slide" style="background-image: url('/assets/images/carousel/photos/omra4.webp')"></div>
-                <div class="carousel-slide" style="background-image: url('/assets/images/carousel/photos/omra5.webp')"></div>
+    <div class="hero-background">
+        <img src="/assets/images/carousel/photos/omra1.webp" alt="Kaaba" class="hero-bg-image">
+        <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1 class="hero-title">
+                <span class="hero-main">VOTRE HAJJ</span>
+                <span class="hero-subtitle">et votre Umra avec</span>
+                <span class="hero-subtitle">nous</span>
+            </h1>
+        </div>
+        
+        <!-- Carousel Navigation -->
+        <div class="carousel-nav">
+            <button class="carousel-btn prev" onclick="changeSlide(-1)">‹</button>
+            <button class="carousel-btn next" onclick="changeSlide(1)">›</button>
+        </div>
+    </div>
+</section>
+
+<!-- Services Banner -->
+<section class="services-banner">
+    <div class="services-container">
+        <div class="service-item">
+            <div class="service-icon">✈️</div>
+            <span class="service-text">PACKAGES HAJJ</span>
+        </div>
+        <div class="service-item">
+            <div class="service-icon">✈️</div>
+            <span class="service-text">PACKAGES UMRA</span>
+        </div>
+        <div class="service-item">
+            <div class="service-icon">✈️</div>
+            <span class="service-text">BILLETS D'AVION</span>
+        </div>
+        <div class="service-item">
+            <div class="service-icon">🛏️</div>
+            <span class="service-text">HÔTELS MAKKAH</span>
+        </div>
+        <div class="service-item">
+            <div class="service-icon">🛏️</div>
+            <span class="service-text">HÔTELS MADINAH</span>
+        </div>
+        <div class="service-item vip">
+            <div class="service-icon">⭐</div>
+            <span class="service-text">SERVICES VIP</span>
+        </div>
+    </div>
+</section>
+
+<!-- Package Categories -->
+<section class="package-categories">
+    <div class="categories-container">
+        {% for package in packages|slice(0, 3) %}
+        <div class="category-card">
+            <div class="category-image">
+                {% if package.images and package.images|length > 0 %}
+                    <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                {% else %}
+                    <div class="placeholder-image">🕌</div>
+                {% endif %}
             </div>
-            <!-- Carousel Indicators -->
-            <div class="carousel-indicators">
-                <div class="indicator active" data-slide="0"></div>
-                <div class="indicator" data-slide="1"></div>
-                <div class="indicator" data-slide="2"></div>
-                <div class="indicator" data-slide="3"></div>
-                <div class="indicator" data-slide="4"></div>
+            <div class="category-content">
+                <h3>{{ package.titre }}</h3>
+                {% if package.prixBase %}
+                    <p>À partir de {{ package.prixBase|number_format(0, ',', ' ') }} {{ package.devise|default('XOF') }}</p>
+                {% else %}
+                    <p>Prix sur demande</p>
+                {% endif %}
+                <div class="package-meta">
+                    <span class="duration">📅 {{ package.dureeJours }} jours</span>
+                    {% if package.hotelMakkah or package.hotelMadinah %}
+                        <span class="hotels">🏨 Hôtels inclus</span>
+                    {% endif %}
+                </div>
+                <div class="rating">⭐⭐⭐</div>
+                <a href="{{ path('app_package_show', {'slug': package.slug}) }}" class="category-btn">
+                    VOIR PLUS ...
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <!-- Fallback si aucun package n'est disponible -->
+        <div class="category-card">
+            <div class="category-image">
+                <div class="placeholder-image">🕌</div>
+            </div>
+            <div class="category-content">
+                <h3>Package Hajj</h3>
+                <p>À partir de 3500€</p>
+                <div class="package-meta">
+                    <span class="duration">📅 15 jours</span>
+                    <span class="hotels">🏨 Hôtels inclus</span>
+                </div>
+                <div class="rating">⭐⭐⭐</div>
+                <button class="category-btn">VOIR PLUS ...</button>
             </div>
         </div>
         
-        <!-- Right Side - Content -->
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    <span class="hero-subtitle">Agence Hajj et Omra</span>
-                    <span class="hero-main-title">Dèmè Travel</span>
-                </h1>
-                <p class="hero-description">
-                    Votre partenaire de confiance pour accomplir votre pèlerinage sacré. 
-                    Plus de 10 ans d'expérience dans l'organisation de voyages spirituels.
-                </p>
-                <div class="hero-actions">
-                    <a href="{{ path('app_packages_index') }}" class="btn btn-primary btn-large">
-                        <span class="btn-icon">🕌</span>
-                        Découvrir nos packages
-                    </a>
-                    <a href="{{ path('app_contact') }}" class="btn btn-secondary btn-large">
-                        <span class="btn-icon">📞</span>
-                        Nous contacter
-                    </a>
+        <div class="category-card">
+            <div class="category-image">
+                <div class="placeholder-image">🕌</div>
+            </div>
+            <div class="category-content">
+                <h3>Umra</h3>
+                <p>À partir de 1200€</p>
+                <div class="package-meta">
+                    <span class="duration">📅 10 jours</span>
+                    <span class="hotels">🏨 Hôtels inclus</span>
                 </div>
+                <div class="rating">⭐⭐⭐</div>
+                <button class="category-btn">VOIR PLUS ...</button>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="features-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Pourquoi choisir Dèmè Travel ?</h2>
-            <p>Notre expertise et notre engagement pour votre satisfaction</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🏆</div>
-                <h3>Expertise Reconnue</h3>
-                <p>Plus de 10 ans d'expérience dans l'organisation de pèlerinages avec des milliers de pèlerins satisfaits.</p>
+        
+        <div class="category-card">
+            <div class="category-image">
+                <div class="placeholder-image">🕌</div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">🛡️</div>
-                <h3>Sécurité Garantie</h3>
-                <p>Agence certifiée et agréée par les autorités saoudiennes. Votre sécurité est notre priorité absolue.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3>Prix Transparents</h3>
-                <p>Pas de mauvaises surprises ! Nos prix sont clairs et incluent tous les services essentiels.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3>Accompagnement Personnalisé</h3>
-                <p>Équipe bilingue disponible 24h/24 pour vous accompagner tout au long de votre voyage.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Packages Preview Section -->
-<section class="packages-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Nos Packages Populaires</h2>
-            <p>Découvrez nos offres les plus demandées</p>
-        </div>
-        <div class="packages-preview">
-            {% for package in packages|slice(0, 3) %}
-            <div class="package-preview-card">
-                <div class="package-preview-image">
-                    {% if package_has_images(package) %}
-                        <img src="{{ package_first_image(package) }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
-                    {% else %}
-                        <div class="package-preview-placeholder">🕌</div>
-                    {% endif %}
-                    <div class="package-preview-badge">
-                        <span class="badge-text">{{ package.dureeJours }} jours</span>
-                    </div>
+            <div class="category-content">
+                <h3>VIP Service</h3>
+                <p>Sur demande</p>
+                <div class="package-meta">
+                    <span class="duration">📅 Sur mesure</span>
+                    <span class="hotels">🏨 Hôtels 5*</span>
                 </div>
-                <div class="package-preview-content">
-                    <h3>{{ package.titre }}</h3>
-                    <div class="package-preview-features">
-                        <span class="feature">✈️ Vol inclus</span>
-                        <span class="feature">🏨 Hôtels 4*</span>
-                        <span class="feature">📋 Visa inclus</span>
-                    </div>
-                    <div class="package-preview-price">
-                        <span class="price-label">À partir de</span>
-                        <span class="price-amount">{{ package.prixBase|number_format(0, ',', ' ') }}</span>
-                        <span class="price-currency">{{ package.devise|default('XOF') }}</span>
-                    </div>
-                    <a href="{{ path('app_package_show', {'slug': package.slug}) }}" class="btn btn-outline">
-                        Voir les détails
-                    </a>
-                </div>
+                <div class="rating">⭐⭐⭐</div>
+                <button class="category-btn">VOIR PLUS ...</button>
             </div>
-            {% endfor %}
         </div>
-        <div class="packages-cta">
-            <a href="{{ path('app_packages_index') }}" class="btn btn-primary btn-large">
-                Voir tous nos packages
-            </a>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
 <!-- Testimonials Section -->
 <section class="testimonials-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Témoignages de nos pèlerins</h2>
-            <p>Ce que disent nos clients satisfaits</p>
+    <div class="testimonials-container">
+        <div class="testimonials-header">
+            <h2>💬 Témoignages de nos pèlerins</h2>
+            <p>Découvrez les expériences de ceux qui nous ont fait confiance</p>
         </div>
+        
         <div class="testimonials-grid">
             <div class="testimonial-card">
-                <div class="testimonial-content">
-                    <p>"Un voyage exceptionnel ! L'équipe de Dèmè Travel a été parfaite du début à la fin. Tout était bien organisé et nous nous sommes sentis en sécurité."</p>
+                <div class="testimonial-header">
+                    <div class="client-avatar">👤</div>
+                    <div class="client-info">
+                        <span class="client-name">AHMED DIALLO</span>
+                        <span class="client-trip">Hajj 2023</span>
+                    </div>
                 </div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">👤</div>
-                    <div class="author-info">
-                        <h4>Fatou Diallo</h4>
-                        <span>Omra Mars 2024</span>
+                <div class="testimonial-quote">
+                    "Une expérience spirituelle inoubliable"
+                </div>
+                <div class="testimonial-text">
+                    Grâce à Dèmè Travel, j'ai pu accomplir mon Hajj dans les meilleures conditions. L'équipe était professionnelle et l'accompagnement spirituel était parfait.
+                </div>
+                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+            </div>
+            
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <div class="client-avatar">👤</div>
+                    <div class="client-info">
+                        <span class="client-name">FATOU TOURÉ</span>
+                        <span class="client-trip">Umra 2024</span>
+                    </div>
+                </div>
+                <div class="testimonial-quote">
+                    "Un service exceptionnel"
+                </div>
+                <div class="testimonial-text">
+                    Mon Umra avec Dèmè Travel a été parfaite. Les hôtels étaient magnifiques, les guides très compétents. Je recommande vivement !
+                </div>
+                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+            </div>
+            
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <div class="client-avatar">👤</div>
+                    <div class="client-info">
+                        <span class="client-name">MAMADOU KEITA</span>
+                        <span class="client-trip">Hajj 2022</span>
+                    </div>
+                </div>
+                <div class="testimonial-quote">
+                    "Une organisation impeccable"
+                </div>
+                <div class="testimonial-text">
+                    Tout était parfaitement organisé. De l'aéroport jusqu'au retour, Dèmè Travel s'est occupé de tout. Un vrai professionnalisme.
+                </div>
+                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Services -->
+<section class="popular-services">
+    <div class="services-header">
+        <h2>NOS SERVICES POPULAIRES</h2>
+    </div>
+    {% if packages|length > 0 %}
+        {% for package in packages|slice(0, 1) %}
+        <div class="service-card">
+            <div class="service-image">
+                {% if package.images and package.images|length > 0 %}
+                    <img src="{{ package.images[0] }}?v={{ "now"|date("U") }}" alt="{{ package.titre }}">
+                {% else %}
+                    <div class="placeholder-image">🕌</div>
+                {% endif %}
+            </div>
+            <div class="service-details">
+                <h3>{{ package.titre|upper }}</h3>
+                <p class="location">{{ package.hotelMakkah ?: 'MAKKAH' }}</p>
+                {% if package.prixBase %}
+                    <p class="price">À partir de {{ package.prixBase|number_format(0, ',', ' ') }} {{ package.devise|default('XOF') }}</p>
+                {% else %}
+                    <p class="price">Prix sur demande</p>
+                {% endif %}
+                <p class="full-location">{{ package.hotelMakkah ?: 'MAKKAH' }}, ARABIE SAOUDITE</p>
+                <div class="service-features">
+                    <span class="feature">📅 {{ package.dureeJours }} jours</span>
+                    {% if package.hotelMakkah %}
+                        <span class="feature">🏨 {{ package.hotelMakkah }}</span>
+                    {% endif %}
+                    {% if package.hotelMadinah %}
+                        <span class="feature">🏨 {{ package.hotelMadinah }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <!-- Fallback si aucun package n'est disponible -->
+        <div class="service-card">
+            <div class="service-image">
+                <div class="placeholder-image">🕌</div>
+            </div>
+            <div class="service-details">
+                <h3>HÔTEL 5 ÉTOILES</h3>
+                <p class="location">MAKKAH</p>
+                <p class="price">À partir de 150€</p>
+                <p class="full-location">MAKKAH, ARABIE SAOUDITE</p>
+            </div>
+        </div>
+    {% endif %}
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+    <div class="about-container">
+        <div class="about-header">
+            <h2>🕌 À propos de Dèmè Travel</h2>
+            <p>Votre partenaire de confiance pour le pèlerinage</p>
+        </div>
+
+        <div class="about-content">
+            <!-- Notre histoire -->
+            <div class="about-item">
+                <div class="about-text">
+                    <h3>📖 Notre Histoire</h3>
+                    <p>Fondée en 2020, Dèmè Travel est née de la passion d'accompagner les pèlerins dans leur voyage spirituel vers les lieux saints de l'Islam. Notre équipe, composée d'experts du tourisme religieux et de guides expérimentés, s'engage à offrir des services de qualité pour rendre votre pèlerinage inoubliable.</p>
+                </div>
+                <div class="about-image">
+                    <img src="/assets/images/carousel/photos/omra1.webp" alt="Kaaba">
+                </div>
+            </div>
+
+            <!-- Notre mission -->
+            <div class="about-item reverse">
+                <div class="about-text">
+                    <h3>🎯 Notre Mission</h3>
+                    <p>Notre mission est de faciliter l'accès au pèlerinage pour tous les musulmans, en offrant des services complets et personnalisés. Nous nous engageons à :</p>
+                    
+                    <ul class="mission-list">
+                        <li>✅ Offrir des packages de qualité à des prix accessibles</li>
+                        <li>✅ Assurer un accompagnement personnalisé avant, pendant et après le voyage</li>
+                        <li>✅ Respecter les traditions et les valeurs islamiques</li>
+                        <li>✅ Garantir la sécurité et le confort de nos pèlerins</li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <img src="/assets/images/carousel/photos/omra2.webp" alt="Mosquée">
+                </div>
+            </div>
+
+            <!-- Nos valeurs et chiffres -->
+            <div class="about-item values-stats-container">
+                <div class="about-text values-section">
+                    <h3>💎 Nos Valeurs</h3>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="value-icon">🤝</div>
+                            <h4>Confiance</h4>
+                            <p>Relations durables basées sur la transparence.</p>
+                        </div>
+                        
+                        <div class="value-card">
+                            <div class="value-icon">🕌</div>
+                            <h4>Respect</h4>
+                            <p>Respect profond des traditions islamiques.</p>
+                        </div>
+                        
+                        <div class="value-card">
+                            <div class="value-icon">⭐</div>
+                            <h4>Excellence</h4>
+                            <p>Services d'excellence à chaque étape.</p>
+                        </div>
+                        
+                        <div class="value-card">
+                            <div class="value-icon">❤️</div>
+                            <h4>Bienveillance</h4>
+                            <p>Traitement avec bienveillance et compassion.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-text stats-section">
+                    <h3>📊 Nos Chiffres</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">1000+</div>
+                            <div class="stat-label">Pèlerins accompagnés</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Départs organisés</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">Satisfaction client</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Support disponible</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="testimonial-card">
-                <div class="testimonial-content">
-                    <p>"Je recommande vivement Dèmè Travel ! Prix transparents, accompagnement de qualité et une expérience spirituelle inoubliable."</p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">👤</div>
-                    <div class="author-info">
-                        <h4>Mamadou Koné</h4>
-                        <span>Hajj 2023</span>
+        </div>
+
+        
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section">
+    <div class="contact-container">
+        <div class="contact-header">
+            <h2>📞 Contactez-nous</h2>
+            <p>Notre équipe est à votre disposition pour répondre à toutes vos questions</p>
+        </div>
+
+        <div class="contact-content">
+            <div class="contact-grid">
+                <!-- Informations de contact -->
+                <div class="contact-info">
+                    <h3>📍 Nos Coordonnées</h3>
+                    
+                    <div class="info-section">
+                        <h4>🏢 Adresse</h4>
+                        <div class="info-item">
+                            <div class="info-icon">📍</div>
+                            <div class="info-content">
+                                <strong>Dèmè Travel</strong><br>
+                                123 Avenue de la Paix<br>
+                                Bamako, Mali
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📞 Téléphone</h4>
+                        <div class="info-item">
+                            <div class="info-icon">📞</div>
+                            <div class="info-content">
+                                <strong>+223 20 22 33 44</strong><br>
+                                <span>Lun-Ven: 8h-18h</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">📱</div>
+                            <div class="info-content">
+                                <strong>+223 76 12 34 56</strong><br>
+                                <span>Support 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>✉️ Email</h4>
+                        <div class="info-item">
+                            <div class="info-icon">✉️</div>
+                            <div class="info-content">
+                                <strong>info@deme-travel.com</strong><br>
+                                <span>Réponse sous 24h</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">📧</div>
+                            <div class="info-content">
+                                <strong>reservations@deme-travel.com</strong><br>
+                                <span>Pour les réservations</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>🕒 Horaires d'ouverture</h4>
+                        <div class="info-item">
+                            <div class="info-icon">🕒</div>
+                            <div class="info-content">
+                                <strong>Lundi - Vendredi</strong><br>
+                                8h00 - 18h00<br>
+                                <strong>Samedi</strong><br>
+                                9h00 - 16h00<br>
+                                <strong>Dimanche</strong><br>
+                                Fermé
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>�� Réseaux sociaux</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <span class="social-icon">📘</span>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <span class="social-icon">📷</span>
+                                <span>Instagram</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <span class="social-icon">🐦</span>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link">
+                                <span class="social-icon">💼</span>
+                                <span>LinkedIn</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="testimonial-content">
-                    <p>"Agence sérieuse et professionnelle. Les hôtels étaient excellents et proches des mosquées. Un service client remarquable !"</p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">👤</div>
-                    <div class="author-info">
-                        <h4>Aissatou Barry</h4>
-                        <span>Omra Décembre 2023</span>
-                    </div>
+
+                <!-- Formulaire de contact -->
+                <div class="contact-form">
+                    <h3>💬 Envoyez-nous un message</h3>
+                    <p>Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.</p>
+
+                    <form method="POST" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom">Nom complet *</label>
+                                <input type="text" id="nom" name="nom" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="telephone">Téléphone</label>
+                                <input type="tel" id="telephone" name="telephone" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="pays">Pays</label>
+                                <select id="pays" name="pays" class="form-control">
+                                    <option value="">Sélectionner un pays</option>
+                                    <option value="Mali">Mali</option>
+                                    <option value="Sénégal">Sénégal</option>
+                                    <option value="Côte d'Ivoire">Côte d'Ivoire</option>
+                                    <option value="Burkina Faso">Burkina Faso</option>
+                                    <option value="Guinée">Guinée</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Tchad">Tchad</option>
+                                    <option value="Autre">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sujet">Sujet *</label>
+                            <select id="sujet" name="sujet" required class="form-control">
+                                <option value="">Sélectionner un sujet</option>
+                                <option value="reservation">Réservation de package</option>
+                                <option value="visa">Demande de visa</option>
+                                <option value="information">Demande d'information</option>
+                                <option value="reclamation">Réclamation</option>
+                                <option value="partenariat">Partenariat</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" rows="6" required class="form-control" 
+                                      placeholder="Décrivez votre demande en détail..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="newsletter" value="1">
+                                <span class="checkmark"></span>
+                                Je souhaite recevoir la newsletter et les offres spéciales
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="rgpd" value="1" required>
+                                <span class="checkmark"></span>
+                                J'accepte que mes données soient traitées conformément à la politique de confidentialité *
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">
+                            📤 Envoyer le message
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="cta-content">
-            <h2>Prêt pour votre pèlerinage ?</h2>
-            <p>Contactez-nous dès maintenant pour planifier votre voyage spirituel</p>
-            <div class="cta-actions">
-                <a href="{{ path('app_contact') }}" class="btn btn-primary btn-large">
-                    <span class="btn-icon">📞</span>
-                    Nous contacter
-                </a>
-                <a href="{{ path('app_packages_index') }}" class="btn btn-secondary btn-large">
-                    <span class="btn-icon">🕌</span>
+<!-- CTA Banner -->
+<section class="cta-banner">
+    <!-- Call to action -->
+        <div class="about-cta">
+            <h3>Prêt pour votre pèlerinage ?</h3>
+            <p>Rejoignez les milliers de pèlerins qui nous font confiance</p>
+            <div class="cta-buttons">
+                <a href="{{ path('app_packages_index') }}" class="btn btn-primary">
                     Voir nos packages
+                </a>
+                <a href="{{ path('app_contact') }}" class="btn btn-secondary">
+                    Nous contacter
                 </a>
             </div>
         </div>
     </div>
 </section>
+
 {% endblock %}
 
 {% block stylesheets %}
 <style>
-/* Variables CSS - Harmonisé avec la navbar admin */
+/* Variables CSS - Design moderne violet-orange */
 :root {
-    --color-primary: #1e3a8a;     /* Bleu nuit - même que navbar admin */
-    --color-secondary: #f59e0b;   /* Or doux - même que navbar admin */
-    --color-accent: #fbbf24;      /* Sable */
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
-    --color-danger: #ef4444;
-    --color-dark: #1f2937;
-    --color-light: #f8fafc;
-    --color-gray: #6b7280;
-    --color-white: #ffffff;
+    --color-primary: #4c1d95;     /* Violet foncé exact des captures */
+    --color-secondary: #f97316;   /* Orange vif exact des captures */
+    --color-accent: #8b5cf6;      /* Violet moyen */
+    --color-light: #ffffff;       /* Blanc */
+    --color-dark: #1f2937;        /* Gris foncé */
+    --color-gray: #6b7280;        /* Gris moyen */
+    --color-light-gray: #f3f4f6;  /* Gris clair */
     
     --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    --gradient-hero: linear-gradient(135deg, rgba(30, 58, 138, 0.9), rgba(245, 158, 11, 0.8));
+    --gradient-violet: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    --gradient-orange: linear-gradient(135deg, var(--color-secondary), #ea580c);
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
     
     --border-radius: 0.75rem;
     --border-radius-lg: 1rem;
@@ -241,612 +599,1225 @@ body {
     background-color: var(--color-light);
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* Hero Section with Split Layout */
+/* Hero Section */
 .hero-section {
     position: relative;
-    min-height: 80vh;
-    background: var(--color-light);
-}
-
-.hero-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 80vh;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-/* Left Side - Photos */
-.hero-photos {
-    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-    border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;
 }
 
-.carousel-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.carousel-slide {
+.hero-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-    filter: brightness(0.9) contrast(1.1);
+    z-index: 1;
 }
 
-.carousel-slide.active {
-    opacity: 1;
+.hero-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.8) contrast(1.1) saturate(0.8);
 }
 
-/* Carousel Indicators */
-.carousel-indicators {
+.hero-overlay {
     position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 0.75rem;
-    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(76, 29, 149, 0.3), 
+        rgba(139, 92, 246, 0.2),
+        rgba(30, 58, 138, 0.4)
+    );
 }
 
-.indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.indicator.active {
-    background: var(--color-white);
-    transform: scale(1.1);
-}
-
-.indicator:hover {
-    background: rgba(255, 255, 255, 0.8);
-}
-
-/* Right Side - Content */
 .hero-content {
-    display: flex;
-    align-items: center;
-    padding: 3rem;
-    background: var(--color-white);
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--color-light);
 }
 
-.hero-text {
-    max-width: 500px;
+.hero-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hero-main {
+    font-size: 4rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    color: var(--color-light);
 }
 
 .hero-subtitle {
-    display: block;
-    font-size: 1.125rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 2.5rem;
+    font-weight: 400;
+    font-style: italic;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    color: var(--color-light);
+    opacity: 0.95;
 }
 
-.hero-main-title {
-    display: block;
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: var(--color-dark);
-    margin-bottom: 1.5rem;
-    line-height: 1.1;
-}
-
-.hero-description {
-    font-size: 1.125rem;
-    color: var(--color-gray);
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
-}
-
-.hero-actions {
+/* Carousel Navigation */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    pointer-events: none; /* Permet de cliquer à travers */
 }
 
-/* Buttons - Reduced color intensity */
-.btn {
-    display: inline-flex;
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto; /* Restaure la possibilité de cliquer */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.carousel-btn.prev {
+    position: absolute;
+    left: 20px; /* Position sur le bord gauche de la page */
+}
+
+.carousel-btn.next {
+    position: absolute;
+    right: 20px; /* Position sur le bord droit de la page */
+}
+
+/* Améliorer la visibilité du texte sur le hero */
+.hero-title {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.hero-main {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* Services Banner */
+.services-banner {
+    background: var(--color-light);
+    padding: 2rem 0;
+    box-shadow: var(--shadow-md);
+}
+
+.services-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0 1rem;
+}
+
+.service-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.875rem 2rem;
+    padding: 1rem;
     border-radius: var(--border-radius);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
     transition: all 0.3s ease;
-    border: none;
     cursor: pointer;
 }
 
-.btn-primary {
-    background: var(--color-primary);
-    color: var(--color-white);
-    box-shadow: var(--shadow-md);
-}
-
-.btn-primary:hover {
-    background: #1e40af;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-secondary {
-    background: var(--color-light);
-    color: var(--color-dark);
-    border: 2px solid #e5e7eb;
-}
-
-.btn-secondary:hover {
-    background: #f1f5f9;
-    border-color: var(--color-primary);
+.service-item:hover {
     transform: translateY(-2px);
 }
 
-.btn-large {
-    padding: 1rem 2.5rem;
-    font-size: 1.125rem;
+.service-item.vip {
+    background: var(--gradient-orange);
+    color: var(--color-light);
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
 }
 
-.btn-icon {
-    font-size: 1.25rem;
+.service-icon {
+    font-size: 1.5rem;
 }
 
-/* Section Header */
-.section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.section-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--color-dark);
-    margin-bottom: 1rem;
-}
-
-.section-header p {
-    font-size: 1.125rem;
-    color: var(--color-gray);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Features Section */
-.features-section {
-    padding: 5rem 0;
-    background: var(--color-white);
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-}
-
-.feature-card {
-    text-align: center;
-    padding: 2rem;
-    border-radius: var(--border-radius-lg);
-    background: var(--color-white);
-    box-shadow: var(--shadow-md);
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
-}
-
-.feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.feature-card h3 {
-    font-size: 1.25rem;
+.service-text {
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--color-dark);
-    margin-bottom: 1rem;
+    text-align: center;
+    white-space: nowrap;
 }
 
-.feature-card p {
-    color: var(--color-gray);
-    line-height: 1.6;
+/* Package Categories */
+.package-categories {
+    padding: 4rem 0;
+    background: var(--color-light-gray);
 }
 
-/* Packages Section */
-.packages-section {
-    padding: 5rem 0;
-    background: var(--color-light);
-}
-
-.packages-preview {
+.categories-container {
+    max-width: 1200px;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
-    margin-bottom: 3rem;
+    padding: 0 1rem;
 }
 
-.package-preview-card {
-    background: var(--color-white);
+.category-card {
+    background: var(--color-light);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
 }
 
-.package-preview-card:hover {
+.category-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-xl);
 }
 
-.package-preview-image {
-    position: relative;
+.category-image {
     height: 200px;
     overflow: hidden;
 }
 
-.package-preview-image img {
+.category-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.package-preview-placeholder {
+.placeholder-image {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--gradient-primary);
-    color: var(--color-white);
+    color: var(--color-light);
     font-size: 3rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-.package-preview-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-
-.badge-text {
-    background: rgba(0, 0, 0, 0.8);
-    color: var(--color-white);
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-}
-
-.package-preview-content {
+.category-content {
     padding: 1.5rem;
-}
-
-.package-preview-content h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-dark);
-    margin-bottom: 1rem;
-}
-
-.package-preview-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.feature {
-    background: var(--color-light);
-    color: var(--color-gray);
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.package-preview-price {
     text-align: center;
-    margin-bottom: 1.5rem;
 }
 
-.price-label {
-    display: block;
-    font-size: 0.875rem;
-    color: var(--color-gray);
-    margin-bottom: 0.25rem;
-}
-
-.price-amount {
+.category-content h3 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--color-dark);
+    margin-bottom: 0.5rem;
 }
 
-.price-currency {
-    font-size: 1rem;
+.category-content p {
     color: var(--color-gray);
-    margin-left: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
-.packages-cta {
-    text-align: center;
+.package-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.duration {
+    background: var(--gradient-primary);
+    color: var(--color-light);
+    padding: 0.3rem 0.7rem;
+    border-radius: 0.5rem;
+}
+
+.hotels {
+    background: var(--gradient-orange);
+    color: var(--color-light);
+    padding: 0.3rem 0.7rem;
+    border-radius: 0.5rem;
+}
+
+.rating {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.category-btn {
+    background: var(--gradient-primary);
+    color: var(--color-light);
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Testimonials Section */
 .testimonials-section {
-    padding: 5rem 0;
-    background: var(--color-white);
+    padding: 4rem 0;
+    background: var(--color-light-gray);
+}
+
+.testimonials-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.testimonials-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.testimonials-header h2 {
+    color: var(--color-primary);
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+}
+
+.testimonials-header p {
+    color: var(--color-gray);
+    font-size: 1.125rem;
+    margin: 0;
 }
 
 .testimonials-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
 }
 
 .testimonial-card {
-    background: var(--color-light);
+    background: white;
     padding: 2rem;
-    border-radius: var(--border-radius-lg);
-    border-left: 4px solid var(--color-primary);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(76, 29, 149, 0.1);
 }
 
-.testimonial-content p {
-    font-style: italic;
-    color: var(--color-dark);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 }
 
-.testimonial-author {
+.testimonial-header {
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.author-avatar {
-    width: 3rem;
-    height: 3rem;
-    background: var(--gradient-primary);
+.client-avatar {
+    font-size: 2rem;
+    background: var(--color-primary);
+    color: white;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-white);
+}
+
+.client-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.client-name {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.125rem;
+}
+
+.client-trip {
+    color: var(--color-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.testimonial-quote {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    font-style: italic;
+    text-align: center;
+}
+
+.testimonial-text {
+    color: var(--color-gray);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.testimonial-rating {
+    text-align: center;
     font-size: 1.25rem;
 }
 
-.author-info h4 {
-    font-weight: 600;
-    color: var(--color-dark);
-    margin-bottom: 0.25rem;
+/* Popular Services */
+.popular-services {
+    padding: 4rem 0;
+    background: var(--color-light-gray);
 }
 
-.author-info span {
+.services-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.services-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-dark);
+}
+
+.service-card {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--color-light);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.service-image {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-details h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-dark);
+    margin-bottom: 0.5rem;
+}
+
+.location {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.full-location {
     font-size: 0.875rem;
     color: var(--color-gray);
 }
 
-/* CTA Section */
-.cta-section {
-    padding: 5rem 0;
+.service-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.feature {
     background: var(--gradient-primary);
-    color: var(--color-white);
+    color: var(--color-light);
+    padding: 0.3rem 0.7rem;
+    border-radius: 0.5rem;
 }
 
-.cta-content {
-    text-align: center;
-    max-width: 600px;
+/* About Section */
+.about-section {
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 2rem;
 }
 
-.cta-content h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+.about-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
 }
 
-.cta-content p {
-    font-size: 1.125rem;
-    margin-bottom: 2rem;
+.about-header h2 {
+    margin: 0 0 1rem 0;
+    font-size: 3rem;
+}
+
+.about-header p {
+    margin: 0;
+    font-size: 1.25rem;
     opacity: 0.9;
 }
 
-.cta-actions {
+.about-content {
+    margin-bottom: 4rem;
+}
+
+.about-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    align-items: center;
+}
+
+.about-item.reverse {
+    direction: rtl;
+}
+
+.about-item.reverse > * {
+    direction: ltr;
+}
+
+.about-text h3 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 2rem;
+}
+
+.about-text p {
+    margin: 0 0 1.5rem 0;
+    color: var(--color-gray);
+    line-height: 1.7;
+    font-size: 1.1rem;
+}
+
+.mission-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mission-list li {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    color: var(--color-gray);
+    font-size: 1.1rem;
+}
+
+.about-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-image img {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    border-radius: 1rem;
+    object-fit: cover;
+}
+
+.values-stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.values-section,
+.stats-section {
+    flex: none;
+}
+
+.values-section h3,
+.stats-section h3 {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.value-card,
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.value-card:hover,
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.value-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.value-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-primary);
+    font-size: 1.125rem;
+}
+
+.value-card p {
+    margin: 0;
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--color-gray);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.about-cta {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.about-cta h3 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.about-cta p {
+    margin: 0 0 2rem 0;
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
     display: flex;
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
 }
 
+.cta-buttons .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cta-buttons .btn-primary {
+    background-color: var(--color-light);
+    color: var(--color-primary);
+}
+
+.cta-buttons .btn-primary:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+}
+
+.cta-buttons .btn-secondary {
+    background-color: transparent;
+    color: var(--color-light);
+    border: 2px solid var(--color-light);
+}
+
+.cta-buttons .btn-secondary:hover {
+    background-color: var(--color-light);
+    color: var(--color-primary);
+}
+
+/* Contact Section */
+.contact-section {
+    padding: 4rem 0;
+    background: var(--color-light-gray);
+}
+
+.contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-radius: 1rem;
+}
+
+.contact-header h2 {
+    margin: 0 0 1rem 0;
+    font-size: 2.5rem;
+}
+
+.contact-header p {
+    margin: 0;
+    font-size: 1.125rem;
+    opacity: 0.9;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 2rem;
+}
+
+.contact-info h3,
+.contact-form h3 {
+    margin: 0 0 2rem 0;
+    color: var(--color-primary);
+    font-size: 1.75rem;
+}
+
+.contact-form p {
+    margin: 0 0 2rem 0;
+    color: var(--color-gray);
+    font-size: 1rem;
+}
+
+.info-section {
+    margin-bottom: 2rem;
+}
+
+.info-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+}
+
+.info-content strong {
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.info-content span {
+    color: var(--color-gray);
+    font-size: 0.875rem;
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
+    color: var(--color-secondary);
+}
+
+.social-icon {
+    font-size: 1.25rem;
+}
+
+.form {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--color-gray);
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.25rem;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
-    .hero-container {
+    .hero-main {
+        font-size: 3rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 2rem;
+    }
+    
+    .services-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .contact-content {
         grid-template-columns: 1fr;
-        min-height: auto;
+        gap: 2rem;
     }
     
-    .hero-photos {
-        height: 50vh;
-        border-radius: 0;
+    .cta-content {
+        flex-direction: column;
+        text-align: center;
     }
-    
-    .hero-content {
-        padding: 2rem;
+
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .about-item {
+        flex-direction: column;
         text-align: center;
     }
     
-    .hero-text {
-        max-width: 100%;
+    .about-image {
+        order: -1;
+        margin-bottom: 2rem;
     }
     
-    .hero-main-title {
-        font-size: 2.5rem;
+    .values-stats-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
     }
     
-    .hero-actions {
+    .values-grid,
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .about-image {
+        width: 100%;
+    }
+
+    .about-text {
+        width: 100%;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-header h2 {
+        font-size: 2rem;
+    }
+    
+    .contact-info h3,
+    .contact-form h3 {
+        font-size: 1.5rem;
+    }
+    
+    .social-links {
         justify-content: center;
     }
 }
 
 @media (max-width: 768px) {
-    .hero-photos {
-        height: 40vh;
+    .hero-main {
+        font-size: 2.5rem;
     }
     
-    .hero-content {
-        padding: 1.5rem;
+    .hero-subtitle {
+        font-size: 1.5rem;
     }
     
-    .hero-main-title {
-        font-size: 2rem;
+    .carousel-nav {
+        padding: 0 1rem;
     }
     
-    .hero-description {
-        font-size: 1rem;
+    .carousel-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.25rem;
     }
     
-    .hero-actions {
+    .categories-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .testimonials-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-card {
         flex-direction: column;
-        align-items: center;
+        text-align: center;
     }
     
-    .btn-large {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
+    .service-image {
+        width: 120px;
+        height: 120px;
     }
     
-    .section-header h2 {
+    .about-header h2 {
         font-size: 2rem;
     }
     
-    .features-grid {
+    .about-item {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
     
-    .packages-preview {
-        grid-template-columns: 1fr;
+    .about-item.reverse {
+        direction: ltr;
     }
     
-    .testimonials-grid {
-        grid-template-columns: 1fr;
+    .about-image img {
+        width: 200px;
+        height: 200px;
+        font-size: 4rem;
     }
     
-    .cta-actions {
+    .cta-buttons {
         flex-direction: column;
         align-items: center;
     }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 0 0.5rem;
-    }
-    
-    .hero-main-title {
+    .hero-main {
         font-size: 2rem;
     }
     
-    .btn-large {
-        padding: 0.875rem 2rem;
-        font-size: 1rem;
+    .hero-subtitle {
+        font-size: 1.25rem;
     }
- }
- </style>
- {% endblock %}
+    
+    .services-container {
+        padding: 0 0.5rem;
+    }
+    
+    .service-item {
+        padding: 0.75rem;
+    }
+    
+    .service-text {
+        font-size: 0.75rem;
+    }
+    
+    .contact-form {
+        padding: 1.5rem;
+    }
+    
+    .about-header h2 {
+        font-size: 2rem;
+    }
+    
+    .about-item {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .about-item.reverse {
+        direction: ltr;
+    }
+    
+    .about-image img {
+        max-width: 300px;
+        height: 250px;
+    }
+    
+    .values-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .about-cta h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Styles spécifiques pour la page d'accueil */
+body {
+    padding-top: 0; /* Pas de padding-top sur la page d'accueil */
+}
+
+.header {
+    background: rgba(76, 29, 149, 0.8) !important; /* Plus foncée */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Améliorer la visibilité du logo */
+.logo img {
+    filter: brightness(1.5) contrast(1.5) !important; /* Plus visible */
+}
+
+.logo-text {
+    color: #ffffff !important; /* Blanc pur pour plus de contraste */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: 800 !important;
+}
+
+/* Corriger les flèches du carousel */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    pointer-events: none; /* Permet de cliquer à travers */
+    z-index: 10;
+}
+
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius:50%;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto; /* Restaure la possibilité de cliquer */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-btn.prev {
+    margin-left: 2rem; /* Position sur le bord gauche */
+}
+
+.carousel-btn.next {
+    margin-right: 2rem; /* Position sur le bord droit */
+}
+
+/* Améliorer la visibilité du texte sur le hero */
+.hero-title {
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+.hero-main {
+    text-shadow: 0 6px 16px rgba(0, 0, 0, 0.9);
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Améliorer la navigation */
+.nav a {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+}
+
+.nav a:hover {
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+</style>
+{% endblock %}
 
 {% block javascripts %}
 <script>
+let currentSlide = 0;
+const slides = [
+    '/assets/images/carousel/photos/omra1.webp',
+    '/assets/images/carousel/photos/omra2.webp',
+    '/assets/images/carousel/photos/omra3.webp',
+    '/assets/images/carousel/photos/omra4.webp',
+    '/assets/images/carousel/photos/omra5.webp'
+];
+
+function changeSlide(direction) {
+    currentSlide = (currentSlide + direction + slides.length) % slides.length;
+    updateHeroBackground();
+}
+
+function updateHeroBackground() {
+    const heroBg = document.querySelector('.hero-bg-image');
+    if (heroBg) {
+        heroBg.src = slides[currentSlide];
+    }
+}
+
+// Auto-advance slides every 8 seconds
+setInterval(() => {
+    changeSlide(1);
+}, 8000);
+
+// Initialize with first slide
 document.addEventListener('DOMContentLoaded', function() {
-    const slides = document.querySelectorAll('.carousel-slide');
-    const indicators = document.querySelectorAll('.indicator');
-    let currentSlide = 0;
-    
-    // Function to show a specific slide
-    function showSlide(index) {
-        // Remove active class from all slides and indicators
-        slides.forEach(slide => slide.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
-        
-        // Add active class to current slide and indicator
-        slides[index].classList.add('active');
-        indicators[index].classList.add('active');
-        
-        currentSlide = index;
-    }
-    
-    // Function to go to next slide
-    function nextSlide() {
-        const next = (currentSlide + 1) % slides.length;
-        showSlide(next);
-    }
-    
-    // Auto-advance slides every 6 seconds
-    setInterval(nextSlide, 6000);
-    
-    // Add click handlers to indicators
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            showSlide(index);
-        });
-    });
-    
-    // Optional: Add swipe support for mobile
-    let startX = 0;
-    let endX = 0;
-    
-    const heroSection = document.querySelector('.hero-section');
-    
-    heroSection.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
-    
-    heroSection.addEventListener('touchend', (e) => {
-        endX = e.changedTouches[0].clientX;
-        handleSwipe();
-    });
-    
-    function handleSwipe() {
-        const threshold = 50; // Minimum swipe distance
-        const diff = startX - endX;
-        
-        if (Math.abs(diff) > threshold) {
-            if (diff > 0) {
-                // Swipe left - next slide
-                nextSlide();
-            } else {
-                // Swipe right - previous slide
-                const prev = (currentSlide - 1 + slides.length) % slides.length;
-                showSlide(prev);
-            }
-        }
-    }
+    updateHeroBackground();
 });
 </script>
 {% endblock %} 
