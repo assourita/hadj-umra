@@ -84,14 +84,14 @@
                 <ul>
                     {% if is_granted('ROLE_ADMIN') %}
                         <li>
-                            <a href="{{ path('app_admin_dashboard') }}" target="_blank">
+                            <a href="{{ path('app_admin_dashboard') }}">
                                 <i class="icon">⚙️</i>
                                 <span>Dashboard Admin</span>
                             </a>
                         </li>
                     {% endif %}
                     <li>
-                        <a href="{{ path('app_home') }}" target="_blank">
+                        <a href="{{ path('app_home') }}">
                             <i class="icon">🏠</i>
                             <span>Page d'accueil</span>
                         </a>
